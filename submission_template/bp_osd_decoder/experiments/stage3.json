@@ -1,0 +1,13 @@
+{
+  "triple5_bp60": {"enhanced": true, "max_iter": 5, "lam3": 60, "refine_lam3": 100},
+  "triple5_bp100": {"enhanced": true, "max_iter": 5, "lam3": 100, "refine_lam3": 140},
+  "triple5_pairs200": {"enhanced": true, "max_iter": 5, "lam": 600, "lam2": 200, "lam3": 40, "refine_lam3": 60},
+  "union35": {"union": true},
+  "union35_cap2048": {"union": true, "capacity": 2048},
+  "union358": {"union": true, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "union_diverse": {"union": true, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [3, 1.0, 0.3]]},
+  "union35_pairs200": {"union": true, "lam": 600, "lam2": 200},
+  "union358_pairs200": {"union": true, "lam": 600, "lam2": 200, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "union35_pairs300": {"union": true, "lam": 1000, "lam2": 300},
+  "union_single5": {"union": true, "schedules": [[5, 0.8, 0.5]]}
+}

@@ -1,0 +1,20 @@
+{
+  "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070": {
+    "basis": "X",
+    "file": "graph_X.npz",
+    "lut_file": "lut_X.npz",
+    "source_circuit": "data\\train\\X_circuit.stim",
+    "H_sha256": "b309d8db1ae61ea7bb1841caad57fcc2aff57c3ff0dc9ebd4706c7547fcaab51",
+    "L_sha256": "f15f839199e45d971c901ca9eede9105cf6461c0837a4848e19b2b97c0963541",
+    "p_sha256": "00f405f1b243ea26e90442f29fc13321eec9e3a9238c97e0a0a52dacc63584cd"
+  },
+  "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968": {
+    "basis": "Z",
+    "file": "graph_Z.npz",
+    "lut_file": "lut_Z.npz",
+    "source_circuit": "data\\train\\Z_circuit.stim",
+    "H_sha256": "2634e8ed5311408e38c51843b305a69de38f7b210f0a071e888db541b45efedf",
+    "L_sha256": "2e68767f824b81b66cab924218af1979a21fcc95ca549d7b14f386dc61f045ef",
+    "p_sha256": "d5fa5a3d262b550cf1a11782ff0ef417a56e1334ef0ff31dbdbb0cee71b21d5d"
+  }
+}

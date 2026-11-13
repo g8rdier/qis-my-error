@@ -1,0 +1,11 @@
+{
+  "name": "reference",
+  "engine": "enhanced",
+  "lut_cutoff": 4,
+  "deduplicate": true,
+  "parameters": {
+    "max_iter": 3, "alpha": 0.8, "damping": 0.5, "avg_post": true,
+    "always_osd": true, "lam": 400, "lam2": 100, "coset": 2, "temp": 1.0,
+    "refine_thr": 0.3, "refine_lam": 1000, "refine_lam2": 300
+  }
+}

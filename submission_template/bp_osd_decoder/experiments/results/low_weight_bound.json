@@ -1,0 +1,30 @@
+[
+  {
+    "basis": "X",
+    "lower_bound_ler": 0.001002471627440415,
+    "bitwise_lower_bounds": [
+      0.0011139814093831836,
+      0.001046628364384891,
+      0.0008805672219205006,
+      0.0009687095140730843
+    ],
+    "low_weight_probability": 0.400202908909926,
+    "ambiguous_low_weight_mass": 0.041857753951932294,
+    "ambiguous_syndromes": 28433,
+    "scope": "independent DEM, weight<=2 sub-probability; not conditioned/renormalized"
+  },
+  {
+    "basis": "Z",
+    "lower_bound_ler": 0.0010436716260272569,
+    "bitwise_lower_bounds": [
+      0.0010098487449260723,
+      0.0009053135209041091,
+      0.0011850126897024792,
+      0.0010745115485763668
+    ],
+    "low_weight_probability": 0.41162585521390477,
+    "ambiguous_low_weight_mass": 0.0664333936435002,
+    "ambiguous_syndromes": 29659,
+    "scope": "independent DEM, weight<=2 sub-probability; not conditioned/renormalized"
+  }
+]

@@ -1,10 +1,54 @@
 # Decoder scoreboard — LER (per-bit, lower is better) + parameters
 
-Eval protocol: every row reports **val** = held-out 10% of `data/train/train.csv`
-(seed-0 split) and **fresh** = `data/eval_fresh/eval_fresh.csv` (20k shots/basis,
-seed 999, different sample). `data/test/test.csv` is NEVER used for training
+Historical ML rows use the seeded validation splits documented per run;
+**fresh** = `data/eval_fresh/eval_fresh.csv` (20k shots/basis,
+seed 999). The BP+OSD section has a separate independent-audit protocol.
+`data/test/test.csv` is NEVER used for training
 or model selection — decode-only for the final submission.
 Timing: `run_local.py` median-of-5 on this machine (guide only; judges use B200+48 cores).
+
+## BP+OSD improvement program (separate from the ML decoder)
+
+The historical seed-999 set below was used repeatedly for ML selection; it is
+not the final holdout for this experiment. BP+OSD configurations were selected on
+three newly sampled seed families, then frozen before independent audits.
+No Kaggle test CSV or test labels used.
+
+**Latest sealed audit: 300k shots, seeds 830100–830105 (150k/basis):**
+
+| Frozen configuration | Audit LER | Delta vs reference |
+|---|---:|---:|
+| Imported reference | 0.03506333 | — |
+| Previous full union | 0.03432250 | -0.00074083 |
+| **Physical-pair closure, 2 seeds/logical class** | **0.03414583** | **-0.00091750** |
+
+Closure improves all six basis/seed groups and beats the prior full union
+by -0.00017667 (paired 95% CI [-0.00026383, -0.00008950]).
+Total relative improvement over reference: **2.62%**. This remains above 0.03.
+The named model is `bp_osd_decoder/candidate/accuracy_closure.json`,
+also selected by that folder's `config.json`.
+Official-shaped local check: 56.86s median-of-five on 200k held-out shots,
+16 laptop threads, deterministic. Judge timing on B200+48 cores is unmeasured.
+
+**Earlier independent audit: seeds 720100–720105, 300k shots:**
+
+| Frozen BP+OSD option | Independent audit LER | Delta vs reference | Status |
+|---|---:|---:|---|
+| Imported reference | 0.035200 | — | Preserved unchanged |
+| Five iterations only | 0.035081 | -0.000119 | Paired interval includes zero |
+| Uncertainty-routed candidate union | **0.034752** | **-0.000448** | Preserved as balanced.json |
+| Full candidate union, 3/5/8 rankings | **0.034618** | **-0.000582** | Preserved as accuracy.json |
+
+Within that earlier audit, union variants improve all six basis/seed groups;
+the fast parameter-only gain is less convincing. Do not compare the two audit
+families as paired samples.
+Full per-setting/per-seed results, paired intervals, rejected ideas and reasoning:
+[`bp_osd_decoder/EXPERIMENTS.md`](bp_osd_decoder/EXPERIMENTS.md).
+Entry point: `bp_osd_decoder/candidate/decoder.py`; configurations and graph
+artifacts are kept there, separately from all MLP weights and manifests.
+The standalone `bp_osd_decoder/handin/` includes runtime artifacts and source
+generators, without labelled CSVs. The primary `submission_template/decoder.py`
+remains the existing ML decoder.
 
 ## Results (both bases combined; X / Z split in notes)
 

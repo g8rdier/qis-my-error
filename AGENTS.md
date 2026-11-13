@@ -16,11 +16,11 @@ that plain ML doesn't usually get. The best solutions will likely exploit both v
 
 **We are scored on accuracy AND speed.** The leaderboard metric is LER (lower is better,
 see below). The final ranking additionally penalises runtime: the top 10 decoders are timed on
-a B200 GPU + 48 CPU cores machine, and the final score is `LER * max(1, t / t_cap)^alpha`.
+a B200 GPU + 48 CPU cores machine, and the final score is `LER * max(1, t / t_cap)^alpha`. Max score is at 15.4 seconds or faster. But run on the judges' computer, which is much faster than mine. If we can, we should utilize their GPU and threads.
 There is a hard limit of 5 minutes. Import-time work (loading weights, building tables) is
 **not** timed — only the `decode()` calls are. So: front-load everything into import time.
 
-Hand-ins can include pretrained weights/models, as long as we trained them and provide the code that generated the weights.
+Hand-ins can include pretrained weights/models, as long as we trained them and provide the code that generated the weights. 
 
 ## The decoding problem (the physics/linear-algebra view)
 

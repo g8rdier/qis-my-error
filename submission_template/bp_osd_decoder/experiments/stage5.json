@@ -1,0 +1,10 @@
+{
+  "fast_iter5": {"max_iter": 5},
+  "accuracy_union": {"union": true, "lam": 600, "lam2": 200, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "routed_005": {"adaptive": true, "initial": {"max_iter": 5}, "route_threshold": 0.05},
+  "routed_020": {"adaptive": true, "initial": {"max_iter": 5}, "route_threshold": 0.2},
+  "routed_replace_005": {"adaptive": true, "initial": {"max_iter": 5, "refine_thr": 0}, "route_threshold": 0.05},
+  "routed_replace_010": {"adaptive": true, "initial": {"max_iter": 5, "refine_thr": 0}, "route_threshold": 0.1},
+  "routed_replace_020": {"adaptive": true, "initial": {"max_iter": 5, "refine_thr": 0}, "route_threshold": 0.2},
+  "routed_replace_030": {"adaptive": true, "initial": {"max_iter": 5, "refine_thr": 0}, "route_threshold": 0.3}
+}

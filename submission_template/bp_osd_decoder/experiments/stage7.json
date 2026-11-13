@@ -1,0 +1,10 @@
+{
+  "closure_control": {"union": true, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "closure_global16": {"union": true, "closure_seeds": 16, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "closure_global64": {"union": true, "closure_seeds": 64, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "closure_global32_two": {"union": true, "closure_seeds": 32, "closure_rounds": 2, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "closure_class2": {"union": true, "closure_seeds": 2, "closure_per_class": true, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "closure_class4": {"union": true, "closure_seeds": 4, "closure_per_class": true, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "closure_class8_two": {"union": true, "closure_seeds": 8, "closure_rounds": 2, "closure_per_class": true, "lam": 600, "lam2": 200, "capacity": 4096, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "jitter_closure_class4": {"union": true, "closure_seeds": 4, "closure_per_class": true, "jitter_trials": 4, "jitter_strength": 1.0, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]}
+}

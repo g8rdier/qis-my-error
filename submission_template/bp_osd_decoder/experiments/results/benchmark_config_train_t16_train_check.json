@@ -1,0 +1,69 @@
+{
+  "command": [
+    "C:\\Users\\nicho\\Code\\qis-my-error\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\run_local.py",
+    "--decoder",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\bp_osd_decoder\\candidate",
+    "--problem-set",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\data\\train",
+    "--runs",
+    "1",
+    "--threads",
+    "16",
+    "--out",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\bp_osd_decoder\\experiments\\cache\\benchmark_config_train_t16_train_check.csv"
+  ],
+  "config": {
+    "name": "physical_pair_closure_class2",
+    "engine": "union",
+    "lut_cutoff": 4,
+    "deduplicate": true,
+    "selection": "Frozen on seed-family 610100 development before opening 830100 audit",
+    "parameters": {
+      "schedules": [
+        [
+          3,
+          0.8,
+          0.5
+        ],
+        [
+          5,
+          0.8,
+          0.5
+        ],
+        [
+          8,
+          0.8,
+          0.5
+        ]
+      ],
+      "lam": 600,
+      "lam2": 200,
+      "capacity": 2048,
+      "gap": 20.0,
+      "exact_order3": false,
+      "jitter_trials": 0,
+      "closure_seeds": 2,
+      "closure_rounds": 1,
+      "closure_per_class": true
+    }
+  },
+  "threads": 16,
+  "runs": 1,
+  "problem_set": "C:\\Users\\nicho\\Code\\qis-my-error\\data\\train",
+  "median_seconds": 58.77,
+  "ler": 0.03443,
+  "source_hashes": {
+    "enhanced.py": "c4a6652332363d4aedb48f5354dcb315bec6a9eba02b75694d98d82aa5cbc74e",
+    "union.py": "857325b1bac78e828bd2e6d3719bd139d5a7c6a19223d589f7d1c36dd2cdcd0a",
+    "adaptive.py": "1b7e6f3af5b5f069d48fad0e2cea9e0744bceeda1283b7dc80632d6c64eb1386",
+    "pair_index.py": "f5863b0fc7b9ccbdaa03ba6e05ce8e097a0e29e0f9d02c4e29ae8b153683b3a3",
+    "candidate\\decoder.py": "6ad82012c1f6b75b1fca0183c17e9308fd0fe331920b7adbd0a35d48e6bd47ef",
+    "fused.py": "90662a965404ccb23241b4501ecce642b678d5d405ed9e52d8075f4590b97dac",
+    "bp_checkpoints.py": "3f1755a075b0607147aba8d9f7d15ddbe45151fe0571ce8e3d1ad645624a479a",
+    "pool.py": "ed15cee207c9cb5805e1da497f408b999795283a1a43fff1f94b340735bc8e1a",
+    "local_closure.py": "b887ee872dd50e6f9b1420e5da805d79686e87eef956d19a08ae2f7fa105b278"
+  },
+  "illustrative_local_score": 0.04500533685839214,
+  "score_note": "local timing only; not a judging-server score"
+}

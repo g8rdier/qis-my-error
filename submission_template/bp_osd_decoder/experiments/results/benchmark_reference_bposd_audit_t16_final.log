@@ -1,0 +1,15 @@
+loading C:\Users\nicho\Code\qis-my-error\data\bposd_audit\bposd_audit.csv ...
+C:\Users\nicho\Code\qis-my-error\data\bposd_audit X: 100000 shots
+C:\Users\nicho\Code\qis-my-error\data\bposd_audit Z: 100000 shots
+run 1: 7.13 s
+run 2: 7.27 s
+run 3: 7.17 s
+run 4: 7.30 s
+run 5: 7.23 s
+runtime (median of 5): 7.23 s
+wrote C:\Users\nicho\Code\qis-my-error\submission_template\bp_osd_decoder\experiments\cache\benchmark_reference_bposd_audit_t16_final.csv
+X: LER 0.03498
+Z: LER 0.03513
+both: LER 0.03506
+C:\Users\nicho\Code\qis-my-error\submission_template\bp_osd_decoder\bp_osd.py:48: RuntimeWarning: overflow encountered in scalar multiply
+  _CTZ_TABLE[((np.uint64(1) << np.uint64(_i)) * _DEBRUIJN) >> np.uint64(58)] = _i

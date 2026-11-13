@@ -1,0 +1,6 @@
+{
+  "exact3_iter5": {"union": true, "exact_order3": true, "schedules": [[5, 0.8, 0.5]]},
+  "exact3_union35": {"union": true, "exact_order3": true},
+  "exact3_union358": {"union": true, "exact_order3": true, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "exact3_iter5_pairs200": {"union": true, "exact_order3": true, "lam": 600, "lam2": 200, "schedules": [[5, 0.8, 0.5]]}
+}

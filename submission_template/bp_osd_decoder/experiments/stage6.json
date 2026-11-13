@@ -1,0 +1,12 @@
+{
+  "accuracy_union_control": {"union": true, "lam": 600, "lam2": 200, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "union_capacity2048": {"union": true, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 16.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "union_capacity8192_gap24": {"union": true, "lam": 600, "lam2": 200, "capacity": 8192, "gap": 24.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "wide_union300": {"union": true, "lam": 1000, "lam2": 300, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5], [12, 0.8, 0.5], [20, 0.8, 0.5]]},
+  "wide_union500": {"union": true, "lam": 1500, "lam2": 500, "capacity": 4096, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5], [12, 0.8, 0.5], [20, 0.8, 0.5]]},
+  "diverse_union300": {"union": true, "lam": 1000, "lam2": 300, "capacity": 2048, "gap": 20.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5], [12, 0.8, 0.5], [3, 0.6, 0.3], [5, 0.9, 0.3], [8, 0.9, 0.7]]},
+  "jitter4_sigma05": {"union": true, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "jitter_trials": 4, "jitter_strength": 0.5, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "jitter4_sigma10": {"union": true, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "jitter_trials": 4, "jitter_strength": 1.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "jitter4_sigma20": {"union": true, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0, "jitter_trials": 4, "jitter_strength": 2.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]},
+  "jitter12_sigma10": {"union": true, "lam": 600, "lam2": 200, "capacity": 4096, "gap": 20.0, "jitter_trials": 12, "jitter_strength": 1.0, "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]}
+}

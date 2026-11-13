@@ -11,3 +11,9 @@ wheels/
 
 # Kaggle upload package, rebuilt by data/make_kaggle_package.py (host_only/ holds the hidden labels)
 data/kaggle_competition/
+
+# BP+OSD lookup tables (~113 MB), rebuilt by submission_template/bp_osd_decoder/build_lut.py
+submission_template/bp_osd_decoder/lut/
+submission_template/bp_osd_decoder/experiments/cache/
+submission_template/bp_osd_decoder/handin/
+data/bposd_audit*/

@@ -1,0 +1,12 @@
+{
+  "name": "accuracy_union",
+  "engine": "union",
+  "lut_cutoff": 4,
+  "deduplicate": true,
+  "selection": "Frozen on development seeds before opening seed family 720100",
+  "parameters": {
+    "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]],
+    "lam": 600, "lam2": 200, "capacity": 512, "gap": 16.0,
+    "exact_order3": false
+  }
+}

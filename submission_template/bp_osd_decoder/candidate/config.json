@@ -1,0 +1,13 @@
+{
+  "name": "physical_pair_closure_class2",
+  "engine": "union",
+  "lut_cutoff": 4,
+  "deduplicate": true,
+  "selection": "Frozen on seed-family 610100 development before opening 830100 audit",
+  "parameters": {
+    "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]],
+    "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0,
+    "exact_order3": false, "jitter_trials": 0,
+    "closure_seeds": 2, "closure_rounds": 1, "closure_per_class": true
+  }
+}

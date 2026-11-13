@@ -1,0 +1,53 @@
+{
+  "command": [
+    "C:\\Users\\nicho\\Code\\qis-my-error\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\run_local.py",
+    "--decoder",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\bp_osd_decoder\\candidate",
+    "--problem-set",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\data\\bposd_audit",
+    "--runs",
+    "5",
+    "--threads",
+    "16",
+    "--out",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\bp_osd_decoder\\experiments\\cache\\benchmark_reference_bposd_audit_t16_final.csv"
+  ],
+  "config": {
+    "name": "reference",
+    "engine": "enhanced",
+    "lut_cutoff": 4,
+    "deduplicate": true,
+    "parameters": {
+      "max_iter": 3,
+      "alpha": 0.8,
+      "damping": 0.5,
+      "avg_post": true,
+      "always_osd": true,
+      "lam": 400,
+      "lam2": 100,
+      "coset": 2,
+      "temp": 1.0,
+      "refine_thr": 0.3,
+      "refine_lam": 1000,
+      "refine_lam2": 300
+    }
+  },
+  "threads": 16,
+  "runs": 5,
+  "problem_set": "C:\\Users\\nicho\\Code\\qis-my-error\\data\\bposd_audit",
+  "median_seconds": 7.23,
+  "ler": 0.03506,
+  "source_hashes": {
+    "enhanced.py": "c4a6652332363d4aedb48f5354dcb315bec6a9eba02b75694d98d82aa5cbc74e",
+    "union.py": "3ab3be83a8d6c3c56ed00ed8d9c4082f6dee017147c26ac56f40d0ce1fcbdef6",
+    "adaptive.py": "1b7e6f3af5b5f069d48fad0e2cea9e0744bceeda1283b7dc80632d6c64eb1386",
+    "pair_index.py": "f5863b0fc7b9ccbdaa03ba6e05ce8e097a0e29e0f9d02c4e29ae8b153683b3a3",
+    "candidate\\decoder.py": "6ad82012c1f6b75b1fca0183c17e9308fd0fe331920b7adbd0a35d48e6bd47ef",
+    "fused.py": "d9d7f4291e3f34308109e3da38b96f6530e9b8aa960200f1eeffdd824b0eed52",
+    "bp_checkpoints.py": "3f1755a075b0607147aba8d9f7d15ddbe45151fe0571ce8e3d1ad645624a479a",
+    "pool.py": "ed15cee207c9cb5805e1da497f408b999795283a1a43fff1f94b340735bc8e1a"
+  },
+  "illustrative_local_score": 0.03506,
+  "score_note": "local timing only; not a judging-server score"
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "config": "accuracy_union",
+    "basis": "X",
+    "seed": 720100,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 13.905691600000864
+  },
+  {
+    "config": "routed_replace_005",
+    "basis": "X",
+    "seed": 720100,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 6.481769500001974
+  },
+  {
+    "config": "accuracy_union",
+    "basis": "X",
+    "seed": 720102,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 13.821420500000386
+  },
+  {
+    "config": "routed_replace_005",
+    "basis": "X",
+    "seed": 720102,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 6.585856699999567
+  },
+  {
+    "config": "accuracy_union",
+    "basis": "X",
+    "seed": 720104,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 13.753330600000481
+  },
+  {
+    "config": "routed_replace_005",
+    "basis": "X",
+    "seed": 720104,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 6.4164519000005384
+  },
+  {
+    "config": "accuracy_union",
+    "basis": "Z",
+    "seed": 720101,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 13.752545700001065
+  },
+  {
+    "config": "routed_replace_005",
+    "basis": "Z",
+    "seed": 720101,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 6.443271099997219
+  },
+  {
+    "config": "accuracy_union",
+    "basis": "Z",
+    "seed": 720103,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 13.784350699999777
+  },
+  {
+    "config": "routed_replace_005",
+    "basis": "Z",
+    "seed": 720103,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 6.372924499999499
+  },
+  {
+    "config": "accuracy_union",
+    "basis": "Z",
+    "seed": 720105,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 13.632390799997665
+  },
+  {
+    "config": "routed_replace_005",
+    "basis": "Z",
+    "seed": 720105,
+    "shots": 50000,
+    "bit_differences": 0,
+    "seconds": 6.3834386999988055
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "reference": "baseline",
+  "challenger": "frozen_pair_closure",
+  "shots": 300000,
+  "reference_ler": 0.035063333333333335,
+  "challenger_ler": 0.034145833333333334,
+  "delta": -0.0009175,
+  "paired_95ci": [
+    -0.0010738152737016738,
+    -0.0007611847262983262
+  ],
+  "corrected_bits": 3356,
+  "introduced_bits": 2255,
+  "net_corrected_bits": 1101,
+  "checks": [
+    {
+      "basis": "X",
+      "seed": 830100,
+      "delta": -0.00083
+    },
+    {
+      "basis": "X",
+      "seed": 830102,
+      "delta": -0.00083
+    },
+    {
+      "basis": "X",
+      "seed": 830104,
+      "delta": -0.001065
+    },
+    {
+      "basis": "Z",
+      "seed": 830101,
+      "delta": -0.000865
+    },
+    {
+      "basis": "Z",
+      "seed": 830103,
+      "delta": -0.000965
+    },
+    {
+      "basis": "Z",
+      "seed": 830105,
+      "delta": -0.00095
+    }
+  ]
+}

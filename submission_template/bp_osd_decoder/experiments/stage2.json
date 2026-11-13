@@ -1,0 +1,13 @@
+{
+  "triple_bp20": {"enhanced": true, "lam3": 20, "refine_lam3": 40},
+  "triple_bp40": {"enhanced": true, "lam3": 40, "refine_lam3": 60},
+  "triple_bp60": {"enhanced": true, "lam3": 60, "refine_lam3": 80},
+  "triple_single40": {"enhanced": true, "lam3": 40, "refine_lam3": 60, "triple_order": 1},
+  "triple_refine60": {"enhanced": true, "refine_lam3": 60},
+  "triple_iter5": {"enhanced": true, "lam3": 40, "refine_lam3": 60, "max_iter": 5},
+  "iter5_pairs300": {"max_iter": 5, "lam": 1000, "lam2": 300, "refine_thr": 0},
+  "iter5_refine_wider": {"max_iter": 5, "refine_lam": 1500, "refine_lam2": 500},
+  "spa3": {"enhanced": true, "bp_mode": 1, "alpha": 1.0},
+  "spa5": {"enhanced": true, "bp_mode": 1, "alpha": 1.0, "max_iter": 5},
+  "spa10": {"enhanced": true, "bp_mode": 1, "alpha": 1.0, "max_iter": 10}
+}

@@ -1,0 +1,107 @@
+{
+  "checks": [
+    {
+      "config": "accuracy_union",
+      "basis": "X",
+      "seed": 720100,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 11.972690799997508
+    },
+    {
+      "config": "routed_replace_005",
+      "basis": "X",
+      "seed": 720100,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 5.529671500000404
+    },
+    {
+      "config": "accuracy_union",
+      "basis": "X",
+      "seed": 720102,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 10.940966600002866
+    },
+    {
+      "config": "routed_replace_005",
+      "basis": "X",
+      "seed": 720102,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 5.39898820000235
+    },
+    {
+      "config": "accuracy_union",
+      "basis": "X",
+      "seed": 720104,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 11.06698790000155
+    },
+    {
+      "config": "routed_replace_005",
+      "basis": "X",
+      "seed": 720104,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 5.301685400001588
+    },
+    {
+      "config": "accuracy_union",
+      "basis": "Z",
+      "seed": 720101,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 11.018454799999745
+    },
+    {
+      "config": "routed_replace_005",
+      "basis": "Z",
+      "seed": 720101,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 5.535067400000116
+    },
+    {
+      "config": "accuracy_union",
+      "basis": "Z",
+      "seed": 720103,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 11.015027500001452
+    },
+    {
+      "config": "routed_replace_005",
+      "basis": "Z",
+      "seed": 720103,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 5.459660600001371
+    },
+    {
+      "config": "accuracy_union",
+      "basis": "Z",
+      "seed": 720105,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 11.057884599998943
+    },
+    {
+      "config": "routed_replace_005",
+      "basis": "Z",
+      "seed": 720105,
+      "shots": 50000,
+      "bit_differences": 0,
+      "seconds": 5.307585300000937
+    }
+  ],
+  "labels_read": false,
+  "source_hashes": {
+    "union.py": "3ab3be83a8d6c3c56ed00ed8d9c4082f6dee017147c26ac56f40d0ce1fcbdef6",
+    "fused.py": "d9d7f4291e3f34308109e3da38b96f6530e9b8aa960200f1eeffdd824b0eed52",
+    "pool.py": "ed15cee207c9cb5805e1da497f408b999795283a1a43fff1f94b340735bc8e1a",
+    "bp_checkpoints.py": "3f1755a075b0607147aba8d9f7d15ddbe45151fe0571ce8e3d1ad645624a479a"
+  }
+}

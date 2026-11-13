@@ -1,0 +1,80 @@
+{
+  "command": [
+    "C:\\Users\\nicho\\Code\\qis-my-error\\.venv\\Scripts\\python.exe",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\run_local.py",
+    "--decoder",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\bp_osd_decoder\\candidate",
+    "--problem-set",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\data\\bposd_audit",
+    "--runs",
+    "5",
+    "--threads",
+    "16",
+    "--out",
+    "C:\\Users\\nicho\\Code\\qis-my-error\\submission_template\\bp_osd_decoder\\experiments\\cache\\benchmark_config_bposd_audit_t16_hashed.csv"
+  ],
+  "config": {
+    "name": "balanced_routed_union",
+    "engine": "fused",
+    "lut_cutoff": 4,
+    "deduplicate": true,
+    "selection": "Frozen on development seeds before opening seed family 720100",
+    "parameters": {
+      "initial": {
+        "max_iter": 5,
+        "alpha": 0.8,
+        "damping": 0.5,
+        "avg_post": true,
+        "always_osd": true,
+        "lam": 400,
+        "lam2": 100,
+        "coset": 2,
+        "temp": 1.0,
+        "refine_thr": 0
+      },
+      "refiner": {
+        "union": true,
+        "schedules": [
+          [
+            3,
+            0.8,
+            0.5
+          ],
+          [
+            5,
+            0.8,
+            0.5
+          ],
+          [
+            8,
+            0.8,
+            0.5
+          ]
+        ],
+        "lam": 600,
+        "lam2": 200,
+        "capacity": 512,
+        "gap": 16.0,
+        "exact_order3": false
+      },
+      "route_threshold": 0.05
+    }
+  },
+  "threads": 16,
+  "runs": 5,
+  "problem_set": "C:\\Users\\nicho\\Code\\qis-my-error\\data\\bposd_audit",
+  "median_seconds": 15.94,
+  "ler": 0.03463,
+  "source_hashes": {
+    "enhanced.py": "c4a6652332363d4aedb48f5354dcb315bec6a9eba02b75694d98d82aa5cbc74e",
+    "union.py": "3ab3be83a8d6c3c56ed00ed8d9c4082f6dee017147c26ac56f40d0ce1fcbdef6",
+    "adaptive.py": "1b7e6f3af5b5f069d48fad0e2cea9e0744bceeda1283b7dc80632d6c64eb1386",
+    "pair_index.py": "f5863b0fc7b9ccbdaa03ba6e05ce8e097a0e29e0f9d02c4e29ae8b153683b3a3",
+    "candidate\\decoder.py": "6ad82012c1f6b75b1fca0183c17e9308fd0fe331920b7adbd0a35d48e6bd47ef",
+    "fused.py": "d9d7f4291e3f34308109e3da38b96f6530e9b8aa960200f1eeffdd824b0eed52",
+    "bp_checkpoints.py": "3f1755a075b0607147aba8d9f7d15ddbe45151fe0571ce8e3d1ad645624a479a",
+    "pool.py": "ed15cee207c9cb5805e1da497f408b999795283a1a43fff1f94b340735bc8e1a"
+  },
+  "illustrative_local_score": 0.03486952334832519,
+  "score_note": "local timing only; not a judging-server score"
+}

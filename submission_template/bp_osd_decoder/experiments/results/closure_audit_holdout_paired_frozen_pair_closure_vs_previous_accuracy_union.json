@@ -1,0 +1,47 @@
+{
+  "reference": "previous_accuracy_union",
+  "challenger": "frozen_pair_closure",
+  "shots": 300000,
+  "reference_ler": 0.0343225,
+  "challenger_ler": 0.034145833333333334,
+  "delta": -0.00017666666666666666,
+  "paired_95ci": [
+    -0.0002638307140580389,
+    -8.950261927529447e-05
+  ],
+  "corrected_bits": 1148,
+  "introduced_bits": 936,
+  "net_corrected_bits": 212,
+  "checks": [
+    {
+      "basis": "X",
+      "seed": 830100,
+      "delta": -0.00018
+    },
+    {
+      "basis": "X",
+      "seed": 830102,
+      "delta": -0.00019
+    },
+    {
+      "basis": "X",
+      "seed": 830104,
+      "delta": -0.000145
+    },
+    {
+      "basis": "Z",
+      "seed": 830101,
+      "delta": -0.000165
+    },
+    {
+      "basis": "Z",
+      "seed": 830103,
+      "delta": -0.000145
+    },
+    {
+      "basis": "Z",
+      "seed": 830105,
+      "delta": -0.000235
+    }
+  ]
+}

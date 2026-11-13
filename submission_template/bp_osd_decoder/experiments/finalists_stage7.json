@@ -1,0 +1,11 @@
+{
+  "previous_accuracy_union": {
+    "union": true, "lam": 600, "lam2": 200, "capacity": 512, "gap": 16.0,
+    "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]
+  },
+  "frozen_pair_closure": {
+    "union": true, "closure_seeds": 2, "closure_per_class": true,
+    "closure_rounds": 1, "lam": 600, "lam2": 200, "capacity": 2048, "gap": 20.0,
+    "schedules": [[3, 0.8, 0.5], [5, 0.8, 0.5], [8, 0.8, 0.5]]
+  }
+}
