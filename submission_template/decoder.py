@@ -20,6 +20,7 @@ each and compile the numba kernel, so decode() only has to look the tables up by
 circuit that is not one of these is handled too, by building its tables inside decode().
 """
 import hashlib
+from re import search
 
 import numpy as np
 import stim
@@ -31,9 +32,11 @@ ROUNDS, NOISE = 5, 0.002
 # passes (direction, eps, max_states, thr): the first pass decodes every shot; each later pass re-decodes the shots
 # where some logical bit still has a probability between thr and 1 - thr. Direction 0 sweeps the mechanisms forward
 # in time, 1 backward.
-MLD_TIERS = [(0, 1e-4, 1536, 0.0), (1, 3e-5, 4096, 0.15)]
+MLD_TIERS = [(0, 6.666666666666667e-5, 1792, 0.0), (1, 3e-5, 3072, 0.1)]
 MLD_COMPACT_EVERY = 32
-MLD_HEXP = 0.55
+MLD_HEXP = 0.6
+
+
 
 
 def _key(circuit: stim.Circuit) -> str:
