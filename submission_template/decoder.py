@@ -80,3 +80,13 @@ def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:
     events = np.asarray(detector_events, dtype=bool)
     assert events.ndim == 2 and events.shape[1] == g[0]["nd"]
     return (decode_marginals(g, events) > 0.5).astype(np.uint8)
+    out, found = lookup(circuit, detector_events)
+    # the table is only trusted for the easiest shots; BP + OSD is more accurate on everything else
+    miss = ~(found & (np.asarray(detector_events).sum(1) <= LUT_MAX_FIRED))
+    if miss.any():
+        m = problem_info(circuit)
+        graph = build_graph(m["H"], m["L"], m["p"])
+        bposd_params = {'max_iter': 8, 'alpha': 0.6, 'always_osd': True, 'damping': 0.1, 'avg_post': True, 'lam': 400, 'lam2': 100, 'coset': 2, 'temp': 0.85, 'refine_thr': 0.3, 'refine_lam': 1000, 'refine_lam2': 300
+                        ,'return_stats': False, 'return_classp': False}
+        out[miss] = decode_bp_osd(graph, np.asarray(detector_events)[miss], **bposd_params)
+    return out
