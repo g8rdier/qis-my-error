@@ -1,0 +1,147 @@
+{
+  "name": "reference+shuffle_checks/max",
+  "ler": 0.0335475,
+  "wrong_per_bit": [
+    10409,
+    9830,
+    10097,
+    9921
+  ],
+  "seconds": null,
+  "paired": {
+    "delta": -3.9166666666666665e-05,
+    "ci95": [
+      -7.757586328581884e-05,
+      -7.574700475145016e-07
+    ],
+    "net_bits_saved": 47
+  },
+  "groups": [
+    {
+      "name": "reference+shuffle_checks/max",
+      "ler": 0.03313,
+      "wrong_per_bit": [
+        1809,
+        1689,
+        1561,
+        1567
+      ],
+      "seconds": 0,
+      "paired": {
+        "delta": -2.5e-05,
+        "ci95": [
+          -0.00013280085528644014,
+          8.280085528644015e-05
+        ],
+        "net_bits_saved": 5
+      },
+      "basis": "X",
+      "family": 0
+    },
+    {
+      "name": "reference+shuffle_checks/max",
+      "ler": 0.03336,
+      "wrong_per_bit": [
+        1653,
+        1518,
+        1775,
+        1726
+      ],
+      "seconds": 0,
+      "paired": {
+        "delta": 1e-05,
+        "ci95": [
+          -7.315654283946838e-05,
+          9.315654283946838e-05
+        ],
+        "net_bits_saved": -2
+      },
+      "basis": "Z",
+      "family": 0
+    },
+    {
+      "name": "reference+shuffle_checks/max",
+      "ler": 0.03429,
+      "wrong_per_bit": [
+        1865,
+        1783,
+        1589,
+        1621
+      ],
+      "seconds": 0,
+      "paired": {
+        "delta": -0.0001,
+        "ci95": [
+          -0.00019192888935701317,
+          -8.07111064298685e-06
+        ],
+        "net_bits_saved": 20
+      },
+      "basis": "X",
+      "family": 1
+    },
+    {
+      "name": "reference+shuffle_checks/max",
+      "ler": 0.032515,
+      "wrong_per_bit": [
+        1630,
+        1479,
+        1755,
+        1639
+      ],
+      "seconds": 0,
+      "paired": {
+        "delta": 1e-05,
+        "ci95": [
+          -7.655207762984572e-05,
+          9.655207762984571e-05
+        ],
+        "net_bits_saved": -2
+      },
+      "basis": "Z",
+      "family": 1
+    },
+    {
+      "name": "reference+shuffle_checks/max",
+      "ler": 0.03411,
+      "wrong_per_bit": [
+        1823,
+        1783,
+        1565,
+        1651
+      ],
+      "seconds": 0,
+      "paired": {
+        "delta": -5e-05,
+        "ci95": [
+          -0.00014897516780322645,
+          4.897516780322645e-05
+        ],
+        "net_bits_saved": 10
+      },
+      "basis": "X",
+      "family": 2
+    },
+    {
+      "name": "reference+shuffle_checks/max",
+      "ler": 0.03388,
+      "wrong_per_bit": [
+        1629,
+        1578,
+        1852,
+        1717
+      ],
+      "seconds": 0,
+      "paired": {
+        "delta": -8e-05,
+        "ci95": [
+          -0.00017399662218664906,
+          1.399662218664905e-05
+        ],
+        "net_bits_saved": 16
+      },
+      "basis": "Z",
+      "family": 2
+    }
+  ]
+}

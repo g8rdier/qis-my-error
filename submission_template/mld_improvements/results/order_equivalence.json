@@ -1,0 +1,12 @@
+[
+  {
+    "name": "candidate",
+    "bits": 800000,
+    "changed_bits": 0
+  },
+  {
+    "name": "accuracy",
+    "bits": 800000,
+    "changed_bits": 0
+  }
+]

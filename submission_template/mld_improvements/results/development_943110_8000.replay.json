@@ -1,0 +1,2702 @@
+[
+  {
+    "name": "tight+reverse_checks/max",
+    "ler": 0.034,
+    "wrong_per_bit": [
+      1704,
+      1614,
+      1671,
+      1539
+    ],
+    "seconds": 25.696314599998004,
+    "paired": {
+      "delta": -0.00016145833333333333,
+      "ci95": [
+        -0.00029416018800817323,
+        -2.8756478658493437e-05
+      ],
+      "net_bits_saved": 31
+    },
+    "groups": [
+      {
+        "name": "tight+reverse_checks/max",
+        "ler": 0.0348125,
+        "wrong_per_bit": [
+          296,
+          284,
+          268,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0004604898523877166,
+            0.00021048985238771657
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "tight+reverse_checks/max",
+        "ler": 0.035125,
+        "wrong_per_bit": [
+          283,
+          262,
+          305,
+          274
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00025,
+          "ci95": [
+            -0.0005098202278862298,
+            9.820227886229754e-06
+          ],
+          "net_bits_saved": 8
+        }
+      },
+      {
+        "name": "tight+reverse_checks/max",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          304,
+          271,
+          255,
+          252
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.0002450153139356964,
+            0.0002450153139356964
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "tight+reverse_checks/max",
+        "ler": 0.03403125,
+        "wrong_per_bit": [
+          277,
+          257,
+          288,
+          267
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0005081097938547455,
+            0.0001956097938547455
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+reverse_checks/max",
+        "ler": 0.0345625,
+        "wrong_per_bit": [
+          304,
+          297,
+          256,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0005493701310483759,
+            0.00029937013104837585
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "tight+reverse_checks/max",
+        "ler": 0.03165625,
+        "wrong_per_bit": [
+          240,
+          243,
+          299,
+          231
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0003125,
+          "ci95": [
+            -0.0006125030928185785,
+            -1.2496907181421587e-05
+          ],
+          "net_bits_saved": 10
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+parity075_tight/max",
+    "ler": 0.034005208333333335,
+    "wrong_per_bit": [
+      1703,
+      1616,
+      1668,
+      1542
+    ],
+    "seconds": 24.094356999987212,
+    "paired": {
+      "delta": -0.00015625,
+      "ci95": [
+        -0.00029320345675225583,
+        -1.929654324774418e-05
+      ],
+      "net_bits_saved": 30
+    },
+    "groups": [
+      {
+        "name": "reference+parity075_tight/max",
+        "ler": 0.03471875,
+        "wrong_per_bit": [
+          295,
+          284,
+          268,
+          264
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0005705937983494836,
+            0.00013309379834948364
+          ],
+          "net_bits_saved": 7
+        }
+      },
+      {
+        "name": "reference+parity075_tight/max",
+        "ler": 0.03515625,
+        "wrong_per_bit": [
+          281,
+          264,
+          304,
+          276
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0004395517852242873,
+            2.051785224287269e-06
+          ],
+          "net_bits_saved": 7
+        }
+      },
+      {
+        "name": "reference+parity075_tight/max",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          305,
+          271,
+          254,
+          252
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.0002450153139356964,
+            0.0002450153139356964
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+parity075_tight/max",
+        "ler": 0.0340625,
+        "wrong_per_bit": [
+          277,
+          257,
+          288,
+          268
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0005219607274056059,
+            0.0002719607274056059
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+parity075_tight/max",
+        "ler": 0.0346875,
+        "wrong_per_bit": [
+          305,
+          297,
+          258,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.000415443677507731,
+            0.000415443677507731
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+parity075_tight/max",
+        "ler": 0.03159375,
+        "wrong_per_bit": [
+          240,
+          243,
+          296,
+          232
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000375,
+          "ci95": [
+            -0.0007104003705291169,
+            -3.959962947088321e-05
+          ],
+          "net_bits_saved": 12
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+reverse_checks/max",
+    "ler": 0.03401041666666667,
+    "wrong_per_bit": [
+      1701,
+      1613,
+      1674,
+      1542
+    ],
+    "seconds": 14.221282399987103,
+    "paired": {
+      "delta": -0.00015104166666666667,
+      "ci95": [
+        -0.0002739601314795528,
+        -2.8123201853780586e-05
+      ],
+      "net_bits_saved": 29
+    },
+    "groups": [
+      {
+        "name": "reference+reverse_checks/max",
+        "ler": 0.0348125,
+        "wrong_per_bit": [
+          295,
+          284,
+          269,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0003989217516294607,
+            0.0001489217516294607
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+reverse_checks/max",
+        "ler": 0.0350625,
+        "wrong_per_bit": [
+          281,
+          262,
+          303,
+          276
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0003125,
+          "ci95": [
+            -0.0006479311326104668,
+            2.2931132610466785e-05
+          ],
+          "net_bits_saved": 10
+        }
+      },
+      {
+        "name": "reference+reverse_checks/max",
+        "ler": 0.033875,
+        "wrong_per_bit": [
+          306,
+          271,
+          256,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 6.25e-05,
+          "ci95": [
+            -0.00016668674708494798,
+            0.000291686747084948
+          ],
+          "net_bits_saved": -2
+        }
+      },
+      {
+        "name": "reference+reverse_checks/max",
+        "ler": 0.03396875,
+        "wrong_per_bit": [
+          275,
+          257,
+          290,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0005369981255457197,
+            9.949812554571963e-05
+          ],
+          "net_bits_saved": 7
+        }
+      },
+      {
+        "name": "reference+reverse_checks/max",
+        "ler": 0.03459375,
+        "wrong_per_bit": [
+          303,
+          296,
+          258,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.0004663368282833731,
+            0.00027883682828337307
+          ],
+          "net_bits_saved": 3
+        }
+      },
+      {
+        "name": "reference+reverse_checks/max",
+        "ler": 0.03175,
+        "wrong_per_bit": [
+          241,
+          243,
+          298,
+          234
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.00047126050349239777,
+            3.376050349239779e-05
+          ],
+          "net_bits_saved": 7
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+shuffle_checks/max",
+    "ler": 0.034015625,
+    "wrong_per_bit": [
+      1702,
+      1613,
+      1672,
+      1544
+    ],
+    "seconds": 15.598306200001389,
+    "paired": {
+      "delta": -0.00014583333333333335,
+      "ci95": [
+        -0.00024993122419644353,
+        -4.173544247022313e-05
+      ],
+      "net_bits_saved": 28
+    },
+    "groups": [
+      {
+        "name": "reference+shuffle_checks/max",
+        "ler": 0.0348125,
+        "wrong_per_bit": [
+          297,
+          283,
+          269,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0003541744684560739,
+            0.00010417446845607388
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/max",
+        "ler": 0.03534375,
+        "wrong_per_bit": [
+          281,
+          264,
+          307,
+          279
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.00023440481175541943,
+            0.00017190481175541943
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/max",
+        "ler": 0.03375,
+        "wrong_per_bit": [
+          305,
+          272,
+          253,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.0002125343727546324,
+            8.75343727546324e-05
+          ],
+          "net_bits_saved": 2
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/max",
+        "ler": 0.0339375,
+        "wrong_per_bit": [
+          275,
+          257,
+          289,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00025,
+          "ci95": [
+            -0.0005740784871882615,
+            7.407848718826151e-05
+          ],
+          "net_bits_saved": 8
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/max",
+        "ler": 0.0345,
+        "wrong_per_bit": [
+          303,
+          294,
+          257,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.000522975872420614,
+            0.00014797587242061395
+          ],
+          "net_bits_saved": 6
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/max",
+        "ler": 0.03175,
+        "wrong_per_bit": [
+          241,
+          243,
+          297,
+          235
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0004559366171732888,
+            1.8436617173288777e-05
+          ],
+          "net_bits_saved": 7
+        }
+      }
+    ]
+  },
+  {
+    "name": "tight+shuffle_checks/max",
+    "ler": 0.034020833333333333,
+    "wrong_per_bit": [
+      1701,
+      1617,
+      1669,
+      1545
+    ],
+    "seconds": 27.07333840001229,
+    "paired": {
+      "delta": -0.000140625,
+      "ci95": [
+        -0.00026934237847435494,
+        -1.1907621525645017e-05
+      ],
+      "net_bits_saved": 27
+    },
+    "groups": [
+      {
+        "name": "tight+shuffle_checks/max",
+        "ler": 0.03478125,
+        "wrong_per_bit": [
+          296,
+          284,
+          268,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0004860941882400718,
+            0.00017359418824007184
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/max",
+        "ler": 0.0351875,
+        "wrong_per_bit": [
+          280,
+          264,
+          305,
+          277
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.00039964969692528004,
+            2.4649696925280033e-05
+          ],
+          "net_bits_saved": 6
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/max",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          304,
+          271,
+          254,
+          253
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.0002450153139356964,
+            0.0002450153139356964
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/max",
+        "ler": 0.03403125,
+        "wrong_per_bit": [
+          277,
+          257,
+          288,
+          267
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0004972796930233906,
+            0.0001847796930233906
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/max",
+        "ler": 0.034625,
+        "wrong_per_bit": [
+          304,
+          298,
+          256,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.0004868767620561611,
+            0.0003618767620561611
+          ],
+          "net_bits_saved": 2
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/max",
+        "ler": 0.0316875,
+        "wrong_per_bit": [
+          240,
+          243,
+          298,
+          233
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00028125,
+          "ci95": [
+            -0.0005749483746492248,
+            1.2448374649224811e-05
+          ],
+          "net_bits_saved": 9
+        }
+      }
+    ]
+  },
+  {
+    "name": "tight+last_detector/max",
+    "ler": 0.03403125,
+    "wrong_per_bit": [
+      1702,
+      1618,
+      1670,
+      1544
+    ],
+    "seconds": 33.1807587000003,
+    "paired": {
+      "delta": -0.00013020833333333333,
+      "ci95": [
+        -0.00025564633152461445,
+        -4.770335142052209e-06
+      ],
+      "net_bits_saved": 25
+    },
+    "groups": [
+      {
+        "name": "tight+last_detector/max",
+        "ler": 0.03478125,
+        "wrong_per_bit": [
+          296,
+          284,
+          268,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0004860941882400718,
+            0.00017359418824007184
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+last_detector/max",
+        "ler": 0.03521875,
+        "wrong_per_bit": [
+          281,
+          264,
+          304,
+          278
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.00033997957964626194,
+            2.7479579646261937e-05
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+last_detector/max",
+        "ler": 0.03378125,
+        "wrong_per_bit": [
+          304,
+          271,
+          255,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.0002684840691282175,
+            0.00020598406912821749
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "tight+last_detector/max",
+        "ler": 0.0341875,
+        "wrong_per_bit": [
+          278,
+          259,
+          289,
+          268
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.00031233446672179456,
+            0.00031233446672179456
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "tight+last_detector/max",
+        "ler": 0.03453125,
+        "wrong_per_bit": [
+          303,
+          297,
+          255,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0005761711301978454,
+            0.0002636711301978454
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+last_detector/max",
+        "ler": 0.0316875,
+        "wrong_per_bit": [
+          240,
+          243,
+          299,
+          232
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00028125,
+          "ci95": [
+            -0.000587457116637534,
+            2.4957116637534143e-05
+          ],
+          "net_bits_saved": 9
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+hybrid075_tight/max",
+    "ler": 0.034046875,
+    "wrong_per_bit": [
+      1701,
+      1619,
+      1668,
+      1549
+    ],
+    "seconds": 17.036343699997815,
+    "paired": {
+      "delta": -0.00011458333333333333,
+      "ci95": [
+        -0.00022733457518122404,
+        -1.83209148544264e-06
+      ],
+      "net_bits_saved": 22
+    },
+    "groups": [
+      {
+        "name": "reference+hybrid075_tight/max",
+        "ler": 0.03475,
+        "wrong_per_bit": [
+          295,
+          285,
+          267,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.000522975872420614,
+            0.00014797587242061395
+          ],
+          "net_bits_saved": 6
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/max",
+        "ler": 0.03521875,
+        "wrong_per_bit": [
+          281,
+          262,
+          305,
+          279
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.00033997957964626194,
+            2.7479579646261937e-05
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/max",
+        "ler": 0.033875,
+        "wrong_per_bit": [
+          304,
+          271,
+          256,
+          253
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 6.25e-05,
+          "ci95": [
+            -0.0001973743755261989,
+            0.0003223743755261989
+          ],
+          "net_bits_saved": -2
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/max",
+        "ler": 0.03415625,
+        "wrong_per_bit": [
+          279,
+          259,
+          289,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.0002684840691282175,
+            0.00020598406912821749
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/max",
+        "ler": 0.0344375,
+        "wrong_per_bit": [
+          302,
+          296,
+          254,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00025,
+          "ci95": [
+            -0.0006373644845691046,
+            0.00013736448456910463
+          ],
+          "net_bits_saved": 8
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/max",
+        "ler": 0.03184375,
+        "wrong_per_bit": [
+          240,
+          246,
+          297,
+          236
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0003186822422845524,
+            6.868224228455237e-05
+          ],
+          "net_bits_saved": 4
+        }
+      }
+    ]
+  },
+  {
+    "name": "tight+shuffle_checks/average",
+    "ler": 0.03405208333333333,
+    "wrong_per_bit": [
+      1700,
+      1614,
+      1674,
+      1550
+    ],
+    "seconds": 27.07333840001229,
+    "paired": {
+      "delta": -0.000109375,
+      "ci95": [
+        -0.00025553433722914123,
+        3.678433722914124e-05
+      ],
+      "net_bits_saved": 21
+    },
+    "groups": [
+      {
+        "name": "tight+shuffle_checks/average",
+        "ler": 0.0346875,
+        "wrong_per_bit": [
+          293,
+          282,
+          269,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00025,
+          "ci95": [
+            -0.000596460664252068,
+            9.646066425206799e-05
+          ],
+          "net_bits_saved": 8
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/average",
+        "ler": 0.035375,
+        "wrong_per_bit": [
+          280,
+          264,
+          307,
+          281
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.0002598779849677226,
+            0.0002598779849677226
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/average",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          306,
+          271,
+          254,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.00028730592247051893,
+            0.00028730592247051893
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/average",
+        "ler": 0.03396875,
+        "wrong_per_bit": [
+          276,
+          257,
+          287,
+          267
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0006203896064587904,
+            0.00018288960645879038
+          ],
+          "net_bits_saved": 7
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/average",
+        "ler": 0.03453125,
+        "wrong_per_bit": [
+          303,
+          295,
+          258,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0004972796930233905,
+            0.00018477969302339048
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+shuffle_checks/average",
+        "ler": 0.0319375,
+        "wrong_per_bit": [
+          242,
+          245,
+          299,
+          236
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.0005017490857891262,
+            0.0004392490857891262
+          ],
+          "net_bits_saved": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+parity075_tight/average",
+    "ler": 0.03409375,
+    "wrong_per_bit": [
+      1707,
+      1620,
+      1674,
+      1545
+    ],
+    "seconds": 24.094356999987212,
+    "paired": {
+      "delta": -6.770833333333333e-05,
+      "ci95": [
+        -0.00013618594945747487,
+        7.69282790808205e-07
+      ],
+      "net_bits_saved": 13
+    },
+    "groups": [
+      {
+        "name": "reference+parity075_tight/average",
+        "ler": 0.03496875,
+        "wrong_per_bit": [
+          297,
+          284,
+          271,
+          267
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -0.00013081095002692023,
+            0.00019331095002692023
+          ],
+          "net_bits_saved": -1
+        }
+      },
+      {
+        "name": "reference+parity075_tight/average",
+        "ler": 0.03525,
+        "wrong_per_bit": [
+          282,
+          264,
+          305,
+          277
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.00027501561572256433,
+            2.5015615722564328e-05
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+parity075_tight/average",
+        "ler": 0.03375,
+        "wrong_per_bit": [
+          304,
+          272,
+          253,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.0002125343727546324,
+            8.75343727546324e-05
+          ],
+          "net_bits_saved": 2
+        }
+      },
+      {
+        "name": "reference+parity075_tight/average",
+        "ler": 0.03409375,
+        "wrong_per_bit": [
+          278,
+          258,
+          289,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.00033097616112821106,
+            0.00014347616112821105
+          ],
+          "net_bits_saved": 3
+        }
+      },
+      {
+        "name": "reference+parity075_tight/average",
+        "ler": 0.034625,
+        "wrong_per_bit": [
+          304,
+          297,
+          258,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.0002125343727546324,
+            8.75343727546324e-05
+          ],
+          "net_bits_saved": 2
+        }
+      },
+      {
+        "name": "reference+parity075_tight/average",
+        "ler": 0.031875,
+        "wrong_per_bit": [
+          242,
+          245,
+          298,
+          235
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.0002307023146363289,
+            4.32023146363289e-05
+          ],
+          "net_bits_saved": 3
+        }
+      }
+    ]
+  },
+  {
+    "name": "tight+reverse_checks/average",
+    "ler": 0.03409895833333333,
+    "wrong_per_bit": [
+      1702,
+      1620,
+      1676,
+      1549
+    ],
+    "seconds": 25.696314599998004,
+    "paired": {
+      "delta": -6.25e-05,
+      "ci95": [
+        -0.0002239086351360286,
+        9.89086351360286e-05
+      ],
+      "net_bits_saved": 12
+    },
+    "groups": [
+      {
+        "name": "tight+reverse_checks/average",
+        "ler": 0.0348125,
+        "wrong_per_bit": [
+          295,
+          284,
+          269,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.00047149315153839313,
+            0.00022149315153839312
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "tight+reverse_checks/average",
+        "ler": 0.0349375,
+        "wrong_per_bit": [
+          280,
+          259,
+          303,
+          276
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0004375,
+          "ci95": [
+            -0.0008705238450998434,
+            -4.476154900156669e-06
+          ],
+          "net_bits_saved": 14
+        }
+      },
+      {
+        "name": "tight+reverse_checks/average",
+        "ler": 0.0339375,
+        "wrong_per_bit": [
+          304,
+          273,
+          256,
+          253
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.000125,
+          "ci95": [
+            -0.00016229286281358943,
+            0.00041229286281358943
+          ],
+          "net_bits_saved": -4
+        }
+      },
+      {
+        "name": "tight+reverse_checks/average",
+        "ler": 0.03403125,
+        "wrong_per_bit": [
+          277,
+          255,
+          290,
+          267
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0005936764299312375,
+            0.0002811764299312376
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "tight+reverse_checks/average",
+        "ler": 0.03484375,
+        "wrong_per_bit": [
+          304,
+          301,
+          260,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.00015625,
+          "ci95": [
+            -0.00029800764453461837,
+            0.0006105076445346184
+          ],
+          "net_bits_saved": -5
+        }
+      },
+      {
+        "name": "tight+reverse_checks/average",
+        "ler": 0.03203125,
+        "wrong_per_bit": [
+          242,
+          248,
+          298,
+          237
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 6.25e-05,
+          "ci95": [
+            -0.00032490080555126326,
+            0.00044990080555126327
+          ],
+          "net_bits_saved": -2
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+hybrid075_tight/average",
+    "ler": 0.034109375,
+    "wrong_per_bit": [
+      1707,
+      1621,
+      1672,
+      1549
+    ],
+    "seconds": 17.036343699997815,
+    "paired": {
+      "delta": -5.208333333333334e-05,
+      "ci95": [
+        -0.00011160643027292795,
+        7.439763606261286e-06
+      ],
+      "net_bits_saved": 10
+    },
+    "groups": [
+      {
+        "name": "reference+hybrid075_tight/average",
+        "ler": 0.03490625,
+        "wrong_per_bit": [
+          296,
+          284,
+          271,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.00016821601226491177,
+            0.00010571601226491177
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/average",
+        "ler": 0.03528125,
+        "wrong_per_bit": [
+          281,
+          264,
+          304,
+          280
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.00029689557713097266,
+            0.00010939557713097266
+          ],
+          "net_bits_saved": 3
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/average",
+        "ler": 0.03384375,
+        "wrong_per_bit": [
+          306,
+          272,
+          254,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -7.484253276209396e-05,
+            0.00013734253276209398
+          ],
+          "net_bits_saved": -1
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/average",
+        "ler": 0.03421875,
+        "wrong_per_bit": [
+          280,
+          260,
+          290,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -7.484253276209393e-05,
+            0.00013734253276209392
+          ],
+          "net_bits_saved": -1
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/average",
+        "ler": 0.03453125,
+        "wrong_per_bit": [
+          303,
+          295,
+          258,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0003182762183386261,
+            5.776218338626076e-06
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "reference+hybrid075_tight/average",
+        "ler": 0.031875,
+        "wrong_per_bit": [
+          241,
+          246,
+          295,
+          238
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.0002307023146363289,
+            4.32023146363289e-05
+          ],
+          "net_bits_saved": 3
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+hybrid075/max",
+    "ler": 0.034125,
+    "wrong_per_bit": [
+      1709,
+      1620,
+      1677,
+      1546
+    ],
+    "seconds": 11.626782599982107,
+    "paired": {
+      "delta": -3.6458333333333336e-05,
+      "ci95": [
+        -7.599410478986312e-05,
+        3.0774381231964522e-06
+      ],
+      "net_bits_saved": 7
+    },
+    "groups": [
+      {
+        "name": "reference+hybrid075/max",
+        "ler": 0.03490625,
+        "wrong_per_bit": [
+          297,
+          284,
+          270,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -9.249999999999997e-05,
+            2.999999999999997e-05
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "reference+hybrid075/max",
+        "ler": 0.0353125,
+        "wrong_per_bit": [
+          281,
+          264,
+          307,
+          278
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.000149115166063017,
+            2.4115166063016998e-05
+          ],
+          "net_bits_saved": 2
+        }
+      },
+      {
+        "name": "reference+hybrid075/max",
+        "ler": 0.03384375,
+        "wrong_per_bit": [
+          307,
+          271,
+          254,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -2.9999999999999984e-05,
+            9.249999999999999e-05
+          ],
+          "net_bits_saved": -1
+        }
+      },
+      {
+        "name": "reference+hybrid075/max",
+        "ler": 0.03421875,
+        "wrong_per_bit": [
+          279,
+          260,
+          290,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -7.484253276209396e-05,
+            0.00013734253276209398
+          ],
+          "net_bits_saved": -1
+        }
+      },
+      {
+        "name": "reference+hybrid075/max",
+        "ler": 0.0345625,
+        "wrong_per_bit": [
+          303,
+          295,
+          259,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0002750156157225643,
+            2.5015615722564274e-05
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+hybrid075/max",
+        "ler": 0.03190625,
+        "wrong_per_bit": [
+          242,
+          246,
+          297,
+          236
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.000149115166063017,
+            2.4115166063016998e-05
+          ],
+          "net_bits_saved": 2
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+merge32/max",
+    "ler": 0.034130208333333335,
+    "wrong_per_bit": [
+      1710,
+      1618,
+      1677,
+      1548
+    ],
+    "seconds": 15.843103299979703,
+    "paired": {
+      "delta": -3.125e-05,
+      "ci95": [
+        -7.208280163476689e-05,
+        9.582801634766886e-06
+      ],
+      "net_bits_saved": 6
+    },
+    "groups": [
+      {
+        "name": "reference+merge32/max",
+        "ler": 0.0349375,
+        "wrong_per_bit": [
+          297,
+          284,
+          270,
+          267
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -8.662599498924087e-05,
+            8.662599498924087e-05
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+merge32/max",
+        "ler": 0.03525,
+        "wrong_per_bit": [
+          281,
+          263,
+          306,
+          278
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.00024747702622428464,
+            -2.522973775715391e-06
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+merge32/max",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          306,
+          271,
+          254,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -8.662599498924087e-05,
+            8.662599498924087e-05
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+merge32/max",
+        "ler": 0.034125,
+        "wrong_per_bit": [
+          279,
+          258,
+          290,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.0002125343727546324,
+            8.75343727546324e-05
+          ],
+          "net_bits_saved": 2
+        }
+      },
+      {
+        "name": "reference+merge32/max",
+        "ler": 0.03471875,
+        "wrong_per_bit": [
+          305,
+          297,
+          260,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -2.9999999999999984e-05,
+            9.249999999999999e-05
+          ],
+          "net_bits_saved": -1
+        }
+      },
+      {
+        "name": "reference+merge32/max",
+        "ler": 0.0319375,
+        "wrong_per_bit": [
+          242,
+          245,
+          297,
+          238
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -9.249999999999999e-05,
+            2.9999999999999984e-05
+          ],
+          "net_bits_saved": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+last_detector/max",
+    "ler": 0.034130208333333335,
+    "wrong_per_bit": [
+      1706,
+      1618,
+      1679,
+      1550
+    ],
+    "seconds": 21.705726499989396,
+    "paired": {
+      "delta": -3.125e-05,
+      "ci95": [
+        -9.89645510526527e-05,
+        3.6464551052652695e-05
+      ],
+      "net_bits_saved": 6
+    },
+    "groups": [
+      {
+        "name": "reference+last_detector/max",
+        "ler": 0.0349375,
+        "wrong_per_bit": [
+          297,
+          284,
+          271,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+last_detector/max",
+        "ler": 0.03534375,
+        "wrong_per_bit": [
+          281,
+          264,
+          306,
+          280
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.00013734253276209398,
+            7.484253276209396e-05
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "reference+last_detector/max",
+        "ler": 0.0339375,
+        "wrong_per_bit": [
+          305,
+          273,
+          256,
+          252
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.000125,
+          "ci95": [
+            -0.0001041744684560738,
+            0.0003541744684560738
+          ],
+          "net_bits_saved": -4
+        }
+      },
+      {
+        "name": "reference+last_detector/max",
+        "ler": 0.0341875,
+        "wrong_per_bit": [
+          279,
+          259,
+          291,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -8.662599498924087e-05,
+            8.662599498924087e-05
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+last_detector/max",
+        "ler": 0.0345,
+        "wrong_per_bit": [
+          302,
+          294,
+          258,
+          250
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.0004747765374075442,
+            9.977653740754418e-05
+          ],
+          "net_bits_saved": 6
+        }
+      },
+      {
+        "name": "reference+last_detector/max",
+        "ler": 0.031875,
+        "wrong_per_bit": [
+          242,
+          244,
+          297,
+          237
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.00019982484846264002,
+            1.2324848462640016e-05
+          ],
+          "net_bits_saved": 3
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+merge32/average",
+    "ler": 0.034140625,
+    "wrong_per_bit": [
+      1709,
+      1620,
+      1679,
+      1547
+    ],
+    "seconds": 15.843103299979703,
+    "paired": {
+      "delta": -2.0833333333333333e-05,
+      "ci95": [
+        -4.970655945804617e-05,
+        8.039892791379503e-06
+      ],
+      "net_bits_saved": 4
+    },
+    "groups": [
+      {
+        "name": "reference+merge32/average",
+        "ler": 0.0349375,
+        "wrong_per_bit": [
+          297,
+          284,
+          271,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+merge32/average",
+        "ler": 0.03528125,
+        "wrong_per_bit": [
+          281,
+          263,
+          307,
+          278
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.00019982484846264002,
+            1.2324848462640016e-05
+          ],
+          "net_bits_saved": 3
+        }
+      },
+      {
+        "name": "reference+merge32/average",
+        "ler": 0.03378125,
+        "wrong_per_bit": [
+          305,
+          271,
+          254,
+          251
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -9.249999999999999e-05,
+            2.9999999999999984e-05
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "reference+merge32/average",
+        "ler": 0.0341875,
+        "wrong_per_bit": [
+          279,
+          260,
+          290,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -8.662599498924087e-05,
+            8.662599498924087e-05
+          ],
+          "net_bits_saved": 0
+        }
+      },
+      {
+        "name": "reference+merge32/average",
+        "ler": 0.03471875,
+        "wrong_per_bit": [
+          305,
+          297,
+          260,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -2.9999999999999984e-05,
+            9.249999999999999e-05
+          ],
+          "net_bits_saved": -1
+        }
+      },
+      {
+        "name": "reference+merge32/average",
+        "ler": 0.0319375,
+        "wrong_per_bit": [
+          242,
+          245,
+          297,
+          238
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -9.249999999999999e-05,
+            2.9999999999999984e-05
+          ],
+          "net_bits_saved": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+shuffle_checks/average",
+    "ler": 0.034140625,
+    "wrong_per_bit": [
+      1703,
+      1618,
+      1680,
+      1554
+    ],
+    "seconds": 15.598306200001389,
+    "paired": {
+      "delta": -2.0833333333333333e-05,
+      "ci95": [
+        -0.00012291755991053466,
+        8.125089324386799e-05
+      ],
+      "net_bits_saved": 4
+    },
+    "groups": [
+      {
+        "name": "reference+shuffle_checks/average",
+        "ler": 0.03490625,
+        "wrong_per_bit": [
+          296,
+          283,
+          272,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.00021501020932591453,
+            0.00015251020932591453
+          ],
+          "net_bits_saved": 1
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/average",
+        "ler": 0.03546875,
+        "wrong_per_bit": [
+          281,
+          265,
+          307,
+          282
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 9.375e-05,
+          "ci95": [
+            -0.00012709426303563316,
+            0.00031459426303563317
+          ],
+          "net_bits_saved": -3
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/average",
+        "ler": 0.03390625,
+        "wrong_per_bit": [
+          306,
+          272,
+          254,
+          253
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 9.375e-05,
+          "ci95": [
+            -9.000000000000002e-05,
+            0.0002775
+          ],
+          "net_bits_saved": -3
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/average",
+        "ler": 0.034,
+        "wrong_per_bit": [
+          275,
+          258,
+          289,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.000487553115219196,
+            0.00011255311521919599
+          ],
+          "net_bits_saved": 6
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/average",
+        "ler": 0.0345625,
+        "wrong_per_bit": [
+          303,
+          295,
+          259,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.00029823033212603405,
+            4.823033212603405e-05
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+shuffle_checks/average",
+        "ler": 0.032,
+        "wrong_per_bit": [
+          242,
+          245,
+          299,
+          238
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -0.0003413418633595851,
+            0.00040384186335958516
+          ],
+          "net_bits_saved": -1
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+hybrid075/average",
+    "ler": 0.034145833333333334,
+    "wrong_per_bit": [
+      1709,
+      1623,
+      1672,
+      1552
+    ],
+    "seconds": 11.626782599982107,
+    "paired": {
+      "delta": -1.5625e-05,
+      "ci95": [
+        -0.00013511164114953178,
+        0.00010386164114953177
+      ],
+      "net_bits_saved": 3
+    },
+    "groups": [
+      {
+        "name": "reference+hybrid075/average",
+        "ler": 0.0348125,
+        "wrong_per_bit": [
+          296,
+          285,
+          270,
+          263
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.00029823033212603405,
+            4.823033212603405e-05
+          ],
+          "net_bits_saved": 4
+        }
+      },
+      {
+        "name": "reference+hybrid075/average",
+        "ler": 0.03528125,
+        "wrong_per_bit": [
+          278,
+          266,
+          305,
+          280
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.00040001225128638996,
+            0.00021251225128638993
+          ],
+          "net_bits_saved": 3
+        }
+      },
+      {
+        "name": "reference+hybrid075/average",
+        "ler": 0.03403125,
+        "wrong_per_bit": [
+          309,
+          273,
+          255,
+          252
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.00021875,
+          "ci95": [
+            -8.748162215141688e-05,
+            0.0005249816221514169
+          ],
+          "net_bits_saved": -7
+        }
+      },
+      {
+        "name": "reference+hybrid075/average",
+        "ler": 0.03453125,
+        "wrong_per_bit": [
+          283,
+          261,
+          293,
+          268
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.00034375,
+          "ci95": [
+            7.6857045618801e-05,
+            0.000610642954381199
+          ],
+          "net_bits_saved": -11
+        }
+      },
+      {
+        "name": "reference+hybrid075/average",
+        "ler": 0.03446875,
+        "wrong_per_bit": [
+          305,
+          294,
+          256,
+          248
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0004994093671868734,
+            6.190936718687335e-05
+          ],
+          "net_bits_saved": 7
+        }
+      },
+      {
+        "name": "reference+hybrid075/average",
+        "ler": 0.03175,
+        "wrong_per_bit": [
+          238,
+          244,
+          293,
+          241
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0006012499966805491,
+            0.00016374999668054903
+          ],
+          "net_bits_saved": 7
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+reverse_checks/average",
+    "ler": 0.03416145833333333,
+    "wrong_per_bit": [
+      1706,
+      1625,
+      1680,
+      1548
+    ],
+    "seconds": 14.221282399987103,
+    "paired": {
+      "delta": 0.0,
+      "ci95": [
+        -0.00013696059030210843,
+        0.00013696059030210843
+      ],
+      "net_bits_saved": 0
+    },
+    "groups": [
+      {
+        "name": "reference+reverse_checks/average",
+        "ler": 0.03484375,
+        "wrong_per_bit": [
+          297,
+          283,
+          270,
+          265
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.000412027598286282,
+            0.00022452759828628195
+          ],
+          "net_bits_saved": 3
+        }
+      },
+      {
+        "name": "reference+reverse_checks/average",
+        "ler": 0.03509375,
+        "wrong_per_bit": [
+          280,
+          261,
+          305,
+          277
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00028125,
+          "ci95": [
+            -0.0006637303777118563,
+            0.00010123037771185643
+          ],
+          "net_bits_saved": 9
+        }
+      },
+      {
+        "name": "reference+reverse_checks/average",
+        "ler": 0.034,
+        "wrong_per_bit": [
+          305,
+          274,
+          255,
+          254
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0001875,
+          "ci95": [
+            -7.234549818905107e-05,
+            0.0004473454981890511
+          ],
+          "net_bits_saved": -6
+        }
+      },
+      {
+        "name": "reference+reverse_checks/average",
+        "ler": 0.03403125,
+        "wrong_per_bit": [
+          275,
+          257,
+          291,
+          266
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0005186163581782668,
+            0.00020611635817826686
+          ],
+          "net_bits_saved": 5
+        }
+      },
+      {
+        "name": "reference+reverse_checks/average",
+        "ler": 0.03490625,
+        "wrong_per_bit": [
+          306,
+          300,
+          262,
+          249
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.00021875,
+          "ci95": [
+            -0.00012226318952368416,
+            0.0005597631895236842
+          ],
+          "net_bits_saved": -7
+        }
+      },
+      {
+        "name": "reference+reverse_checks/average",
+        "ler": 0.03209375,
+        "wrong_per_bit": [
+          243,
+          250,
+          297,
+          237
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.000125,
+          "ci95": [
+            -0.00021048985238771663,
+            0.00046048985238771663
+          ],
+          "net_bits_saved": -4
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference+last_detector/average",
+    "ler": 0.03446875,
+    "wrong_per_bit": [
+      1720,
+      1634,
+      1696,
+      1568
+    ],
+    "seconds": 21.705726499989396,
+    "paired": {
+      "delta": 0.00030729166666666665,
+      "ci95": [
+        5.746057468527702e-05,
+        0.0005571227586480562
+      ],
+      "net_bits_saved": -59
+    },
+    "groups": [
+      {
+        "name": "reference+last_detector/average",
+        "ler": 0.035375,
+        "wrong_per_bit": [
+          302,
+          287,
+          272,
+          271
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0004375,
+          "ci95": [
+            -0.0002445263790473682,
+            0.0011195263790473682
+          ],
+          "net_bits_saved": -14
+        }
+      },
+      {
+        "name": "reference+last_detector/average",
+        "ler": 0.0356875,
+        "wrong_per_bit": [
+          282,
+          266,
+          310,
+          284
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0003125,
+          "ci95": [
+            -0.0002876234239589785,
+            0.0009126234239589786
+          ],
+          "net_bits_saved": -10
+        }
+      },
+      {
+        "name": "reference+last_detector/average",
+        "ler": 0.03440625,
+        "wrong_per_bit": [
+          311,
+          277,
+          258,
+          255
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.00059375,
+          "ci95": [
+            -3.1366579615379466e-06,
+            0.0011906366579615378
+          ],
+          "net_bits_saved": -19
+        }
+      },
+      {
+        "name": "reference+last_detector/average",
+        "ler": 0.03475,
+        "wrong_per_bit": [
+          283,
+          264,
+          292,
+          273
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0005625,
+          "ci95": [
+            7.262444541891874e-05,
+            0.001052375554581081
+          ],
+          "net_bits_saved": -18
+        }
+      },
+      {
+        "name": "reference+last_detector/average",
+        "ler": 0.03490625,
+        "wrong_per_bit": [
+          304,
+          297,
+          262,
+          254
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.00021875,
+          "ci95": [
+            -0.0003845111993896371,
+            0.0008220111993896371
+          ],
+          "net_bits_saved": -7
+        }
+      },
+      {
+        "name": "reference+last_detector/average",
+        "ler": 0.0316875,
+        "wrong_per_bit": [
+          238,
+          243,
+          302,
+          231
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00028125,
+          "ci95": [
+            -0.0009605598598323123,
+            0.00039805985983231226
+          ],
+          "net_bits_saved": 9
+        }
+      }
+    ]
+  },
+  {
+    "name": "tight+last_detector/average",
+    "ler": 0.03453125,
+    "wrong_per_bit": [
+      1721,
+      1635,
+      1698,
+      1576
+    ],
+    "seconds": 33.1807587000003,
+    "paired": {
+      "delta": 0.00036979166666666665,
+      "ci95": [
+        0.00011216353783939317,
+        0.0006274197954939402
+      ],
+      "net_bits_saved": -71
+    },
+    "groups": [
+      {
+        "name": "tight+last_detector/average",
+        "ler": 0.035375,
+        "wrong_per_bit": [
+          302,
+          288,
+          272,
+          270
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0004375,
+          "ci95": [
+            -0.0002445263790473683,
+            0.0011195263790473684
+          ],
+          "net_bits_saved": -14
+        }
+      },
+      {
+        "name": "tight+last_detector/average",
+        "ler": 0.03575,
+        "wrong_per_bit": [
+          283,
+          264,
+          310,
+          287
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.000375,
+          "ci95": [
+            -0.0002496148732158722,
+            0.0009996148732158722
+          ],
+          "net_bits_saved": -12
+        }
+      },
+      {
+        "name": "tight+last_detector/average",
+        "ler": 0.0345,
+        "wrong_per_bit": [
+          311,
+          277,
+          259,
+          257
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0006875,
+          "ci95": [
+            5.703323520471037e-05,
+            0.0013179667647952894
+          ],
+          "net_bits_saved": -22
+        }
+      },
+      {
+        "name": "tight+last_detector/average",
+        "ler": 0.034875,
+        "wrong_per_bit": [
+          284,
+          265,
+          292,
+          275
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.0006875,
+          "ci95": [
+            0.000153714091237602,
+            0.001221285908762398
+          ],
+          "net_bits_saved": -22
+        }
+      },
+      {
+        "name": "tight+last_detector/average",
+        "ler": 0.03496875,
+        "wrong_per_bit": [
+          303,
+          298,
+          263,
+          255
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": 0.00028125,
+          "ci95": [
+            -0.0003582290415723285,
+            0.0009207290415723284
+          ],
+          "net_bits_saved": -9
+        }
+      },
+      {
+        "name": "tight+last_detector/average",
+        "ler": 0.03171875,
+        "wrong_per_bit": [
+          238,
+          243,
+          302,
+          232
+        ],
+        "seconds": 0,
+        "paired": {
+          "delta": -0.00025,
+          "ci95": [
+            -0.0009153643371962848,
+            0.00041536433719628477
+          ],
+          "net_bits_saved": 8
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,2693 @@
+[
+  {
+    "name": "hybrid075_tight",
+    "ler": 0.034,
+    "wrong_per_bit": [
+      1697,
+      1618,
+      1664,
+      1549
+    ],
+    "seconds": 9.852495000006456,
+    "paired": {
+      "delta": -0.00016145833333333333,
+      "ci95": [
+        -0.0002835249707912801,
+        -3.939169587538657e-05
+      ],
+      "net_bits_saved": 31
+    },
+    "groups": [
+      {
+        "name": "hybrid075_tight",
+        "ler": 0.0346875,
+        "wrong_per_bit": [
+          294,
+          284,
+          267,
+          265
+        ],
+        "seconds": 1.3366399000005913,
+        "paired": {
+          "delta": -0.00025,
+          "ci95": [
+            -0.0005964606642520681,
+            9.646066425206804e-05
+          ],
+          "net_bits_saved": 8
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          1336
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075_tight",
+        "ler": 0.0351875,
+        "wrong_per_bit": [
+          281,
+          263,
+          303,
+          279
+        ],
+        "seconds": 1.73088049999933,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.00044734549818905103,
+            7.234549818905102e-05
+          ],
+          "net_bits_saved": 6
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          1333
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075_tight",
+        "ler": 0.033875,
+        "wrong_per_bit": [
+          304,
+          271,
+          256,
+          253
+        ],
+        "seconds": 1.466914500000712,
+        "paired": {
+          "delta": 6.25e-05,
+          "ci95": [
+            -0.00021143202452982354,
+            0.00033643202452982355
+          ],
+          "net_bits_saved": -2
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          1363
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075_tight",
+        "ler": 0.03409375,
+        "wrong_per_bit": [
+          278,
+          257,
+          290,
+          266
+        ],
+        "seconds": 2.237670900001831,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.0003607413435663784,
+            0.00017324134356637842
+          ],
+          "net_bits_saved": 3
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          1348
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075_tight",
+        "ler": 0.03434375,
+        "wrong_per_bit": [
+          301,
+          295,
+          253,
+          250
+        ],
+        "seconds": 1.6934149000007892,
+        "paired": {
+          "delta": -0.00034375,
+          "ci95": [
+            -0.0007358935224314697,
+            4.839352243146976e-05
+          ],
+          "net_bits_saved": 11
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          1344
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075_tight",
+        "ler": 0.0318125,
+        "wrong_per_bit": [
+          239,
+          248,
+          295,
+          236
+        ],
+        "seconds": 1.386974300003203,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0003770772728916065,
+            6.457727289160654e-05
+          ],
+          "net_bits_saved": 5
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          1289
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "parity075_tight",
+    "ler": 0.034005208333333335,
+    "wrong_per_bit": [
+      1703,
+      1616,
+      1668,
+      1542
+    ],
+    "seconds": 16.910508299995854,
+    "paired": {
+      "delta": -0.00015625,
+      "ci95": [
+        -0.00029320345675225583,
+        -1.929654324774418e-05
+      ],
+      "net_bits_saved": 30
+    },
+    "groups": [
+      {
+        "name": "parity075_tight",
+        "ler": 0.03471875,
+        "wrong_per_bit": [
+          295,
+          284,
+          268,
+          264
+        ],
+        "seconds": 2.586038399997051,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0005705937983494836,
+            0.00013309379834948364
+          ],
+          "net_bits_saved": 7
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          1370
+        ],
+        "config": {
+          "heuristic": "parity",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "parity075_tight",
+        "ler": 0.03515625,
+        "wrong_per_bit": [
+          281,
+          264,
+          304,
+          276
+        ],
+        "seconds": 2.8913154999972903,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0004395517852242873,
+            2.051785224287269e-06
+          ],
+          "net_bits_saved": 7
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          1362
+        ],
+        "config": {
+          "heuristic": "parity",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "parity075_tight",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          305,
+          271,
+          254,
+          252
+        ],
+        "seconds": 2.6624210000009043,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.0002450153139356964,
+            0.0002450153139356964
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          1394
+        ],
+        "config": {
+          "heuristic": "parity",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "parity075_tight",
+        "ler": 0.0340625,
+        "wrong_per_bit": [
+          277,
+          257,
+          288,
+          268
+        ],
+        "seconds": 3.3825834000017494,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.0005219607274056059,
+            0.0002719607274056059
+          ],
+          "net_bits_saved": 4
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          1369
+        ],
+        "config": {
+          "heuristic": "parity",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "parity075_tight",
+        "ler": 0.0346875,
+        "wrong_per_bit": [
+          305,
+          297,
+          258,
+          250
+        ],
+        "seconds": 3.079992699997092,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -0.000415443677507731,
+            0.000415443677507731
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          1360
+        ],
+        "config": {
+          "heuristic": "parity",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "parity075_tight",
+        "ler": 0.03159375,
+        "wrong_per_bit": [
+          240,
+          243,
+          296,
+          232
+        ],
+        "seconds": 2.308157300001767,
+        "paired": {
+          "delta": -0.000375,
+          "ci95": [
+            -0.0007104003705291169,
+            -3.959962947088321e-05
+          ],
+          "net_bits_saved": 12
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          1321
+        ],
+        "config": {
+          "heuristic": "parity",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "tight",
+    "ler": 0.03405208333333333,
+    "wrong_per_bit": [
+      1703,
+      1619,
+      1671,
+      1545
+    ],
+    "seconds": 18.65888090000226,
+    "paired": {
+      "delta": -0.000109375,
+      "ci95": [
+        -0.0002339810447547616,
+        1.5231044754761587e-05
+      ],
+      "net_bits_saved": 21
+    },
+    "groups": [
+      {
+        "name": "tight",
+        "ler": 0.03478125,
+        "wrong_per_bit": [
+          296,
+          284,
+          268,
+          265
+        ],
+        "seconds": 2.5697683000034885,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0004860941882400718,
+            0.00017359418824007184
+          ],
+          "net_bits_saved": 5
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          1370
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "tight",
+        "ler": 0.03521875,
+        "wrong_per_bit": [
+          281,
+          264,
+          304,
+          278
+        ],
+        "seconds": 3.542791200001375,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.00035937710662259755,
+            4.687710662259754e-05
+          ],
+          "net_bits_saved": 5
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          1367
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "tight",
+        "ler": 0.03378125,
+        "wrong_per_bit": [
+          304,
+          271,
+          255,
+          251
+        ],
+        "seconds": 2.5866800999938278,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -0.0002684840691282175,
+            0.00020598406912821749
+          ],
+          "net_bits_saved": 1
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          1390
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "tight",
+        "ler": 0.03421875,
+        "wrong_per_bit": [
+          279,
+          259,
+          289,
+          268
+        ],
+        "seconds": 3.9078507000012905,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -0.0002870334925068967,
+            0.00034953349250689666
+          ],
+          "net_bits_saved": -1
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          1377
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "tight",
+        "ler": 0.03459375,
+        "wrong_per_bit": [
+          303,
+          298,
+          256,
+          250
+        ],
+        "seconds": 3.332395400000678,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.0004954129602463882,
+            0.0003079129602463882
+          ],
+          "net_bits_saved": 3
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          1364
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      },
+      {
+        "name": "tight",
+        "ler": 0.03171875,
+        "wrong_per_bit": [
+          240,
+          243,
+          299,
+          233
+        ],
+        "seconds": 2.7193952000015997,
+        "paired": {
+          "delta": -0.00025,
+          "ci95": [
+            -0.0005500312314451286,
+            5.003123144512849e-05
+          ],
+          "net_bits_saved": 8
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          1319
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              3e-05,
+              4096,
+              0
+            ],
+            [
+              1,
+              1e-05,
+              8192,
+              0.05
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "shuffle_checks",
+    "ler": 0.03411979166666667,
+    "wrong_per_bit": [
+      1699,
+      1623,
+      1674,
+      1555
+    ],
+    "seconds": 8.41445750001003,
+    "paired": {
+      "delta": -4.1666666666666665e-05,
+      "ci95": [
+        -0.0001944521467676588,
+        0.00011111881343432549
+      ],
+      "net_bits_saved": 8
+    },
+    "groups": [
+      {
+        "name": "shuffle_checks",
+        "ler": 0.03478125,
+        "wrong_per_bit": [
+          293,
+          282,
+          271,
+          267
+        ],
+        "seconds": 1.2460439999995288,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0004624999999999999,
+            0.00014999999999999993
+          ],
+          "net_bits_saved": 5
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          892
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "shuffle_checks"
+        }
+      },
+      {
+        "name": "shuffle_checks",
+        "ler": 0.0354375,
+        "wrong_per_bit": [
+          279,
+          266,
+          307,
+          282
+        ],
+        "seconds": 1.2835249999989173,
+        "paired": {
+          "delta": 6.25e-05,
+          "ci95": [
+            -0.0002375781232925183,
+            0.0003625781232925183
+          ],
+          "net_bits_saved": -2
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          897
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "shuffle_checks"
+        }
+      },
+      {
+        "name": "shuffle_checks",
+        "ler": 0.0339375,
+        "wrong_per_bit": [
+          306,
+          275,
+          252,
+          253
+        ],
+        "seconds": 1.3642275000020163,
+        "paired": {
+          "delta": 0.000125,
+          "ci95": [
+            -0.00014892175162946076,
+            0.00039892175162946076
+          ],
+          "net_bits_saved": -4
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          959
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "shuffle_checks"
+        }
+      },
+      {
+        "name": "shuffle_checks",
+        "ler": 0.033875,
+        "wrong_per_bit": [
+          276,
+          256,
+          286,
+          266
+        ],
+        "seconds": 1.712620300000708,
+        "paired": {
+          "delta": -0.0003125,
+          "ci95": [
+            -0.0007789449880045923,
+            0.00015394498800459224
+          ],
+          "net_bits_saved": 10
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          923
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "shuffle_checks"
+        }
+      },
+      {
+        "name": "shuffle_checks",
+        "ler": 0.03453125,
+        "wrong_per_bit": [
+          301,
+          297,
+          258,
+          249
+        ],
+        "seconds": 1.3145413000020199,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.0005186163581782667,
+            0.00020611635817826675
+          ],
+          "net_bits_saved": 5
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          885
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "shuffle_checks"
+        }
+      },
+      {
+        "name": "shuffle_checks",
+        "ler": 0.03215625,
+        "wrong_per_bit": [
+          244,
+          247,
+          300,
+          238
+        ],
+        "seconds": 1.49349940000684,
+        "paired": {
+          "delta": 0.0001875,
+          "ci95": [
+            -0.00029479562417918304,
+            0.0006697956241791831
+          ],
+          "net_bits_saved": -6
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          883
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "shuffle_checks"
+        }
+      }
+    ]
+  },
+  {
+    "name": "merge32",
+    "ler": 0.034130208333333335,
+    "wrong_per_bit": [
+      1710,
+      1618,
+      1677,
+      1548
+    ],
+    "seconds": 8.659254599988344,
+    "paired": {
+      "delta": -3.125e-05,
+      "ci95": [
+        -7.208280163476689e-05,
+        9.582801634766886e-06
+      ],
+      "net_bits_saved": 6
+    },
+    "groups": [
+      {
+        "name": "merge32",
+        "ler": 0.0349375,
+        "wrong_per_bit": [
+          297,
+          284,
+          270,
+          267
+        ],
+        "seconds": 1.1735494999957155,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -8.662599498924087e-05,
+            8.662599498924087e-05
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          894
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "merge_factor": 32.0
+        }
+      },
+      {
+        "name": "merge32",
+        "ler": 0.03525,
+        "wrong_per_bit": [
+          281,
+          263,
+          306,
+          278
+        ],
+        "seconds": 1.4215096999978414,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.00024747702622428464,
+            -2.522973775715391e-06
+          ],
+          "net_bits_saved": 4
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          903
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "merge_factor": 32.0
+        }
+      },
+      {
+        "name": "merge32",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          306,
+          271,
+          254,
+          251
+        ],
+        "seconds": 1.229487099997641,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            -8.662599498924087e-05,
+            8.662599498924087e-05
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          966
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "merge_factor": 32.0
+        }
+      },
+      {
+        "name": "merge32",
+        "ler": 0.034125,
+        "wrong_per_bit": [
+          279,
+          258,
+          290,
+          265
+        ],
+        "seconds": 1.8556884999998147,
+        "paired": {
+          "delta": -6.25e-05,
+          "ci95": [
+            -0.0002125343727546324,
+            8.75343727546324e-05
+          ],
+          "net_bits_saved": 2
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          921
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "merge_factor": 32.0
+        }
+      },
+      {
+        "name": "merge32",
+        "ler": 0.03471875,
+        "wrong_per_bit": [
+          305,
+          297,
+          260,
+          249
+        ],
+        "seconds": 1.6388657999996212,
+        "paired": {
+          "delta": 3.125e-05,
+          "ci95": [
+            -2.9999999999999984e-05,
+            9.249999999999999e-05
+          ],
+          "net_bits_saved": -1
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          890
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "merge_factor": 32.0
+        }
+      },
+      {
+        "name": "merge32",
+        "ler": 0.0319375,
+        "wrong_per_bit": [
+          242,
+          245,
+          297,
+          238
+        ],
+        "seconds": 1.3401539999977103,
+        "paired": {
+          "delta": -3.125e-05,
+          "ci95": [
+            -9.249999999999999e-05,
+            2.9999999999999984e-05
+          ],
+          "net_bits_saved": 1
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          896
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "merge_factor": 32.0
+        }
+      }
+    ]
+  },
+  {
+    "name": "reference",
+    "ler": 0.03416145833333333,
+    "wrong_per_bit": [
+      1708,
+      1623,
+      1680,
+      1548
+    ],
+    "seconds": 7.1838486999913584,
+    "paired": {
+      "delta": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "net_bits_saved": 0
+    },
+    "groups": [
+      {
+        "name": "reference",
+        "ler": 0.0349375,
+        "wrong_per_bit": [
+          297,
+          284,
+          271,
+          266
+        ],
+        "seconds": 1.0123418000002857,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          893
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "reference",
+        "ler": 0.035375,
+        "wrong_per_bit": [
+          281,
+          265,
+          307,
+          279
+        ],
+        "seconds": 1.2240309999979218,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          899
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "reference",
+        "ler": 0.0338125,
+        "wrong_per_bit": [
+          306,
+          271,
+          254,
+          251
+        ],
+        "seconds": 1.009709899997688,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          959
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "reference",
+        "ler": 0.0341875,
+        "wrong_per_bit": [
+          278,
+          260,
+          291,
+          265
+        ],
+        "seconds": 1.357485499996983,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          916
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "reference",
+        "ler": 0.0346875,
+        "wrong_per_bit": [
+          304,
+          297,
+          260,
+          249
+        ],
+        "seconds": 1.478092999997898,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          886
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "reference",
+        "ler": 0.03196875,
+        "wrong_per_bit": [
+          242,
+          246,
+          297,
+          238
+        ],
+        "seconds": 1.102187500000582,
+        "paired": {
+          "delta": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "net_bits_saved": 0
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          891
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "reverse_checks",
+    "ler": 0.03416145833333333,
+    "wrong_per_bit": [
+      1705,
+      1622,
+      1680,
+      1552
+    ],
+    "seconds": 7.037433699995745,
+    "paired": {
+      "delta": 0.0,
+      "ci95": [
+        -0.00017857476194309594,
+        0.00017857476194309594
+      ],
+      "net_bits_saved": 0
+    },
+    "groups": [
+      {
+        "name": "reverse_checks",
+        "ler": 0.03471875,
+        "wrong_per_bit": [
+          293,
+          283,
+          269,
+          266
+        ],
+        "seconds": 1.0846747999967192,
+        "paired": {
+          "delta": -0.00021875,
+          "ci95": [
+            -0.0005811008264718988,
+            0.00014360082647189878
+          ],
+          "net_bits_saved": 7
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          895
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "reverse_checks"
+        }
+      },
+      {
+        "name": "reverse_checks",
+        "ler": 0.03509375,
+        "wrong_per_bit": [
+          281,
+          261,
+          304,
+          277
+        ],
+        "seconds": 1.234430099997553,
+        "paired": {
+          "delta": -0.00028125,
+          "ci95": [
+            -0.0007186464076005428,
+            0.00015614640760054286
+          ],
+          "net_bits_saved": 9
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          899
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "reverse_checks"
+        }
+      },
+      {
+        "name": "reverse_checks",
+        "ler": 0.0340625,
+        "wrong_per_bit": [
+          307,
+          273,
+          257,
+          253
+        ],
+        "seconds": 1.3601347000003443,
+        "paired": {
+          "delta": 0.00025,
+          "ci95": [
+            -0.00011748213274897628,
+            0.0006174821327489762
+          ],
+          "net_bits_saved": -8
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          972
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "reverse_checks"
+        }
+      },
+      {
+        "name": "reverse_checks",
+        "ler": 0.034,
+        "wrong_per_bit": [
+          275,
+          256,
+          289,
+          268
+        ],
+        "seconds": 1.0542226000034134,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.000653977162449177,
+            0.00027897716244917696
+          ],
+          "net_bits_saved": 6
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          908
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "reverse_checks"
+        }
+      },
+      {
+        "name": "reverse_checks",
+        "ler": 0.035,
+        "wrong_per_bit": [
+          306,
+          301,
+          262,
+          251
+        ],
+        "seconds": 1.1775815000000875,
+        "paired": {
+          "delta": 0.0003125,
+          "ci95": [
+            -0.00022843581589072475,
+            0.0008534358158907248
+          ],
+          "net_bits_saved": -10
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          881
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "reverse_checks"
+        }
+      },
+      {
+        "name": "reverse_checks",
+        "ler": 0.03209375,
+        "wrong_per_bit": [
+          243,
+          248,
+          299,
+          237
+        ],
+        "seconds": 1.1263899999976275,
+        "paired": {
+          "delta": 0.000125,
+          "ci95": [
+            -0.0002993701310483759,
+            0.0005493701310483759
+          ],
+          "net_bits_saved": -4
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          883
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ],
+          "detector_order": "reverse_checks"
+        }
+      }
+    ]
+  },
+  {
+    "name": "hybrid075",
+    "ler": 0.03418229166666667,
+    "wrong_per_bit": [
+      1713,
+      1621,
+      1675,
+      1554
+    ],
+    "seconds": 4.442933899990749,
+    "paired": {
+      "delta": 2.0833333333333333e-05,
+      "ci95": [
+        -0.00013195248780832622,
+        0.0001736191544749929
+      ],
+      "net_bits_saved": -4
+    },
+    "groups": [
+      {
+        "name": "hybrid075",
+        "ler": 0.03478125,
+        "wrong_per_bit": [
+          298,
+          284,
+          269,
+          262
+        ],
+        "seconds": 0.6506394000025466,
+        "paired": {
+          "delta": -0.00015625,
+          "ci95": [
+            -0.00044999308416050234,
+            0.00013749308416050236
+          ],
+          "net_bits_saved": 5
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          877
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075",
+        "ler": 0.03528125,
+        "wrong_per_bit": [
+          279,
+          264,
+          307,
+          279
+        ],
+        "seconds": 0.7064564999964205,
+        "paired": {
+          "delta": -9.375e-05,
+          "ci95": [
+            -0.0004561267122793458,
+            0.00026862671227934575
+          ],
+          "net_bits_saved": 3
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          879
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075",
+        "ler": 0.03421875,
+        "wrong_per_bit": [
+          310,
+          275,
+          256,
+          254
+        ],
+        "seconds": 0.7007751999990433,
+        "paired": {
+          "delta": 0.00040625,
+          "ci95": [
+            1.4135182636594351e-05,
+            0.0007983648173634057
+          ],
+          "net_bits_saved": -13
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          925
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075",
+        "ler": 0.03446875,
+        "wrong_per_bit": [
+          281,
+          260,
+          294,
+          268
+        ],
+        "seconds": 1.0200284000020474,
+        "paired": {
+          "delta": 0.00028125,
+          "ci95": [
+            -5.974118361491454e-05,
+            0.0006222411836149144
+          ],
+          "net_bits_saved": -9
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          895
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075",
+        "ler": 0.0345,
+        "wrong_per_bit": [
+          305,
+          294,
+          257,
+          248
+        ],
+        "seconds": 0.7274820999955409,
+        "paired": {
+          "delta": -0.0001875,
+          "ci95": [
+            -0.000555,
+            0.00018000000000000004
+          ],
+          "net_bits_saved": 6
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          863
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "hybrid075",
+        "ler": 0.03184375,
+        "wrong_per_bit": [
+          240,
+          244,
+          292,
+          243
+        ],
+        "seconds": 0.63755229999515,
+        "paired": {
+          "delta": -0.000125,
+          "ci95": [
+            -0.000591487216508015,
+            0.00034148721650801493
+          ],
+          "net_bits_saved": 4
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          865
+        ],
+        "config": {
+          "heuristic": "hybrid",
+          "hexp": 0.75,
+          "order": "span",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "last_detector",
+    "ler": 0.03458854166666667,
+    "wrong_per_bit": [
+      1726,
+      1638,
+      1695,
+      1582
+    ],
+    "seconds": 14.521877799998038,
+    "paired": {
+      "delta": 0.00042708333333333335,
+      "ci95": [
+        0.00013478307873395927,
+        0.0007193835879327074
+      ],
+      "net_bits_saved": -82
+    },
+    "groups": [
+      {
+        "name": "last_detector",
+        "ler": 0.03546875,
+        "wrong_per_bit": [
+          301,
+          288,
+          271,
+          275
+        ],
+        "seconds": 2.1989777000053436,
+        "paired": {
+          "delta": 0.00053125,
+          "ci95": [
+            -0.00026966313201577403,
+            0.001332163132015774
+          ],
+          "net_bits_saved": -17
+        },
+        "basis": "X",
+        "family": 0,
+        "seed": 943110,
+        "routed": [
+          8000,
+          844
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "last",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "last_detector",
+        "ler": 0.03596875,
+        "wrong_per_bit": [
+          282,
+          269,
+          309,
+          291
+        ],
+        "seconds": 2.4196781999999075,
+        "paired": {
+          "delta": 0.00059375,
+          "ci95": [
+            -0.0001125437629642057,
+            0.0013000437629642056
+          ],
+          "net_bits_saved": -19
+        },
+        "basis": "Z",
+        "family": 0,
+        "seed": 943111,
+        "routed": [
+          8000,
+          868
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "last",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "last_detector",
+        "ler": 0.034875,
+        "wrong_per_bit": [
+          312,
+          280,
+          263,
+          261
+        ],
+        "seconds": 2.369326699998055,
+        "paired": {
+          "delta": 0.0010625,
+          "ci95": [
+            0.00035381808759121563,
+            0.0017711819124087845
+          ],
+          "net_bits_saved": -34
+        },
+        "basis": "X",
+        "family": 1,
+        "seed": 943112,
+        "routed": [
+          8000,
+          896
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "last",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "last_detector",
+        "ler": 0.03478125,
+        "wrong_per_bit": [
+          285,
+          264,
+          292,
+          272
+        ],
+        "seconds": 2.5767820999972173,
+        "paired": {
+          "delta": 0.00059375,
+          "ci95": [
+            -2.7772271913081154e-05,
+            0.0012152722719130811
+          ],
+          "net_bits_saved": -19
+        },
+        "basis": "Z",
+        "family": 1,
+        "seed": 943113,
+        "routed": [
+          8000,
+          878
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "last",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "last_detector",
+        "ler": 0.03503125,
+        "wrong_per_bit": [
+          309,
+          296,
+          262,
+          254
+        ],
+        "seconds": 2.3551129999978,
+        "paired": {
+          "delta": 0.00034375,
+          "ci95": [
+            -0.000351918969073297,
+            0.001039418969073297
+          ],
+          "net_bits_saved": -11
+        },
+        "basis": "X",
+        "family": 2,
+        "seed": 943114,
+        "routed": [
+          8000,
+          834
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "last",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      },
+      {
+        "name": "last_detector",
+        "ler": 0.03140625,
+        "wrong_per_bit": [
+          237,
+          241,
+          298,
+          229
+        ],
+        "seconds": 2.6020000999997137,
+        "paired": {
+          "delta": -0.0005625,
+          "ci95": [
+            -0.001312601838629122,
+            0.000187601838629122
+          ],
+          "net_bits_saved": 18
+        },
+        "basis": "Z",
+        "family": 2,
+        "seed": 943115,
+        "routed": [
+          8000,
+          843
+        ],
+        "config": {
+          "heuristic": "max",
+          "hexp": 0.5,
+          "order": "last",
+          "compact": 32,
+          "tiers": [
+            [
+              0,
+              0.0001,
+              1024,
+              0.0
+            ],
+            [
+              1,
+              3e-05,
+              4096,
+              0.15
+            ]
+          ]
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "fresh": {
+    "reference_ler": 0.0336075,
+    "candidate_ler": 0.03355375,
+    "accuracy_ler": 0.03354875,
+    "candidate_paired": {
+      "delta": -5.375e-05,
+      "ci95": [
+        -0.00010869740305940778,
+        1.1974030594077853e-06
+      ],
+      "net_bits_saved": 43
+    },
+    "accuracy_paired": {
+      "delta": -5.875e-05,
+      "ci95": [
+        -0.00010644583395696509,
+        -1.1054166043034905e-05
+      ],
+      "net_bits_saved": 47
+    }
+  },
+  "train": {
+    "reference_ler": 0.03386875,
+    "candidate_ler": 0.03385875,
+    "accuracy_ler": 0.03386,
+    "candidate_paired": {
+      "delta": -1e-05,
+      "ci95": [
+        -6.565342366573532e-05,
+        4.565342366573532e-05
+      ],
+      "net_bits_saved": 8
+    },
+    "accuracy_paired": {
+      "delta": -8.75e-06,
+      "ci95": [
+        -5.682257621815604e-05,
+        3.932257621815605e-05
+      ],
+      "net_bits_saved": 7
+    }
+  },
+  "local_timings": {
+    "reference": {
+      "runs": 1,
+      "seconds": 21.53
+    },
+    "candidate": {
+      "runs": 5,
+      "seconds": 31.47
+    },
+    "accuracy": {
+      "runs": 5,
+      "seconds": 48.98
+    }
+  },
+  "sorted_dedup_timings": {
+    "reference": {
+      "runs": 1,
+      "seconds": 21.53
+    },
+    "candidate": {
+      "runs": 5,
+      "seconds": 37.9
+    },
+    "accuracy": {
+      "runs": 5,
+      "seconds": 60.73
+    }
+  },
+  "pooled_candidate": {
+    "shots": 500000,
+    "delta": -3.5e-05,
+    "ci95": [
+      -7.044285965427454e-05,
+      4.4285965427453693e-07
+    ],
+    "net_bits_saved": 70
+  },
+  "pooled_accuracy": {
+    "shots": 500000,
+    "delta": -4.7e-05,
+    "ci95": [
+      -7.691784781641947e-05,
+      -1.708215218358052e-05
+    ],
+    "net_bits_saved": 94
+  },
+  "versions_note": "See experiment metadata and pinned parent requirements.txt",
+  "parameter_hashes": {
+    "candidate": "d4fc14eb179ac1edc53598011ea559f176c97d2960bf5ca4a033f36e9e05e545",
+    "accuracy": "1a9609a07ba49f980f267676ad8311a557fcc864ef9ff5ff728a3e822e2422e5"
+  },
+  "source_hashes": {
+    "mld_improvements\\decoder.py": "d48c60cd0eb297fe595e78769516d639f8acb723fdfc29c7b0cdf2928e43b3cb",
+    "mld_improvements\\runtime.py": "55970f4e22d1cc8d89fcaa070b43ef6f7b5a15ae29536f3ae5faf659e83d68a8",
+    "mld.py": "2ce6f752ed7bc90a8bb42e08e8ccf97e49f8c33d9b736fb9259bab24f8df8ad5"
+  }
+}

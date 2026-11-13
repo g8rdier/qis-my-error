@@ -1,0 +1,10 @@
+{
+  "name": "hybrid075_tight",
+  "status": "500k held-out shots; no statistically clear accuracy gain; optional tighter-search comparison",
+  "components": [
+    {
+      "heuristic": "hybrid", "hexp": 0.75, "order": "span", "compact": 32,
+      "tiers": [[0, 0.00003, 4096, 0.0], [1, 0.00001, 8192, 0.05]]
+    }
+  ]
+}

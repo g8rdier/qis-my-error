@@ -1,0 +1,326 @@
+{
+  "arguments": {
+    "stage": "development",
+    "shots": 3000,
+    "families": 3,
+    "seed": 943100,
+    "threads": 16,
+    "names": [
+      "reference",
+      "broader_route",
+      "tight",
+      "third_pass",
+      "parity05",
+      "parity075",
+      "parity10",
+      "hybrid05",
+      "hybrid075",
+      "probability",
+      "span_probability",
+      "max065",
+      "merge32",
+      "merge_all"
+    ],
+    "config": null,
+    "closure": true
+  },
+  "configurations": {
+    "reference": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "broader_route": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.02
+        ]
+      ]
+    },
+    "tight": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          3e-05,
+          4096,
+          0
+        ],
+        [
+          1,
+          1e-05,
+          8192,
+          0.05
+        ]
+      ]
+    },
+    "third_pass": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ],
+        [
+          0,
+          3e-06,
+          8192,
+          0.15
+        ]
+      ]
+    },
+    "parity05": {
+      "heuristic": "parity",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "parity075": {
+      "heuristic": "parity",
+      "hexp": 0.75,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "parity10": {
+      "heuristic": "parity",
+      "hexp": 1.0,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "hybrid05": {
+      "heuristic": "hybrid",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "hybrid075": {
+      "heuristic": "hybrid",
+      "hexp": 0.75,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "probability": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "probability",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "span_probability": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "span_probability",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "max065": {
+      "heuristic": "max",
+      "hexp": 0.65,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ]
+    },
+    "merge32": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ],
+      "merge_factor": 32.0
+    },
+    "merge_all": {
+      "heuristic": "max",
+      "hexp": 0.5,
+      "order": "span",
+      "compact": 32,
+      "tiers": [
+        [
+          0,
+          0.0001,
+          1024,
+          0.0
+        ],
+        [
+          1,
+          3e-05,
+          4096,
+          0.15
+        ]
+      ],
+      "merge_factor": 1e+100
+    }
+  },
+  "versions": {
+    "numpy": "2.2.6",
+    "numba": "0.68.1",
+    "stim": "1.16.0"
+  },
+  "hashes": {
+    "submission_template\\mld_improvements\\search.py": "d92685b02a56b9df1c3bd01641b174cfbd0dc4057523992cfd1fc431e4a8afec",
+    "submission_template\\mld.py": "decc02dee1ccab3b2c854fcd9720e3e4e9b8553475dd6f315768f6e4ebddab2f"
+  }
+}

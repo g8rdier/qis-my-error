@@ -1,0 +1,113 @@
+{
+  "shots": 300000,
+  "failed_shots": 0,
+  "mean_posterior_risk": 0.030653867563392008,
+  "observed_ler": 0.03358666666666667,
+  "changed_bits": 407,
+  "changed_shots": 326,
+  "correct_to_wrong": 180,
+  "wrong_to_correct": 227,
+  "confidence_bins": [
+    {
+      "risk_range": [
+        0,
+        0.001
+      ],
+      "bits": 752389,
+      "expected_error": 0.0001266882547797079,
+      "observed_error": 0.0008572693114864785
+    },
+    {
+      "risk_range": [
+        0.001,
+        0.01
+      ],
+      "bits": 215931,
+      "expected_error": 0.003191558804294568,
+      "observed_error": 0.006465028180298336
+    },
+    {
+      "risk_range": [
+        0.01,
+        0.05
+      ],
+      "bits": 86383,
+      "expected_error": 0.02449655066397047,
+      "observed_error": 0.035990877834759155
+    },
+    {
+      "risk_range": [
+        0.05,
+        0.15
+      ],
+      "bits": 51778,
+      "expected_error": 0.09078443035090268,
+      "observed_error": 0.10817335547916103
+    },
+    {
+      "risk_range": [
+        0.15,
+        0.35
+      ],
+      "bits": 60140,
+      "expected_error": 0.2648810917490088,
+      "observed_error": 0.27070169604256733
+    },
+    {
+      "risk_range": [
+        0.35,
+        0.5
+      ],
+      "bits": 31896,
+      "expected_error": 0.4155221693652699,
+      "observed_error": 0.4161023325808879
+    }
+  ],
+  "syndrome_weight_bins": [
+    {
+      "weight_range": [
+        0,
+        0
+      ],
+      "shots": 13724,
+      "expected_error": 0.0,
+      "observed_error": 0.0
+    },
+    {
+      "weight_range": [
+        1,
+        4
+      ],
+      "shots": 70043,
+      "expected_error": 0.006688981863425758,
+      "observed_error": 0.00675656382507888
+    },
+    {
+      "weight_range": [
+        5,
+        9
+      ],
+      "shots": 128193,
+      "expected_error": 0.023279161590027204,
+      "observed_error": 0.02539920276458153
+    },
+    {
+      "weight_range": [
+        10,
+        14
+      ],
+      "shots": 68912,
+      "expected_error": 0.05353062436949298,
+      "observed_error": 0.05920231599721384
+    },
+    {
+      "weight_range": [
+        15,
+        70
+      ],
+      "shots": 19128,
+      "expected_error": 0.10740882288251867,
+      "observed_error": 0.11851735675449603
+    }
+  ]
+}

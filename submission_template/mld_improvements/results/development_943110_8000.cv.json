@@ -1,0 +1,17 @@
+[
+  {
+    "family": 0,
+    "selected": "hybrid075_tight",
+    "ler": 0.034937499999999996
+  },
+  {
+    "family": 1,
+    "selected": "hybrid075_tight",
+    "ler": 0.033984375
+  },
+  {
+    "family": 2,
+    "selected": "parity075_tight",
+    "ler": 0.033140625
+  }
+]

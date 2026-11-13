@@ -1,0 +1,94 @@
+{
+  "records": [
+    {
+      "model": "candidate",
+      "basis": "X",
+      "family": 0,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "candidate",
+      "basis": "Z",
+      "family": 0,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "candidate",
+      "basis": "X",
+      "family": 1,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "candidate",
+      "basis": "Z",
+      "family": 1,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "candidate",
+      "basis": "X",
+      "family": 2,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "candidate",
+      "basis": "Z",
+      "family": 2,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "accuracy",
+      "basis": "X",
+      "family": 0,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "accuracy",
+      "basis": "Z",
+      "family": 0,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "accuracy",
+      "basis": "X",
+      "family": 1,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "accuracy",
+      "basis": "Z",
+      "family": 1,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "accuracy",
+      "basis": "X",
+      "family": 2,
+      "shots": 512,
+      "changed_bits": 0
+    },
+    {
+      "model": "accuracy",
+      "basis": "Z",
+      "family": 2,
+      "shots": 512,
+      "changed_bits": 0
+    }
+  ],
+  "hashes": {
+    "decoder.py": "d48c60cd0eb297fe595e78769516d639f8acb723fdfc29c7b0cdf2928e43b3cb",
+    "runtime.py": "55970f4e22d1cc8d89fcaa070b43ef6f7b5a15ae29536f3ae5faf659e83d68a8",
+    "candidate.json": "a8cd66703329787c8886fbb11271120af0ee53cb0eaed58db0aebf7bbefd0e07",
+    "accuracy.json": "a49e6dead931d4a11599573e955cde3f66d0d22245ae43067215e8a44ac1a4af"
+  }
+}

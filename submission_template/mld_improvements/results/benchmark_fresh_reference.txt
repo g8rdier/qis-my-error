@@ -1,0 +1,11 @@
+C:\Users\nicho\Code\qis-my-error\submission_template\bp_osd.py:48: RuntimeWarning: overflow encountered in scalar multiply
+  _CTZ_TABLE[((np.uint64(1) << np.uint64(_i)) * _DEBRUIJN) >> np.uint64(58)] = _i
+loading C:\Users\nicho\Code\qis-my-error\data\mld_audit_runtime\mld_audit_runtime.csv ...
+C:\Users\nicho\Code\qis-my-error\data\mld_audit_runtime X: 100000 shots
+C:\Users\nicho\Code\qis-my-error\data\mld_audit_runtime Z: 100000 shots
+run 1: 21.53 s
+runtime (median of 1): 21.53 s
+wrote C:\Users\nicho\Code\qis-my-error\submission_template\mld_improvements\cache\fresh_reference.csv
+X: LER 0.03424
+Z: LER 0.03297
+both: LER 0.03361

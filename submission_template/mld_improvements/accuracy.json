@@ -1,0 +1,15 @@
+{
+  "name": "reference+shuffle_checks/max",
+  "status": "small replicated gain on 500k independent shots; optional accuracy-first model",
+  "components": [
+    {
+      "heuristic": "max", "hexp": 0.5, "order": "span", "compact": 32,
+      "tiers": [[0, 0.0001, 1024, 0.0], [1, 0.00003, 4096, 0.15]]
+    },
+    {
+      "heuristic": "max", "hexp": 0.5, "order": "span", "compact": 32,
+      "detector_order": "shuffle_checks",
+      "tiers": [[0, 0.0001, 1024, 0.0], [1, 0.00003, 4096, 0.15]]
+    }
+  ]
+}

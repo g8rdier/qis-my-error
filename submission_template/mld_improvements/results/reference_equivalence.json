@@ -1,0 +1,31 @@
+{
+  "revision": "962f067efdfe5ffd7dd8f43f1e4faf99ee42ac1e",
+  "original_sha256": "7a241f47146abb61d0ff9be06efb60bb16f45686e11bcbb57d052f221c0363d7",
+  "current_sha256": "2ce6f752ed7bc90a8bb42e08e8ccf97e49f8c33d9b736fb9259bab24f8df8ad5",
+  "records": [
+    {
+      "basis": "X",
+      "reverse": false,
+      "shots": 1000,
+      "logweight_changes": 0
+    },
+    {
+      "basis": "X",
+      "reverse": true,
+      "shots": 1000,
+      "logweight_changes": 0
+    },
+    {
+      "basis": "Z",
+      "reverse": false,
+      "shots": 1000,
+      "logweight_changes": 0
+    },
+    {
+      "basis": "Z",
+      "reverse": true,
+      "shots": 1000,
+      "logweight_changes": 0
+    }
+  ]
+}

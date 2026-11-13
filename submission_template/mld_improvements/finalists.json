@@ -1,0 +1,19 @@
+{
+  "reference": {
+    "heuristic": "max", "hexp": 0.5, "order": "span", "compact": 32,
+    "tiers": [[0, 0.0001, 1024, 0.0], [1, 0.00003, 4096, 0.15]]
+  },
+  "hybrid075_tight": {
+    "heuristic": "hybrid", "hexp": 0.75, "order": "span", "compact": 32,
+    "tiers": [[0, 0.00003, 4096, 0.0], [1, 0.00001, 8192, 0.05]]
+  },
+  "hybrid075": {
+    "heuristic": "hybrid", "hexp": 0.75, "order": "span", "compact": 32,
+    "tiers": [[0, 0.0001, 1024, 0.0], [1, 0.00003, 4096, 0.15]]
+  },
+  "shuffle_checks": {
+    "heuristic": "max", "hexp": 0.5, "order": "span", "compact": 32,
+    "detector_order": "shuffle_checks",
+    "tiers": [[0, 0.0001, 1024, 0.0], [1, 0.00003, 4096, 0.15]]
+  }
+}

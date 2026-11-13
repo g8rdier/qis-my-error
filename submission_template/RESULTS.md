@@ -7,6 +7,35 @@ seed 999). The BP+OSD section has a separate independent-audit protocol.
 or model selection — decode-only for the final submission.
 Timing: `run_local.py` median-of-5 on this machine (guide only; judges use B200+48 cores).
 
+## MLD improvement study (current production reference)
+
+The current `decoder.py` is the forward/backward pruned MLD, not the historical
+MLP described in older rows below. A new study tested 19 distinct MLD settings
+plus cached ensembles and closure combinations on 66k development shots,
+then froze candidates before a 300k-shot independent audit (954100–954105).
+
+| Frozen model | Matched audit LER | Paired delta vs production (95% CI) |
+|---|---:|---|
+| Current production MLD | 0.03358667 | — |
+| Hybrid look-ahead, tighter search | 0.03356417 | -0.00002250 [-0.00006884, +0.00002384] |
+| Max(reference, shuffled checks) | 0.03354750 | -0.00003917 [-0.00007758, -0.00000076] |
+
+The primary gain is inconclusive. The tiny secondary gain then replicated on
+another 200k untouched shots (965100/965101): 0.03354875 vs reference 0.03360750.
+Across all **500k held-out shots**, the ensemble scores **0.03354800** vs
+reference **0.03359500**, 94 fewer wrong bits out of 2M; paired difference
+**-0.00004700**, 95% CI **[-0.00007692, -0.00001708]**.
+This is a **0.14% relative** reduction with more compute, not a breakthrough.
+Optional model runtimes after input-order-preserving deduplication:
+**48.98s ensemble / 31.47s hybrid**, median-of-five, 200k fresh shots, 16 local
+threads. These are not B200/48-core judge timings. All five calls are identical;
+the speed change preserves all 1.6M checked bits, and eight correctness tests pass.
+**Production is not replaced.** These matched scores should not be compared
+directly with a 0.03372 result on a different sample.
+Implemented paths, rejected ideas, exact-inference tests, optional entry points,
+runtime checks and raw logs:
+[`mld_improvements/EXPERIMENTS.md`](mld_improvements/EXPERIMENTS.md).
+
 ## BP+OSD improvement program (separate from the ML decoder)
 
 The historical seed-999 set below was used repeatedly for ML selection; it is

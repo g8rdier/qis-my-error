@@ -35,18 +35,38 @@ from bp_osd import _ctz
 VEC_MIN = 24  # state count from which a step uses the vectorisable passes
 
 
-def build_mld(H: np.ndarray, L: np.ndarray, p: np.ndarray, hexp=0.5):
-    """Precompute the sweep order and the per-step tables the kernel needs from the error model."""
+def build_mld(H: np.ndarray, L: np.ndarray, p: np.ndarray, hexp=0.5, *,
+              heuristic="max", mechanism_order="span", merge_factor=1.0):
+    """Precompute a sweep. Defaults preserve the original decoder.
+
+    ``parity`` look-ahead uses each remaining detector's exact odd-parity
+    probability (but approximates correlations between detectors). ``hybrid``
+    averages its log odds with the original maximum-mechanism heuristic.
+    Neither changes physical path weights: these affect pruning only.
+    ``merge_factor > 1`` also merges subthreshold children into already present
+    states, without admitting new subthreshold states.
+    """
     H = np.asarray(H, np.uint8)
     L = np.asarray(L, np.uint8)
     p = np.asarray(p, np.float64)
     nd, n = H.shape
     nobs = L.shape[0]
     assert 64 < nd and nd + nobs <= 128
+    if not np.isfinite(merge_factor) or merge_factor < 1:
+        raise ValueError("merge_factor must be finite and at least one")
     rows = np.arange(nd)[:, None]
     first = np.where(H, rows, nd).min(0)
     last = np.where(H, rows, -1).max(0)
-    order = np.lexsort((last, first))
+    if mechanism_order == "span":
+        order = np.lexsort((last, first))
+    elif mechanism_order == "probability":
+        order = np.lexsort((last, -p, first))
+    elif mechanism_order == "span_probability":
+        order = np.lexsort((-p, last, first))
+    elif mechanism_order == "last":
+        order = np.lexsort((first, last))
+    else:
+        raise ValueError(f"unknown mechanism order: {mechanism_order}")
     Ho = H[:, order].astype(bool)
     Lo = L[:, order].astype(bool)
     full = np.concatenate([Ho, Lo], 0)  # (nd + nobs, n): detector bits then logical bits
@@ -70,6 +90,18 @@ def build_mld(H: np.ndarray, L: np.ndarray, p: np.ndarray, hexp=0.5):
     suffix = np.maximum.accumulate(share[:, ::-1], axis=1)[:, ::-1]
     hcost = np.zeros((n + 1, nd))
     hcost[:n] = np.where(np.isfinite(suffix.T), suffix.T, 0.0)
+    if heuristic in ("parity", "hybrid"):
+        # P(odd number of remaining faults touching d) = (1-prod(1-2p))/2.
+        # expm1 avoids cancellation when the suffix probability is tiny.
+        log_even = np.where(Ho, np.log1p(-2 * p[order])[None, :], 0.0)
+        log_even = np.cumsum(log_even[:, ::-1], axis=1)[:, ::-1]
+        odd = -0.5 * np.expm1(log_even)
+        with np.errstate(divide="ignore"):
+            odds = np.log(odd) - np.log1p(-odd)
+        parity = hexp * np.where(np.isfinite(odds.T), odds.T, 0.0)
+        hcost[:n] = parity if heuristic == "parity" else 0.5 * (hcost[:n] + parity)
+    elif heuristic != "max":
+        raise ValueError(f"unknown heuristic: {heuristic}")
     before = np.where(Ho.T, hcost[:n], 0.0)  # (n, nd), only on the column's detectors
     after = np.where(Ho.T, hcost[1:], 0.0)
     v0 = after - before  # change of a disagreeing detector's charge when the mechanism does not fire
@@ -87,7 +119,8 @@ def build_mld(H: np.ndarray, L: np.ndarray, p: np.ndarray, hexp=0.5):
         cv0[k, : len(dets)] = v0[k, dets]
         cv1[k, : len(dets)] = v1[k, dets]
     return dict(c0=c0, c1=c1, m0=m0, m1=m1, cl0=cl0, cl1=cl1, lr=lr, v0=v0, v1=v1, cdet=cdet, cv0=cv0, cv1=cv1, cw=cw, d1z=d1z,
-                hasv0=hasv0, h0=hcost[0].copy(), nd=nd, nobs=nobs)
+                hasv0=hasv0, h0=hcost[0].copy(), nd=nd, nobs=nobs,
+                merge_margin=float(np.log(merge_factor)))
 
 
 @njit(cache=True, inline="always")
@@ -127,7 +160,7 @@ def _logadd(x, y):
 
 
 @njit(cache=True, fastmath={"nsz", "reassoc", "contract", "arcp"})
-def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, max_states, compact_every,
+def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, merge_margin, max_states, compact_every,
               ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16, stats):
     """Posterior weights of the 16 logical outcomes for one shot, written to out16. The remaining arrays are
     scratch space of size >= 2 * max_states + 1 (table: a power of two >= 4 times that). The weights in out16 are
@@ -161,11 +194,12 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
         lrk = lr[k]
         dz = d1z[k]
         thr = best + leps
+        child_thr = thr - merge_margin
         if ns < VEC_MIN:  # few states: one branchy pass per state is cheapest
             mk0 = m0[k]
             mk1 = m1[k]
             hv = hasv0[k]
-            thrz = thr - lrk - dz  # a state agreeing on the whole column has a passing flipped child iff sc >= thrz
+            thrz = child_thr - lrk - dz
             nbest = ninf
             nc = 0
             for i in range(ns):
@@ -208,7 +242,7 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
                     bad1 = False
                 if not bad1:
                     c = s + lrk + e1
-                    if c >= thr:
+                    if c >= child_thr:
                         cka[nc] = a ^ x0
                         ckb[nc] = b ^ x1
                         clw[nc] = lw[i] + lrk
@@ -261,7 +295,7 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
                     nbest = max(nbest, s)
             nc = 0
             for i in range(ns):
-                if cs[i] >= thr:
+                if cs[i] >= child_thr:
                     cka[nc] = ka[i] ^ x0
                     ckb[nc] = kb[i] ^ x1
                     clw[nc] = lw[i] + lrk
@@ -277,6 +311,8 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
                 sc[t] += l - lw[t]
                 lw[t] = l
             else:
+                if merge_margin > 0.0 and csc[c] < thr:
+                    continue  # extra tail mass may merge, but cannot create a new state
                 t = ns
                 ka[t] = a
                 kb[t] = b
@@ -332,20 +368,21 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
             peak = ns
     out16[:] = 0.0
     mx = ninf
+    detector_hi = (np.uint64(1) << np.uint64(nd - 64)) - np.uint64(1)
     for i in range(ns):
-        if sc[i] > ninf and lw[i] > mx:
+        if ka[i] == 0 and (kb[i] & detector_hi) == 0 and sc[i] > ninf and lw[i] > mx:
             mx = lw[i]
     if mx > ninf:
         sh = np.uint64(nd - 64)
         for i in range(ns):
-            if sc[i] > ninf:
+            if ka[i] == 0 and (kb[i] & detector_hi) == 0 and sc[i] > ninf:
                 out16[np.int64((kb[i] >> sh) & np.uint64(15))] += np.exp(lw[i] - mx)
     stats[0] = peak
     stats[1] = mx
 
 
 @njit(parallel=True, cache=True)
-def _mld_batch(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D, nd, leps, max_states, compact_every, nchunks,
+def _mld_batch(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D, nd, leps, merge_margin, max_states, compact_every, nchunks,
                out16, stats):
     n = D.shape[0]
     cap = 2 * max_states + 1
@@ -373,7 +410,7 @@ def _mld_batch(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, 
                         D0 |= np.uint64(1) << np.uint64(d)
                     else:
                         D1 |= np.uint64(1) << np.uint64(d - 64)
-            _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, max_states,
+            _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, merge_margin, max_states,
                       compact_every, ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16[s], stats[s])
 
 
@@ -383,7 +420,7 @@ def _run(g, detector_events, eps, max_states, compact_every):
     stats = np.zeros((len(D), 2))
     nchunks = max(1, min(len(D), 16 * numba.get_num_threads()))
     _mld_batch(g["c0"], g["c1"], g["m0"], g["m1"], g["cl0"], g["cl1"], g["lr"], g["v0"], g["v1"], g["hasv0"], g["cdet"], g["cv0"], g["cv1"], g["cw"], g["d1z"],
-               g["h0"], D, g["nd"], np.log(eps), max_states, compact_every, nchunks, out16, stats)
+               g["h0"], D, g["nd"], np.log(eps), g.get("merge_margin", 0.0), max_states, compact_every, nchunks, out16, stats)
     return out16, stats
 
 
