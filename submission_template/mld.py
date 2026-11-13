@@ -26,11 +26,26 @@ pass the threshold (about 1% per state and step) are looked up in the hash table
 of a child's cost-to-go is linear in the state's disagreeing detectors within the column, so it is a sum over a
 couple of bits of a precomputed table; dropped states are removed in periodic compactions.
 """
+import itertools
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
 import numpy as np
 import numba
-from numba import njit, prange
+from numba import njit
 
-from bp_osd import _ctz
+_DEBRUIJN = np.uint64(0x03F79D71B4CB0A89)
+_CTZ_TABLE = np.zeros(64, np.int64)
+with np.errstate(over="ignore"):  # the multiplication is meant to wrap around
+    for _i in range(64):
+        _CTZ_TABLE[((np.uint64(1) << np.uint64(_i)) * _DEBRUIJN) >> np.uint64(58)] = _i
+
+
+@njit(cache=True)
+def _ctz(x):
+    """Index of the lowest set bit of a non-zero uint64 (de Bruijn multiplication)."""
+    return _CTZ_TABLE[((x & (~x + np.uint64(1))) * _DEBRUIJN) >> np.uint64(58)]
+
 
 VEC_MIN = 24  # state count from which a step uses the vectorisable passes
 
@@ -344,47 +359,86 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
     stats[1] = mx
 
 
-@njit(parallel=True, cache=True)
-def _mld_batch(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D, nd, leps, max_states, compact_every, nchunks,
-               out16, stats):
-    n = D.shape[0]
-    cap = 2 * max_states + 1
-    tsize = 64
-    while tsize < 4 * cap:
-        tsize *= 2
-    for ch in prange(nchunks):
-        ka = np.empty(cap, np.uint64)
-        kb = np.empty(cap, np.uint64)
-        lw = np.empty(cap)
-        sc = np.empty(cap)
-        cka = np.empty(cap, np.uint64)
-        ckb = np.empty(cap, np.uint64)
-        clw = np.empty(cap)
-        csc = np.empty(cap)
-        cs = np.empty(cap)
-        ce = np.empty(cap)
-        table = np.empty(tsize, np.int64)
-        for s in range(ch * n // nchunks, (ch + 1) * n // nchunks):
-            D0 = np.uint64(0)
-            D1 = np.uint64(0)
-            for d in range(nd):
-                if D[s, d]:
-                    if d < 64:
-                        D0 |= np.uint64(1) << np.uint64(d)
-                    else:
-                        D1 |= np.uint64(1) << np.uint64(d - 64)
-            _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, max_states,
-                      compact_every, ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16[s], stats[s])
+@njit(nogil=True, cache=True)
+def _mld_range(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D, lo, hi, nd, leps, max_states, compact_every,
+               ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16, stats):
+    """Decode shots lo..hi-1 of D on the calling thread, without the GIL."""
+    for s in range(lo, hi):
+        D0 = np.uint64(0)
+        D1 = np.uint64(0)
+        for d in range(nd):
+            if D[s, d]:
+                if d < 64:
+                    D0 |= np.uint64(1) << np.uint64(d)
+                else:
+                    D1 |= np.uint64(1) << np.uint64(d - 64)
+        _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, max_states,
+                  compact_every, ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16[s], stats[s])
+
+
+# The shots are decoded by a pool of Python threads that call the kernel without the GIL. Each thread takes the next
+# small batch of shots when it is free, so no thread is left waiting while another still has a pile of hard shots
+# (numba's prange hands every thread one fixed slice of the shots, and the hard shots are not spread evenly).
+NUM_THREADS = max(1, int(numba.config.NUMBA_NUM_THREADS))
+_POOL = ThreadPoolExecutor(NUM_THREADS)
+_LOCAL = threading.local()
+
+
+def _scratch(max_states):
+    """This thread's scratch arrays for the kernel."""
+    cache = _LOCAL.__dict__.setdefault("scratch", {})
+    if max_states not in cache:
+        cap = 2 * max_states + 1
+        tsize = 64
+        while tsize < 4 * cap:
+            tsize *= 2
+        cache[max_states] = tuple(np.empty(cap, t) for t in (np.uint64, np.uint64, np.float64, np.float64, np.uint64, np.uint64,
+                                                             np.float64, np.float64, np.float64, np.float64)) + (np.empty(tsize, np.int64),)
+    return cache[max_states]
+
+
+def _worker(tasks, counter):
+    while True:
+        i = next(counter)  # atomic: each task is taken by exactly one thread
+        if i >= len(tasks):
+            return
+        g, D, lo, hi, leps, max_states, compact_every, out16, stats = tasks[i]
+        _mld_range(g["c0"], g["c1"], g["m0"], g["m1"], g["cl0"], g["cl1"], g["lr"], g["v0"], g["v1"], g["hasv0"], g["cdet"], g["cv0"], g["cv1"],
+                   g["cw"], g["d1z"], g["h0"], D, lo, hi, g["nd"], leps, max_states, compact_every, *_scratch(max_states), out16, stats)
+
+
+def _run_many(sweeps, compact_every=16):
+    """sweeps: list of (g, detector_events, eps, max_states). Returns a list of (out16, stats), one per sweep. The
+    batches of all sweeps share the thread pool; the result does not depend on the number of threads."""
+    results, per_sweep = [], []
+    for g, detector_events, eps, max_states in sweeps:
+        D = np.ascontiguousarray(np.asarray(detector_events, dtype=np.bool_))
+        out16 = np.zeros((len(D), 16))
+        stats = np.zeros((len(D), 2))
+        results.append((out16, stats))
+        step = max(1, min(64, len(D) // (32 * NUM_THREADS)))
+        per_sweep.append([(g, D, lo, min(lo + step, len(D)), np.log(eps), max_states, compact_every, out16, stats)
+                          for lo in range(0, len(D), step)])
+    tasks = [t for group in itertools.zip_longest(*per_sweep) for t in group if t is not None]
+    counter = itertools.count()
+    futures = [_POOL.submit(_worker, tasks, counter) for _ in range(min(NUM_THREADS, len(tasks)))]
+    for f in futures:
+        f.result()
+    return results
 
 
 def _run(g, detector_events, eps, max_states, compact_every):
-    D = np.ascontiguousarray(np.asarray(detector_events, dtype=np.bool_))
-    out16 = np.zeros((len(D), 16))
-    stats = np.zeros((len(D), 2))
-    nchunks = max(1, min(len(D), 16 * numba.get_num_threads()))
-    _mld_batch(g["c0"], g["c1"], g["m0"], g["m1"], g["cl0"], g["cl1"], g["lr"], g["v0"], g["v1"], g["hasv0"], g["cdet"], g["cv0"], g["cv1"], g["cw"], g["d1z"],
-               g["h0"], D, g["nd"], np.log(eps), max_states, compact_every, nchunks, out16, stats)
-    return out16, stats
+    return _run_many([(g, detector_events, eps, max_states)], compact_every)[0]
+
+
+def _logw(out16, stats):
+    with np.errstate(divide="ignore"):
+        return np.log(out16) + np.where(np.isfinite(stats[:, 1:2]), stats[:, 1:2], 0.0)
+
+
+def mld_logw_many(sweeps):
+    """mld_logw for several sweeps (g, detector_events, eps, max_states) at once, sharing the thread pool."""
+    return [_logw(out16, stats) for out16, stats in _run_many(sweeps)]
 
 
 def mld_classp(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16):
@@ -402,9 +456,7 @@ def mld_logw(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16)
     and pruning only ever removes terms from the sum. Each entry is therefore a lower bound on the exact weight, so
     the results of different sweeps (another mechanism order, another threshold) can be combined by taking the
     largest value per outcome."""
-    out16, stats = _run(g, detector_events, eps, max_states, compact_every)
-    with np.errstate(divide="ignore"):
-        return np.log(out16) + np.where(np.isfinite(stats[:, 1:2]), stats[:, 1:2], 0.0)
+    return _logw(*_run(g, detector_events, eps, max_states, compact_every))
 
 
 def marginals_logw(logw):

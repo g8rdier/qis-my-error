@@ -6,37 +6,74 @@ calls (see "Handing in your code" in the README). Importing the decoder, and any
 not timed.
 
 Every shot is decoded by the pruned dynamic programme in mld.py, which computes the weight of each of the 16 logical
-outcomes and predicts each logical bit by its marginal (the optimal decision for the per-bit LER). It runs in
-passes: the first decodes every shot, and each later pass re-decodes the shots where some logical bit is still
-uncertain.
+outcomes and predicts each logical bit by its marginal (the optimal decision for the per-bit LER).
 
-Pruning only removes terms from an outcome's weight, so every pass gives a lower bound on it, and passes are
-combined by keeping the largest bound per outcome. Passes alternate between sweeping the error mechanisms forward
-and backward in time: the two directions prune different error vectors, so their combination is closer to the exact
-weights than one sweep with a tighter threshold that costs the same.
+Pruning only removes terms from an outcome's weight, so every sweep gives a lower bound on it, and sweeps are
+combined by keeping the largest bound per outcome. A sweep over the error mechanisms forward in time and one
+backward in time prune different error vectors, so their combination is closer to the exact weights than one sweep
+with a tighter threshold that costs the same.
 
-At import we rebuild the competition's two circuits (5 rounds, SI1000 p = 0.002), precompute the decoder tables for
-each and compile the numba kernel, so decode() only has to look the tables up by a hash of the circuit text. A
-circuit that is not one of these is handled too, by building its tables inside decode().
+Their disagreement also shows where the pruning mattered. Every shot gets a forward and a backward sweep with a
+loose threshold. A shot is swept again in both directions with a tighter threshold if the sweeps (or their
+combination) differ on some logical bit's probability by an amount that matters for the decision, that is, relative
+to how far that probability is from 1/2; this is repeated once more with a much tighter threshold. About 14% of the
+shots get the second pair of sweeps and 2.5% the third. Against an exact (unpruned) decoder the remaining loss is
+below one bit in a million.
+
+At import we precompute the decoder tables for the competition's two circuits (circuits/, copied from the Data tab)
+and compile the numba kernel, so decode() only has to look the tables up by a hash of the circuit text. A circuit
+that is not one of these is handled too, by building its tables inside decode(). The folder needs nothing outside
+itself and requirements.txt.
 """
 import hashlib
+import os
 
 import numpy as np
 import stim
-from hackathon_2026 import apply_circuit_noise, create_circuit, problem_info
 
-from mld import build_mld, marginals_logw, mld_logw
+from mld import build_mld, marginals_logw, mld_logw, mld_logw_many
 
-ROUNDS, NOISE = 5, 0.002
-# passes (direction, eps, max_states, thr): the first pass decodes every shot; each later pass re-decodes the shots
-# where some logical bit still has a probability between thr and 1 - thr. Direction 0 sweeps the mechanisms forward
-# in time, 1 backward.
-# The second pass used to be (1, 3e-5, 4096, 0.15). This cheaper one is ~1/3 faster overall with no significant
-# accuracy difference: compare_settings.py on 100k + 50k fresh shots per basis (seeds 1, 2) gave 349 bits only the
-# old setting got right vs 321 only this one got right (sign test: not significant).
-MLD_TIERS = [(0, 1e-4, 1024, 0.0), (1, 1e-4, 2048, 0.15)]
-MLD_COMPACT_EVERY = 32
-MLD_HEXP = 0.5
+HERE = os.path.dirname(os.path.abspath(__file__))
+# stages (sweeps, thr): each sweep is (direction, eps, max_states), direction 0 forward in time, 1 backward. The
+# first stage decodes every shot. A shot goes on to the next stage if, for some logical bit, the probabilities from
+# the stage's sweeps, the combined result before the stage and the combined result after it differ by more than
+# thr * (distance of the combined probability from 1/2 + MARGIN_FLOOR): the tighter sweeps go where the pruning
+# error could still change a decision.
+MLD_STAGES = [
+    (((0, 3e-4, 4096), (1, 3e-4, 4096)), 0.02),
+    (((0, 3e-5, 4096), (1, 3e-5, 4096)), 0.3),
+    (((0, 3e-6, 8192), (1, 3e-6, 8192)), 0.0),
+]
+MARGIN_FLOOR = 0.01
+
+
+def problem_info(circuit: stim.Circuit):
+    """H (detectors x mechanisms), L (observables x mechanisms) and p (probability of each mechanism). Error
+    mechanisms with the same detectors and observables are merged into one column."""
+    dem = circuit.detector_error_model()
+    columns, priors = {}, []
+    for instruction in dem.flattened():
+        if instruction.type != "error":
+            continue
+        detectors, observables = set(), set()
+        for target in instruction.targets_copy():
+            if target.is_relative_detector_id():
+                detectors ^= {target.val}
+            elif target.is_logical_observable_id():
+                observables ^= {target.val}
+        key, p = (frozenset(detectors), frozenset(observables)), instruction.args_copy()[0]
+        if key in columns:  # same effect as an earlier mechanism: either one fires, not both
+            q = priors[columns[key]]
+            priors[columns[key]] = q * (1 - p) + p * (1 - q)
+        else:
+            columns[key] = len(priors)
+            priors.append(p)
+    H = np.zeros((dem.num_detectors, len(priors)), dtype=np.uint8)
+    L = np.zeros((dem.num_observables, len(priors)), dtype=np.uint8)
+    for (detectors, observables), j in columns.items():
+        H[list(detectors), j] = 1
+        L[list(observables), j] = 1
+    return H, L, np.array(priors)
 
 
 def _key(circuit: stim.Circuit) -> str:
@@ -44,56 +81,38 @@ def _key(circuit: stim.Circuit) -> str:
 
 
 def _tables(circuit: stim.Circuit):
-    m = problem_info(circuit)
+    H, L, p = problem_info(circuit)
     # backward sweep: the same decoder on the detectors in reverse order
-    return (
-        build_mld(m["H"], m["L"], m["p"], hexp=MLD_HEXP),
-        build_mld(m["H"][::-1].copy(), m["L"], m["p"], hexp=MLD_HEXP),
-    )
+    return build_mld(H, L, p), build_mld(H[::-1].copy(), L, p)
 
 
 _TABLES = {}
 for _basis in "XZ":
-    _c = apply_circuit_noise(create_circuit(_basis, ROUNDS), p=NOISE)
+    _c = stim.Circuit.from_file(os.path.join(HERE, "circuits", f"{_basis}_circuit.stim"))
     _TABLES[_key(_c)] = _tables(_c)
 for _g in _TABLES.values():  # compile (or load from numba's cache) the kernel before the clock starts
-    for _dir, _eps, _max_states, _ in MLD_TIERS:
-        mld_logw(
-            _g[_dir],
-            np.zeros((2, _g[_dir]["nd"]), bool),
-            eps=_eps,
-            max_states=_max_states,
-            compact_every=MLD_COMPACT_EVERY,
-        )
+    for _sweeps, _ in MLD_STAGES:
+        for _dir, _eps, _max_states in _sweeps:
+            mld_logw(_g[_dir], np.zeros((2, _g[_dir]["nd"]), bool), eps=_eps, max_states=_max_states)
 
 
 def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
     """Per-bit probability of a logical flip, shape (shots, 4)."""
     D = np.asarray(detector_events, dtype=bool)
     events = (np.ascontiguousarray(D), np.ascontiguousarray(D[:, ::-1]))
-    logw = None
-    for direction, eps, max_states, thr in MLD_TIERS:
-        if logw is None:
-            logw = mld_logw(
-                g[direction],
-                events[direction],
-                eps=eps,
-                max_states=max_states,
-                compact_every=MLD_COMPACT_EVERY,
-            )
-            continue
-        sel = np.flatnonzero((np.abs(marginals_logw(logw) - 0.5) < 0.5 - thr).any(1))
-        if len(sel):
-            logw[sel] = np.maximum(
-                logw[sel],
-                mld_logw(
-                    g[direction],
-                    events[direction][sel],
-                    eps=eps,
-                    max_states=max_states,
-                    compact_every=MLD_COMPACT_EVERY,
-                ),
-            )
+    logw = np.full((len(D), 16), -np.inf)  # best lower bound so far on the log weight of each outcome
+    sel = np.arange(len(D))
+    for stage, (sweeps, thr) in enumerate(MLD_STAGES):
+        if len(sel) == 0:
+            break
+        views = [marginals_logw(logw[sel])] if stage else []
+        results = mld_logw_many([(g[direction], events[direction][sel], eps, max_states) for direction, eps, max_states in sweeps])
+        for lw in results:
+            views.append(marginals_logw(lw))
+            logw[sel] = np.maximum(logw[sel], lw)
+        views.append(marginals_logw(logw[sel]))
+        spread = np.max(views, 0) - np.min(views, 0)
+        sel = sel[(spread / (np.abs(views[-1] - 0.5) + MARGIN_FLOOR)).max(1) > thr]
     return marginals_logw(logw)
 
 
@@ -109,13 +128,3 @@ def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:
     events = np.asarray(detector_events, dtype=bool)
     assert events.ndim == 2 and events.shape[1] == g[0]["nd"]
     return (decode_marginals(g, events) > 0.5).astype(np.uint8)
-    #out, found = lookup(circuit, detector_events)
-    ## the table is only trusted for the easiest shots; BP + OSD is more accurate on everything else
-    #miss = ~(found & (np.asarray(detector_events).sum(1) <= LUT_MAX_FIRED))
-    #if miss.any():
-        #m = problem_info(circuit)
-        #graph = build_graph(m["H"], m["L"], m["p"])
-        #bposd_params = {'max_iter': 8, 'alpha': 0.6, 'always_osd': True, 'damping': 0.1, 'avg_post': True, 'lam': 400, 'lam2': 100, 'coset': 2, 'temp': 0.85, 'refine_thr': 0.3, 'refine_lam': 1000, 'refine_lam2': 300
-                        #,'return_stats': False, 'return_classp': False}
-        #out[miss] = decode_bp_osd(graph, np.asarray(detector_events)[miss], **bposd_params)
-    #return out

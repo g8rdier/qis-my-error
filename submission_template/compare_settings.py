@@ -15,11 +15,12 @@ shots:
   slows down for any other reason) affects both equally. Only decoding is timed, as in run_local.py.
 
 A setting is a Python dict literal with any of the keys tiers, hexp and compact_every; missing keys take the values in
-decoder.py. tiers is a list of (direction, eps, max_states, thr) passes as in decoder.MLD_TIERS.
+decoder_two_pass.py (the two-pass decoder these settings belong to; decoder.py now uses stages with a different
+trigger). tiers is a list of (direction, eps, max_states, thr) passes as in decoder_two_pass.MLD_TIERS.
 
 Run from the repository root, for example:
 
-    # is a cheaper second pass as accurate as the current settings? (A defaults to decoder.py)
+    # is a cheaper second pass as accurate as the current settings? (A defaults to decoder_two_pass.py)
     python submission_template/compare_settings.py --b "{'tiers': [(0, 1e-4, 1024, 0), (1, 1e-4, 2048, 0.15)]}"
 
     # same, on hard shots only (>= 10 detectors fired), against the near-exact reference
@@ -41,7 +42,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
 parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-parser.add_argument("--a", default="{}", help="setting A as a dict literal (default: {} = the values in decoder.py)")
+parser.add_argument("--a", default="{}", help="setting A as a dict literal (default: {} = the values in decoder_two_pass.py)")
 parser.add_argument("--b", required=True, help="setting B as a dict literal, e.g. \"{'hexp': 0.6}\"")
 parser.add_argument("--shots", type=int, default=100_000, help="shots per basis (default: 100000)")
 parser.add_argument("--seed", type=int, default=1, help="sampling seed; use a new one to confirm a result (default: 1)")
@@ -61,7 +62,7 @@ import numpy as np  # noqa: E402
 import stim  # noqa: E402
 
 sys.path.insert(0, HERE)
-import decoder  # noqa: E402
+import decoder_two_pass as decoder  # noqa: E402
 from hackathon_2026 import problem_info  # noqa: E402
 from mld import build_mld, marginals_logw, mld_logw  # noqa: E402
 
