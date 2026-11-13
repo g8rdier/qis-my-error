@@ -203,11 +203,17 @@ def verify(data, prediction):
 
 
 def manifest():
-    """Fingerprint this frozen release; this is integrity metadata, not fitting."""
+    """Normalize release text to LF and fingerprint it; no fitting occurs."""
     output = HERE / "manifest.json"
     if output.exists():
         raise FileExistsError(output)
     files = sorted(p for p in HERE.iterdir() if p.is_file() and p != output)
+    for path in files:
+        if path.suffix in (".py", ".json", ".md", ".txt", ".csv") or path.name in ("LICENSE", ".gitattributes"):
+            before = path.read_bytes()
+            normalized = before.replace(b"\r\n", b"\n")
+            if normalized != before:
+                path.write_bytes(normalized)
     report = {"sha256": {p.name: sha256(p) for p in files}}
     output.write_text(json.dumps(report, indent=2), encoding="utf-8", newline="\n")
     print(f"Recorded {len(files)} release file checksums.")
