@@ -12,7 +12,8 @@ predict the logical flips L e (mod 2).
    BP posterior, pick the first linearly independent set of columns of H (Gaussian elimination over GF(2)), and
    solve H e = D using only those columns. This always gives an e that explains D. The combination sweep (lam,
    lam2) also tries the most likely columns outside that set, singly and in pairs, and picks the logical outcome
-   with the largest total probability over all candidates (coset=True).
+   with the largest total probability over all candidates (coset=True). Shots where some logical bit is still
+   uncertain (probability between refine_thr and 1 - refine_thr) are decoded again with a larger sweep.
 
 Columns of H have 70 bits, stored as two uint64 words. Shots are decoded in parallel with numba.
 """
@@ -60,7 +61,7 @@ def _bit(x0, x1, r):
 
 
 @njit(cache=True)
-def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset, cp):
+def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset, cp, temp=1.0):
     """Ordered-statistics decoding.
 
     Columns of H are taken in order of BP posterior (most likely first); the first m independent ones form the
@@ -199,7 +200,7 @@ def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset, cp):
         dlog[a] = dl
         c = base_cost + dc
         lg = base_log ^ dl
-        prob[lg] += np.exp(base_cost - c)
+        prob[lg] += np.exp(temp * (base_cost - c))
         if c < best_cost:
             best_cost = c
             best_log = lg
@@ -215,7 +216,7 @@ def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset, cp):
                     x &= x - np.uint64(1)
                     c -= 2.0 * sgnc[r]
             lg = base_log ^ dlog[a] ^ dlog[bb]
-            prob[lg] += np.exp(base_cost - c)
+            prob[lg] += np.exp(temp * (base_cost - c))
             if c < best_cost:
                 best_cost = c
                 best_log = lg
@@ -240,7 +241,7 @@ def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset, cp):
 
 @njit(parallel=True, cache=True)
 def decode_batch(D, ec, ev, check_ptr, cols, logical, llr0, max_iter, alpha, always_osd, damping, avg_post, nchunks,
-                 lam, lam2, coset, stats, classp):
+                 lam, lam2, coset, stats, classp, temp):
     """D: (shots, m) uint8. Returns (shots,) uint8 logical masks. stats[s] = BP iterations used, or -1 if OSD ran.
 
     Flooding min-sum where the error->detector message is never stored: it is post[j] - c2v[e], the posterior of
@@ -336,13 +337,14 @@ def decode_batch(D, ec, ev, check_ptr, cols, logical, llr0, max_iter, alpha, alw
                             D0 |= np.uint64(1) << np.uint64(i)
                         else:
                             D1 |= np.uint64(1) << np.uint64(i - 64)
-                out[s] = _osd(acc if avg_post else post, llr0, cols, logical, D0, D1, m, lam, lam2, coset, classp[s])
+                out[s] = _osd(acc if avg_post else post, llr0, cols, logical, D0, D1, m, lam, lam2, coset, classp[s], temp)
                 stats[s] = -1
     return out
 
 
 def decode_bp_osd(graph, detector_events, max_iter=3, alpha=0.8, always_osd=True, damping=0.5, avg_post=True,
-                  lam=400, lam2=100, coset=2, return_stats=False, return_classp=False):
+                  lam=400, lam2=100, coset=2, temp=1.0, refine_thr=0.3, refine_lam=1000, refine_lam2=300,
+                  return_stats=False, return_classp=False):
     D = np.ascontiguousarray(detector_events, dtype=np.uint8)
     stats = np.zeros(len(D), np.int64)
     classp = np.zeros((len(D), 16), np.float32)  # P(4-bit logical outcome) from the OSD candidates
@@ -350,7 +352,20 @@ def decode_bp_osd(graph, detector_events, max_iter=3, alpha=0.8, always_osd=True
     coset = int(coset)
     masks = decode_batch(D, graph["ec"], graph["ev"], graph["check_ptr"], graph["cols"], graph["logical"],
                          graph["llr0"], max_iter, alpha, always_osd, damping, avg_post, nchunks,
-                         lam, lam2, coset, stats, classp)
+                         lam, lam2, coset, stats, classp, temp)
+    if refine_thr > 0:
+        # second stage: shots where some logical bit is still uncertain get a larger combination sweep
+        bits = ((np.arange(16)[:, None] >> np.arange(4)) & 1).astype(np.float32)
+        marg = classp @ bits
+        unc = np.flatnonzero((np.abs(marg - 0.5) < 0.5 - refine_thr).any(1))
+        if len(unc):
+            stats2 = np.zeros(len(unc), np.int64)
+            classp2 = np.zeros((len(unc), 16), np.float32)
+            nch2 = max(1, min(len(unc), 8 * numba.get_num_threads()))
+            masks[unc] = decode_batch(D[unc], graph["ec"], graph["ev"], graph["check_ptr"], graph["cols"],
+                                      graph["logical"], graph["llr0"], max_iter, alpha, always_osd, damping, avg_post,
+                                      nch2, refine_lam, refine_lam2, coset, stats2, classp2, temp)
+            classp[unc] = classp2
     out = np.unpackbits(masks[:, None], axis=1, count=4, bitorder="little")
     if return_classp:
         return out, classp
