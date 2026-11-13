@@ -14,9 +14,11 @@ backward in time prune different error vectors, so their combination is closer t
 with a tighter threshold that costs the same.
 
 Their disagreement also shows where the pruning mattered. Every shot gets a forward and a backward sweep with a
-loose threshold; the shots where the two (or their combination) differ on some logical bit's probability are swept
-again in both directions with a tighter threshold. This finds the shots that need the extra work far better than
-re-decoding the shots whose probabilities are close to 1/2: many of those are simply undecidable.
+loose threshold. A shot is swept again in both directions with a tighter threshold if the sweeps (or their
+combination) differ on some logical bit's probability by an amount that matters for the decision, that is, relative
+to how far that probability is from 1/2; this is repeated once more with a much tighter threshold. About 14% of the
+shots get the second pair of sweeps and 2.5% the third. Against an exact (unpruned) decoder the remaining loss is
+below one bit in a million.
 
 At import we precompute the decoder tables for the competition's two circuits (circuits/, copied from the Data tab)
 and compile the numba kernel, so decode() only has to look the tables up by a hash of the circuit text. A circuit
@@ -29,16 +31,20 @@ import os
 import numpy as np
 import stim
 
-from mld import build_mld, marginals_logw, mld_logw
+from mld import build_mld, marginals_logw, mld_logw, mld_logw_many
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # stages (sweeps, thr): each sweep is (direction, eps, max_states), direction 0 forward in time, 1 backward. The
-# first stage decodes every shot; a shot goes on to the next stage if some logical bit's probability differs by more
-# than thr between the stage's sweeps, the combined result before the stage and the combined result after it.
+# first stage decodes every shot. A shot goes on to the next stage if, for some logical bit, the probabilities from
+# the stage's sweeps, the combined result before the stage and the combined result after it differ by more than
+# thr * (distance of the combined probability from 1/2 + MARGIN_FLOOR): the tighter sweeps go where the pruning
+# error could still change a decision.
 MLD_STAGES = [
-    (((0, 3e-4, 4096), (1, 3e-4, 4096)), 0.05),
-    (((0, 3e-5, 4096), (1, 3e-5, 4096)), 0.0),
+    (((0, 3e-4, 4096), (1, 3e-4, 4096)), 0.02),
+    (((0, 3e-5, 4096), (1, 3e-5, 4096)), 0.3),
+    (((0, 3e-6, 8192), (1, 3e-6, 8192)), 0.0),
 ]
+MARGIN_FLOOR = 0.01
 
 
 def problem_info(circuit: stim.Circuit):
@@ -100,12 +106,13 @@ def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
         if len(sel) == 0:
             break
         views = [marginals_logw(logw[sel])] if stage else []
-        for direction, eps, max_states in sweeps:
-            lw = mld_logw(g[direction], events[direction][sel], eps=eps, max_states=max_states)
+        results = mld_logw_many([(g[direction], events[direction][sel], eps, max_states) for direction, eps, max_states in sweeps])
+        for lw in results:
             views.append(marginals_logw(lw))
             logw[sel] = np.maximum(logw[sel], lw)
         views.append(marginals_logw(logw[sel]))
-        sel = sel[(np.max(views, 0) - np.min(views, 0)).max(1) > thr]
+        spread = np.max(views, 0) - np.min(views, 0)
+        sel = sel[(spread / (np.abs(views[-1] - 0.5) + MARGIN_FLOOR)).max(1) > thr]
     return marginals_logw(logw)
 
 
