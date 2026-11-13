@@ -47,13 +47,13 @@ for _i in range(64):
     _CTZ_TABLE[((np.uint64(1) << np.uint64(_i)) * _DEBRUIJN) >> np.uint64(58)] = _i
 
 
-@njit(cache=True, inline="always")
+@njit(cache=True)
 def _ctz(x):
     """Index of the lowest set bit of a non-zero uint64 (de Bruijn multiplication)."""
     return _CTZ_TABLE[((x & (~x + np.uint64(1))) * _DEBRUIJN) >> np.uint64(58)]
 
 
-@njit(cache=True, inline="always")
+@njit(cache=True)
 def _bit(x0, x1, r):
     one = np.uint64(1)
     return ((x0 >> np.uint64(r)) & one) if r < 64 else ((x1 >> np.uint64(r - 64)) & one)
@@ -70,65 +70,93 @@ def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset, cp):
     ratio). Returns the logical mask of the cheapest candidate, or, with coset=True, the logical mask whose
     candidates have the largest total probability.
     """
-    order = np.argsort(post)
-    piv = np.empty(m, np.int64)
-    b0 = np.empty(m, np.uint64)
+    b0 = np.empty(m, np.uint64)  # basis, kept fully reduced: each vector has exactly one pivot bit set
     b1 = np.empty(m, np.uint64)
     c0 = np.empty(m, np.uint64)  # which selected columns make up each basis vector (bitmask over <= 128 slots)
     c1 = np.empty(m, np.uint64)
     sel = np.empty(m, np.int64)
+    kidx = np.empty(128, np.int64)  # basis vector whose pivot is this detector bit
     nl = max(lam, 1)
     npj = np.empty(nl, np.int64)  # most likely columns outside S, and their expansion in terms of S
     nk0 = np.empty(nl, np.uint64)
     nk1 = np.empty(nl, np.uint64)
-    nn = 0
-    rank = 0
-    one = np.uint64(1)
-    for t in range(order.shape[0]):
+    # Only the first ~m + lam columns in likelihood order are ever used, so sort just the most likely K of them;
+    # in the rare case that is not enough, redo the elimination with a full sort.
+    n = post.shape[0]
+    K = min(n, m + lam + 128)
+    for attempt in range(2):
+        if K < n and attempt == 0:
+            thr = np.partition(post.copy(), K - 1)[K - 1]
+            cand = np.nonzero(post <= thr)[0]
+            order = cand[np.argsort(post[cand])]
+        else:
+            order = np.argsort(post)
+        pm0 = np.uint64(0)
+        pm1 = np.uint64(0)
+        nn = 0
+        rank = 0
+        for t in range(order.shape[0]):
+            if rank == m and nn >= lam:
+                break
+            j = order[t]
+            v0 = cols[j, 0]
+            v1 = cols[j, 1]
+            k0 = np.uint64(0)
+            k1 = np.uint64(0)
+            for w in range(2):  # only the pivot bits this column touches need work
+                x = (v0 & pm0) if w == 0 else (v1 & pm1)
+                while x:
+                    k = kidx[_ctz(x) + 64 * w]
+                    x &= x - np.uint64(1)
+                    v0 ^= b0[k]
+                    v1 ^= b1[k]
+                    k0 ^= c0[k]
+                    k1 ^= c1[k]
+            if v0 == 0 and v1 == 0:
+                if nn < lam:  # column j = XOR of the selected columns in k
+                    npj[nn] = j
+                    nk0[nn] = k0
+                    nk1[nn] = k1
+                    nn += 1
+                continue
+            # new pivot: lowest set bit of the reduced column (never an existing pivot)
+            if v0:
+                pk = _ctz(v0)
+                pb0 = np.uint64(1) << np.uint64(pk)
+                pb1 = np.uint64(0)
+            else:
+                pk = 64 + _ctz(v1)
+                pb0 = np.uint64(0)
+                pb1 = np.uint64(1) << np.uint64(pk - 64)
+            if rank < 64:
+                k0 ^= np.uint64(1) << np.uint64(rank)
+            else:
+                k1 ^= np.uint64(1) << np.uint64(rank - 64)
+            for k in range(rank):  # clear the new pivot from the other basis vectors
+                if (b0[k] & pb0) | (b1[k] & pb1):
+                    b0[k] ^= v0
+                    b1[k] ^= v1
+                    c0[k] ^= k0
+                    c1[k] ^= k1
+            b0[rank] = v0
+            b1[rank] = v1
+            c0[rank] = k0
+            c1[rank] = k1
+            sel[rank] = j
+            kidx[pk] = rank
+            pm0 |= pb0
+            pm1 |= pb1
+            rank += 1
         if rank == m and nn >= lam:
             break
-        j = order[t]
-        v0 = cols[j, 0]
-        v1 = cols[j, 1]
-        k0 = np.uint64(0)
-        k1 = np.uint64(0)
-        for k in range(rank):
-            if _bit(v0, v1, piv[k]):
-                v0 ^= b0[k]
-                v1 ^= b1[k]
-                k0 ^= c0[k]
-                k1 ^= c1[k]
-        if v0 == 0 and v1 == 0:
-            if nn < lam:  # column j = XOR of the selected columns in k
-                npj[nn] = j
-                nk0[nn] = k0
-                nk1[nn] = k1
-                nn += 1
-            continue
-        # new pivot: lowest set bit of the reduced column
-        pk = 0
-        while not _bit(v0, v1, pk):
-            pk += 1
-        if rank < 64:
-            k0 ^= one << np.uint64(rank)
-        else:
-            k1 ^= one << np.uint64(rank - 64)
-        piv[rank] = pk
-        b0[rank] = v0
-        b1[rank] = v1
-        c0[rank] = k0
-        c1[rank] = k1
-        sel[rank] = j
-        rank += 1
-    # reduce the syndrome in insertion order; later basis vectors never contain earlier pivots
-    s0 = D0
-    s1 = D1
+    # solve: with a fully reduced basis, D is the XOR of the basis vectors at its pivot bits
     kd0 = np.uint64(0)
     kd1 = np.uint64(0)
-    for k in range(rank):
-        if _bit(s0, s1, piv[k]):
-            s0 ^= b0[k]
-            s1 ^= b1[k]
+    for w in range(2):
+        x = (D0 & pm0) if w == 0 else (D1 & pm1)
+        while x:
+            k = kidx[_ctz(x) + 64 * w]
+            x &= x - np.uint64(1)
             kd0 ^= c0[k]
             kd1 ^= c1[k]
     if lam == 0 and coset == 0:
