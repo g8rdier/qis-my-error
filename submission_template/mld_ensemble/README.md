@@ -14,9 +14,13 @@ and detector permutations. Generating extra shots does not fit new parameters.
 - Settings selected using 66,000 development shots.
 - Earlier independent evaluation: **500,000 shots, LER 0.033548**.
 - New release evaluation: **2,000,000 newly generated shots** (1M/basis,
-  seeds 1086100/1086101); detailed results in `validation.json`.
+  seeds 1086100/1086101): **LER 0.03364375**, shot-level 95% interval
+  **0.03345966–0.03382784**. Detailed results: `validation.json`.
 - Supplied labelled `data/train` reference: **LER 0.033860** on 200,000 shots.
 - No test labels or leaderboard feedback are used.
+
+This folder is about **4.1 MB**, mostly the requested 4 MB prediction CSV.
+All eight tests pass; exported predictions match the research model exactly.
 
 ## How it works
 
@@ -71,3 +75,5 @@ Use a **new** data output directory; `generate_data.py` wipes existing files.
 `build` can also take `--circuits data/train`. It rebuilds the small physics
 asset, not a fitted model. Tools refuse to overwrite existing outputs. Pin the
 versions in `requirements.txt` when reproducing samples and assets.
+For a new release, rerun validation and prediction, update `model.json`, then
+run `prepare.py manifest` in a fresh release folder. Do not mix versioned assets.
