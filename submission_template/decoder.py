@@ -21,6 +21,7 @@ circuit that is not one of these is handled too, by building its tables inside d
 """
 import hashlib
 from re import search
+from typing_extensions import runtime
 
 import numpy as np
 import stim
@@ -32,10 +33,12 @@ ROUNDS, NOISE = 5, 0.002
 # passes (direction, eps, max_states, thr): the first pass decodes every shot; each later pass re-decodes the shots
 # where some logical bit still has a probability between thr and 1 - thr. Direction 0 sweeps the mechanisms forward
 # in time, 1 backward.
-MLD_TIERS = [(0, 6.666666666666667e-5, 1792, 0.0), (1, 3e-5, 3072, 0.1)]
-MLD_COMPACT_EVERY = 32
-MLD_HEXP = 0.6
-
+MLD_TIERS = {
+    "X": ((0, 4.4444444444444447e-05, 2816, 0.0), (1, 3e-05, 3328, 0.125)),
+    "Z": ((0, 0.0001, 2816, 0.0), (1, 2e-05, 3072, 0.125)),
+}
+MLD_COMPACT_EVERY = {"X": 32, "Z": 32}
+MLD_HEXP = {"X": 0.4, "Z": 0.6}
 
 
 
@@ -43,43 +46,43 @@ def _key(circuit: stim.Circuit) -> str:
     return hashlib.sha256(str(circuit).encode()).hexdigest()
 
 
-def _tables(circuit: stim.Circuit):
+def _tables(circuit: stim.Circuit, basis: str):
     m = problem_info(circuit)
     # backward sweep: the same decoder on the detectors in reverse order
     return (
-        build_mld(m["H"], m["L"], m["p"], hexp=MLD_HEXP),
-        build_mld(m["H"][::-1].copy(), m["L"], m["p"], hexp=MLD_HEXP),
+        build_mld(m["H"], m["L"], m["p"], hexp=MLD_HEXP[basis]),
+        build_mld(m["H"][::-1].copy(), m["L"], m["p"], hexp=MLD_HEXP[basis]),
     )
 
 
 _TABLES = {}
 for _basis in "XZ":
     _c = apply_circuit_noise(create_circuit(_basis, ROUNDS), p=NOISE)
-    _TABLES[_key(_c)] = _tables(_c)
-for _g in _TABLES.values():  # compile (or load from numba's cache) the kernel before the clock starts
-    for _dir, _eps, _max_states, _ in MLD_TIERS:
+    _TABLES[_key(_c)] = (_tables(_c, _basis), _basis)
+for _g, _basis in _TABLES.values():  # compile (or load from numba's cache) the kernel before the clock starts
+    for _dir, _eps, _max_states, _ in MLD_TIERS[_basis]:
         mld_logw(
             _g[_dir],
             np.zeros((2, _g[_dir]["nd"]), bool),
             eps=_eps,
             max_states=_max_states,
-            compact_every=MLD_COMPACT_EVERY,
+            compact_every=MLD_COMPACT_EVERY[_basis],
         )
 
 
-def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
+def decode_marginals(g, detector_events: np.ndarray, basis: str = "X") -> np.ndarray:
     """Per-bit probability of a logical flip, shape (shots, 4)."""
     D = np.asarray(detector_events, dtype=bool)
     events = (np.ascontiguousarray(D), np.ascontiguousarray(D[:, ::-1]))
     logw = None
-    for direction, eps, max_states, thr in MLD_TIERS:
+    for direction, eps, max_states, thr in MLD_TIERS[basis]:
         if logw is None:
             logw = mld_logw(
                 g[direction],
                 events[direction],
                 eps=eps,
                 max_states=max_states,
-                compact_every=MLD_COMPACT_EVERY,
+                compact_every=MLD_COMPACT_EVERY[basis],
             )
             continue
         sel = np.flatnonzero((np.abs(marginals_logw(logw) - 0.5) < 0.5 - thr).any(1))
@@ -91,7 +94,7 @@ def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
                     events[direction][sel],
                     eps=eps,
                     max_states=max_states,
-                    compact_every=MLD_COMPACT_EVERY,
+                    compact_every=MLD_COMPACT_EVERY[basis],
                 ),
             )
     return marginals_logw(logw)
@@ -103,12 +106,15 @@ def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:
     detector_events: bool array of shape (shots, 70), columns D0 to D69.
     Returns a 0/1 array of shape (shots, 4), columns L0 to L3.
     """
-    g = _TABLES.get(_key(circuit))
-    if g is None:
-        g = _tables(circuit)
+    entry = _TABLES.get(_key(circuit))
+    if entry is None:
+        basis = "X"
+        g = _tables(circuit, basis)
+    else:
+        g, basis = entry
     events = np.asarray(detector_events, dtype=bool)
     assert events.ndim == 2 and events.shape[1] == g[0]["nd"]
-    return (decode_marginals(g, events) > 0.5).astype(np.uint8)
+    return (decode_marginals(g, events, basis) > 0.5).astype(np.uint8)
     #out, found = lookup(circuit, detector_events)
     ## the table is only trusted for the easiest shots; BP + OSD is more accurate on everything else
     #miss = ~(found & (np.asarray(detector_events).sum(1) <= LUT_MAX_FIRED))

@@ -31,6 +31,11 @@ backwards. Their absolute logical-outcome weights are combined by a maximum,
 then each output bit is selected by its marginal probability. This is an
 approximation, not a mathematically exact posterior or deduplicated union.
 
+The MLD tiers, heuristic exponent, and compaction interval are configured
+independently for the X and Z bases. The full-data optimization notebook
+(`submission_template/mld_full_data_optimization.ipynb`) searches those
+parameters separately and reports per-basis LERs.
+
 The model initializes at import. Calls are deterministic and CPU-parallel;
 48 judge threads are supported. Prior local timing was 48.98s / 200k shots on
 16 laptop threads, **not** a B200/48-core timing.
