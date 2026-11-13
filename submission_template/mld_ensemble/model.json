@@ -1,0 +1,39 @@
+{
+  "name": "MLD ensemble: chronological and fixed shuffled-check sweeps",
+  "format_version": 1,
+  "assets_sha256": "7d06df05521eb5abc70ddda9f0786491cdc904bee87f61f9d678241ba2b55c03",
+  "parameters": {
+    "heuristic_exponent": 0.5,
+    "compact_every": 32,
+    "tiers": [[0, 0.0001, 1024, 0.0], [1, 0.00003, 4096, 0.15]],
+    "combination": "maximum absolute weight per logical class, then bitwise marginals",
+    "detector_orders": ["chronological", "shuffled within rounds"],
+    "shuffle_seed": 42071,
+    "noise_probability": 0.002,
+    "rounds": 5
+  },
+  "training": {
+    "kind": "analytic circuit-probability decoder, not a fitted machine-learning model",
+    "fitted_training_shots": 0,
+    "pretrained_neural_weights": false,
+    "model_assets": "Frozen X/Z H, L, p, circuit texts and detector orders in assets.npz",
+    "development_shots": 66000,
+    "earlier_independent_audit_shots": 500000,
+    "earlier_independent_audit_ler": 0.033548
+  },
+  "validation": {
+    "release_validation": "pending: 2000000 newly generated shots",
+    "previous_train_csv_ler": 0.03386,
+    "new_data_generator": "data/generate_data.py",
+    "new_shots_per_basis": 1000000,
+    "new_seed_x": 1086100,
+    "new_seed_z": 1086101
+  },
+  "provenance": {
+    "base_kernel_revision": "962f067efdfe5ffd7dd8f43f1e4faf99ee42ac1e",
+    "base_kernel_sha256": "7a241f47146abb61d0ff9be06efb60bb16f45686e11bcbb57d052f221c0363d7",
+    "self_contained_kernel_sha256": "f92f26404f00665e27b975ebd434d2577159d0bb9d4edb9e56bb60096741e39e",
+    "changes": "Internal bit-index helper, residual-syndrome guard, omit unused classp wrapper; no model parameter changes",
+    "test_labels_used": false
+  }
+}
