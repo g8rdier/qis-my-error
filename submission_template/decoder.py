@@ -8,9 +8,10 @@ Everything that happens inside decode() counts towards your runtime, including b
 or loading trained weights. Training doesn't count, but it must be reproducible from the code you hand in.
 
 The tables in lut/ are made by build_lut.py from fresh seeded Stim shots: for each detector pattern seen in
-training, every logical bit is the majority vote over the shots with that pattern. Patterns not in the table go to
-the BP + OSD-0 decoder in bp_osd.py, built from the circuit's error model. The table and the error model are built
-on every call, so their cost is part of the measured runtime.
+training, every logical bit is the majority vote over the shots with that pattern. The table answers shots with at
+most LUT_MAX_FIRED detectors fired (where it is as accurate as BP + OSD and much faster); all other shots go to the
+BP + OSD decoder in bp_osd.py, built from the circuit's error model. The table and the error model are built on
+every call, so their cost is part of the measured runtime.
 """
 import hashlib
 import json
@@ -24,6 +25,7 @@ from bp_osd import build_graph, decode_bp_osd
 
 LUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lut")
 N_DET, N_OBS, KEY_BYTES = 70, 4, 9
+LUT_MAX_FIRED = 4  # use the lookup table only for shots with at most this many detectors fired
 
 
 def _load_table(circuit: stim.Circuit):
@@ -57,7 +59,8 @@ def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:
     Returns a 0/1 array of shape (shots, 4), columns L0 to L3.
     """
     out, found = lookup(circuit, detector_events)
-    miss = ~found
+    # the table is only trusted for the easiest shots; BP + OSD is more accurate on everything else
+    miss = ~(found & (np.asarray(detector_events).sum(1) <= LUT_MAX_FIRED))
     if miss.any():
         m = problem_info(circuit)
         graph = build_graph(m["H"], m["L"], m["p"])

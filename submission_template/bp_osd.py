@@ -41,6 +41,18 @@ def build_graph(H: np.ndarray, L: np.ndarray, p: np.ndarray):
                 var_ptr=var_ptr, cols=cols, logical=logical, llr0=llr0, m=m, n=n)
 
 
+_DEBRUIJN = np.uint64(0x03F79D71B4CB0A89)
+_CTZ_TABLE = np.zeros(64, np.int64)
+for _i in range(64):
+    _CTZ_TABLE[((np.uint64(1) << np.uint64(_i)) * _DEBRUIJN) >> np.uint64(58)] = _i
+
+
+@njit(cache=True, inline="always")
+def _ctz(x):
+    """Index of the lowest set bit of a non-zero uint64 (de Bruijn multiplication)."""
+    return _CTZ_TABLE[((x & (~x + np.uint64(1))) * _DEBRUIJN) >> np.uint64(58)]
+
+
 @njit(cache=True, inline="always")
 def _bit(x0, x1, r):
     one = np.uint64(1)
@@ -119,19 +131,24 @@ def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset):
             s1 ^= b1[k]
             kd0 ^= c0[k]
             kd1 ^= c1[k]
-    if lam == 0 and not coset:
+    if lam == 0 and coset == 0:
         out = np.uint8(0)
         for r in range(rank):
             if _bit(kd0, kd1, r):
                 out ^= logical[sel[r]]
         return out
-    # base candidate
+    # base candidate; sgnc[r] = how the cost changes when selected column r is toggled
     base_cost = 0.0
     base_log = np.uint8(0)
+    sgnc = np.empty(rank, np.float64)
     for r in range(rank):
+        cr = cost[sel[r]]
         if _bit(kd0, kd1, r):
-            base_cost += cost[sel[r]]
+            base_cost += cr
             base_log ^= logical[sel[r]]
+            sgnc[r] = -cr
+        else:
+            sgnc[r] = cr
     best_cost = base_cost
     best_log = base_log
     prob = np.zeros(16, np.float64)
@@ -142,9 +159,12 @@ def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset):
     for a in range(nn):
         dc = cost[npj[a]]
         dl = logical[npj[a]]
-        for r in range(rank):
-            if _bit(nk0[a], nk1[a], r):
-                dc += -cost[sel[r]] if _bit(kd0, kd1, r) else cost[sel[r]]
+        for w in range(2):
+            x = nk0[a] if w == 0 else nk1[a]
+            while x:
+                r = _ctz(x) + 64 * w
+                x &= x - np.uint64(1)
+                dc += sgnc[r]
                 dl ^= logical[sel[r]]
         dcost[a] = dc
         dlog[a] = dl
@@ -154,23 +174,35 @@ def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset):
         if c < best_cost:
             best_cost = c
             best_log = lg
-    # pairs among the first lam2: S part changes by nk[a] ^ nk[b]
-    for a in range(min(lam2, nn)):
-        for bb in range(a + 1, min(lam2, nn)):
-            x0 = kd0 ^ nk0[a] ^ nk0[bb]
-            x1 = kd1 ^ nk1[a] ^ nk1[bb]
-            c = cost[npj[a]] + cost[npj[bb]]
-            lg = logical[npj[a]] ^ logical[npj[bb]]
-            for r in range(rank):
-                if _bit(x0, x1, r):
-                    c += cost[sel[r]]
-                    lg ^= logical[sel[r]]
+    # pairs among the first lam2: S part changes by nk[a] ^ nk[b]; bits in both cancel, so undo them
+    n2 = min(lam2, nn)
+    for a in range(n2):
+        for bb in range(a + 1, n2):
+            c = base_cost + dcost[a] + dcost[bb]
+            for w in range(2):
+                x = (nk0[a] & nk0[bb]) if w == 0 else (nk1[a] & nk1[bb])
+                while x:
+                    r = _ctz(x) + 64 * w
+                    x &= x - np.uint64(1)
+                    c -= 2.0 * sgnc[r]
+            lg = base_log ^ dlog[a] ^ dlog[bb]
             prob[lg] += np.exp(base_cost - c)
             if c < best_cost:
                 best_cost = c
                 best_log = lg
-    if coset:
+    if coset == 1:  # most probable 4-bit outcome
         return np.uint8(np.argmax(prob))
+    if coset == 2:  # each bit on its own: flipped if the candidates flipping it carry most of the probability
+        tot = prob.sum()
+        out = np.uint8(0)
+        for bit in range(4):
+            pb = 0.0
+            for cls in range(16):
+                if (cls >> bit) & 1:
+                    pb += prob[cls]
+            if 2 * pb > tot:
+                out |= np.uint8(1 << bit)
+        return out
     return best_log
 
 
@@ -277,11 +309,12 @@ def decode_batch(D, ec, ev, check_ptr, cols, logical, llr0, max_iter, alpha, alw
     return out
 
 
-def decode_bp_osd(graph, detector_events, max_iter=5, alpha=0.9, always_osd=True, damping=0.5, avg_post=True,
-                  lam=200, lam2=40, coset=True, return_stats=False):
+def decode_bp_osd(graph, detector_events, max_iter=3, alpha=0.8, always_osd=True, damping=0.5, avg_post=True,
+                  lam=400, lam2=100, coset=2, return_stats=False):
     D = np.ascontiguousarray(detector_events, dtype=np.uint8)
     stats = np.zeros(len(D), np.int64)
     nchunks = max(1, min(len(D), 8 * numba.get_num_threads()))
+    coset = int(coset)
     masks = decode_batch(D, graph["ec"], graph["ev"], graph["check_ptr"], graph["cols"], graph["logical"],
                          graph["llr0"], max_iter, alpha, always_osd, damping, avg_post, nchunks,
                          lam, lam2, coset, stats)
