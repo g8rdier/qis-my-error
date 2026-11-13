@@ -45,6 +45,9 @@ MLD_STAGES = [
     (((0, 3e-6, 8192), (1, 3e-6, 8192)), 0.0),
 ]
 MARGIN_FLOOR = 0.01
+# Bits whose probability is within TIE_BAND of 1/2 are coin flips: predicting the less likely value there costs at most
+# 2 * TIE_BAND expected errors per bit. TIE_BAND = 0 is the plain maximum-a-posteriori decision.
+TIE_BAND = 0.01
 
 
 def problem_info(circuit: stim.Circuit):
@@ -127,4 +130,8 @@ def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:
         g = _tables(circuit)
     events = np.asarray(detector_events, dtype=bool)
     assert events.ndim == 2 and events.shape[1] == g[0]["nd"]
-    return (decode_marginals(g, events) > 0.5).astype(np.uint8)
+    m = decode_marginals(g, events)
+    pred = m > 0.5
+    if TIE_BAND > 0:
+        pred ^= np.abs(m - 0.5) < TIE_BAND
+    return pred.astype(np.uint8)
