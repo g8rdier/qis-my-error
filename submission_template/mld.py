@@ -438,9 +438,9 @@ def _logw(out16, stats):
         return np.log(out16) + np.where(np.isfinite(stats[:, 1:2]), stats[:, 1:2], 0.0)
 
 
-def mld_logw_many(sweeps):
-    """mld_logw for several sweeps (g, detector_events, eps, max_states) at once, sharing the thread pool."""
-    return [_logw(out16, stats) for out16, stats in _run_many(sweeps)]
+def mld_logw_many(sweeps, compact_every=DEFAULT_COMPACT_EVERY):
+    """mld_logw for several sweeps at once, sharing the thread pool."""
+    return [_logw(out16, stats) for out16, stats in _run_many(sweeps, compact_every)]
 
 
 def mld_classp(g, detector_events, eps=1e-4, max_states=1 << 12,

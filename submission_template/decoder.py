@@ -31,21 +31,23 @@ import os
 import numpy as np
 import stim
 
-from mld import build_mld, marginals_logw, mld_logw, mld_logw_many
+from mld import build_mld, marginals_logw, mld_logw
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# stages (sweeps, thr): each sweep is (direction, eps, max_states), direction 0 forward in time, 1 backward. The
-# first stage decodes every shot. A shot goes on to the next stage if, for some logical bit, the probabilities from
-# the stage's sweeps, the combined result before the stage and the combined result after it differ by more than
-# thr * (distance of the combined probability from 1/2 + MARGIN_FLOOR): the tighter sweeps go where the pruning
-# error could still change a decision.
-MLD_STAGES = [
-    (((0, 3e-4, 4096), (1, 3e-4, 4096)), 0.02),
-    (((0, 3e-5, 4096), (1, 3e-5, 4096)), 0.3),
-    (((0, 3e-6, 8192), (1, 3e-6, 8192)), 0.0),
-]
-MARGIN_FLOOR = 0.01
-
+MLD_TIERS = {
+    "X": (
+        (0, 2.962962962962963e-05, 2816, 0.0),
+        (1, 3e-05, 2048, 0.125),
+        (0, 4.5e-05, 3072, 0.25),
+    ),
+    "Z": (
+        (0, 6.666666666666667e-05, 2560, 0.0),
+        (1, 6.75e-05, 3072, 0.125),
+        (0, 3e-05, 2304, 0.3750000000000001),
+    ),
+}
+MLD_COMPACT_EVERY = {"X": 32, "Z": 32}
+MLD_HEXP = {"X": 0.6, "Z": 0.6}
 
 def problem_info(circuit: stim.Circuit):
     """H (detectors x mechanisms), L (observables x mechanisms) and p (probability of each mechanism). Error
@@ -80,39 +82,52 @@ def _key(circuit: stim.Circuit) -> str:
     return hashlib.sha256(str(circuit).encode()).hexdigest()
 
 
-def _tables(circuit: stim.Circuit):
+def _tables(circuit: stim.Circuit, basis: str):
     H, L, p = problem_info(circuit)
     # backward sweep: the same decoder on the detectors in reverse order
-    return build_mld(H, L, p), build_mld(H[::-1].copy(), L, p)
+    return (
+        build_mld(H, L, p, hexp=MLD_HEXP[basis]),
+        build_mld(H[::-1].copy(), L, p, hexp=MLD_HEXP[basis]),
+    )
 
 
 _TABLES = {}
 for _basis in "XZ":
     _c = stim.Circuit.from_file(os.path.join(HERE, "circuits", f"{_basis}_circuit.stim"))
-    _TABLES[_key(_c)] = _tables(_c)
-for _g in _TABLES.values():  # compile (or load from numba's cache) the kernel before the clock starts
-    for _sweeps, _ in MLD_STAGES:
-        for _dir, _eps, _max_states in _sweeps:
-            mld_logw(_g[_dir], np.zeros((2, _g[_dir]["nd"]), bool), eps=_eps, max_states=_max_states)
+    _TABLES[_key(_c)] = (_tables(_c, _basis), _basis)
+for _g, _basis in _TABLES.values():  # compile (or load from numba's cache) the kernel before the clock starts
+    for _dir, _eps, _max_states, _threshold in MLD_TIERS[_basis]:
+        mld_logw(
+            _g[_dir],
+            np.zeros((2, _g[_dir]["nd"]), bool),
+            eps=_eps,
+            max_states=_max_states,
+            compact_every=MLD_COMPACT_EVERY[_basis],
+        )
 
 
-def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
+def decode_marginals(g, detector_events: np.ndarray, basis: str = "X") -> np.ndarray:
     """Per-bit probability of a logical flip, shape (shots, 4)."""
     D = np.asarray(detector_events, dtype=bool)
     events = (np.ascontiguousarray(D), np.ascontiguousarray(D[:, ::-1]))
-    logw = np.full((len(D), 16), -np.inf)  # best lower bound so far on the log weight of each outcome
-    sel = np.arange(len(D))
-    for stage, (sweeps, thr) in enumerate(MLD_STAGES):
-        if len(sel) == 0:
-            break
-        views = [marginals_logw(logw[sel])] if stage else []
-        results = mld_logw_many([(g[direction], events[direction][sel], eps, max_states) for direction, eps, max_states in sweeps])
-        for lw in results:
-            views.append(marginals_logw(lw))
-            logw[sel] = np.maximum(logw[sel], lw)
-        views.append(marginals_logw(logw[sel]))
-        spread = np.max(views, 0) - np.min(views, 0)
-        sel = sel[(spread / (np.abs(views[-1] - 0.5) + MARGIN_FLOOR)).max(1) > thr]
+    logw = None
+    for direction, eps, max_states, threshold in MLD_TIERS[basis]:
+        selected = np.arange(len(D)) if logw is None else np.flatnonzero(
+            (np.abs(marginals_logw(logw) - 0.5) < 0.5 - threshold).any(axis=1)
+        )
+        if not len(selected):
+            continue
+        refined = mld_logw(
+            g[direction],
+            events[direction][selected],
+            eps=eps,
+            max_states=max_states,
+            compact_every=MLD_COMPACT_EVERY[basis],
+        )
+        if logw is None:
+            logw = refined
+        else:
+            logw[selected] = np.maximum(logw[selected], refined)
     return marginals_logw(logw)
 
 
@@ -122,9 +137,12 @@ def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:
     detector_events: bool array of shape (shots, 70), columns D0 to D69.
     Returns a 0/1 array of shape (shots, 4), columns L0 to L3.
     """
-    g = _TABLES.get(_key(circuit))
-    if g is None:
-        g = _tables(circuit)
+    entry = _TABLES.get(_key(circuit))
+    if entry is None:
+        basis = "X"
+        g = _tables(circuit, basis)
+    else:
+        g, basis = entry
     events = np.asarray(detector_events, dtype=bool)
     assert events.ndim == 2 and events.shape[1] == g[0]["nd"]
-    return (decode_marginals(g, events) > 0.5).astype(np.uint8)
+    return (decode_marginals(g, events, basis) > 0.5).astype(np.uint8)
