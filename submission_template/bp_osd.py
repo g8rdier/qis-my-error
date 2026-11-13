@@ -1,4 +1,4 @@
-"""Belief propagation (normalised min-sum) with an ordered-statistics (OSD-0) fallback, written from scratch.
+"""Belief propagation (damped normalised min-sum) with ordered-statistics decoding (OSD-0 + combination sweep), from scratch.
 
 Decoding problem: the error model gives H (detectors x error mechanisms), L (observables x mechanisms) and the
 prior probability p of each mechanism. Given detector events D, find a likely error e with H e = D (mod 2) and
@@ -10,7 +10,9 @@ predict the logical flips L e (mod 2).
    after a fixed number of iterations; with always_osd=False the hard decision is checked against D instead.
 2. OSD-0, if BP has not matched D after max_iter iterations: sort the mechanisms from most to least likely by their
    BP posterior, pick the first linearly independent set of columns of H (Gaussian elimination over GF(2)), and
-   solve H e = D using only those columns. This always gives an e that explains D.
+   solve H e = D using only those columns. This always gives an e that explains D. The combination sweep (lam,
+   lam2) also tries the most likely columns outside that set, singly and in pairs, and picks the logical outcome
+   with the largest total probability over all candidates (coset=True).
 
 Columns of H have 70 bits, stored as two uint64 words. Shots are decoded in parallel with numba.
 """
@@ -39,9 +41,23 @@ def build_graph(H: np.ndarray, L: np.ndarray, p: np.ndarray):
                 var_ptr=var_ptr, cols=cols, logical=logical, llr0=llr0, m=m, n=n)
 
 
+@njit(cache=True, inline="always")
+def _bit(x0, x1, r):
+    one = np.uint64(1)
+    return ((x0 >> np.uint64(r)) & one) if r < 64 else ((x1 >> np.uint64(r - 64)) & one)
+
+
 @njit(cache=True)
-def _osd0(post, cols, logical, D0, D1, m):
-    """Solve H e = D using the most likely independent columns (ordered by posterior LLR, smallest first)."""
+def _osd(post, cost, cols, logical, D0, D1, m, lam, lam2, coset):
+    """Ordered-statistics decoding.
+
+    Columns of H are taken in order of BP posterior (most likely first); the first m independent ones form the
+    information set S. The OSD-0 solution uses only S. With lam > 0, the combination sweep also tries switching on
+    each of the lam most likely columns outside S (and every pair among the first lam2 of them), re-solving S each
+    time. Every candidate explains D exactly; its cost is sum(cost[j]) over its errors (cost = -log-likelihood
+    ratio). Returns the logical mask of the cheapest candidate, or, with coset=True, the logical mask whose
+    candidates have the largest total probability.
+    """
     order = np.argsort(post)
     piv = np.empty(m, np.int64)
     b0 = np.empty(m, np.uint64)
@@ -49,33 +65,38 @@ def _osd0(post, cols, logical, D0, D1, m):
     c0 = np.empty(m, np.uint64)  # which selected columns make up each basis vector (bitmask over <= 128 slots)
     c1 = np.empty(m, np.uint64)
     sel = np.empty(m, np.int64)
+    nl = max(lam, 1)
+    npj = np.empty(nl, np.int64)  # most likely columns outside S, and their expansion in terms of S
+    nk0 = np.empty(nl, np.uint64)
+    nk1 = np.empty(nl, np.uint64)
+    nn = 0
     rank = 0
     one = np.uint64(1)
     for t in range(order.shape[0]):
+        if rank == m and nn >= lam:
+            break
         j = order[t]
         v0 = cols[j, 0]
         v1 = cols[j, 1]
         k0 = np.uint64(0)
         k1 = np.uint64(0)
         for k in range(rank):
-            pk = piv[k]
-            hit = ((v0 >> np.uint64(pk)) & one) if pk < 64 else ((v1 >> np.uint64(pk - 64)) & one)
-            if hit:
+            if _bit(v0, v1, piv[k]):
                 v0 ^= b0[k]
                 v1 ^= b1[k]
                 k0 ^= c0[k]
                 k1 ^= c1[k]
         if v0 == 0 and v1 == 0:
+            if nn < lam:  # column j = XOR of the selected columns in k
+                npj[nn] = j
+                nk0[nn] = k0
+                nk1[nn] = k1
+                nn += 1
             continue
         # new pivot: lowest set bit of the reduced column
-        if v0 != 0:
-            pk = 0
-            while not ((v0 >> np.uint64(pk)) & one):
-                pk += 1
-        else:
-            pk = 64
-            while not ((v1 >> np.uint64(pk - 64)) & one):
-                pk += 1
+        pk = 0
+        while not _bit(v0, v1, pk):
+            pk += 1
         if rank < 64:
             k0 ^= one << np.uint64(rank)
         else:
@@ -87,32 +108,75 @@ def _osd0(post, cols, logical, D0, D1, m):
         c1[rank] = k1
         sel[rank] = j
         rank += 1
-        if rank == m:
-            break
     # reduce the syndrome in insertion order; later basis vectors never contain earlier pivots
     s0 = D0
     s1 = D1
-    k0 = np.uint64(0)
-    k1 = np.uint64(0)
+    kd0 = np.uint64(0)
+    kd1 = np.uint64(0)
     for k in range(rank):
-        pk = piv[k]
-        hit = ((s0 >> np.uint64(pk)) & one) if pk < 64 else ((s1 >> np.uint64(pk - 64)) & one)
-        if hit:
+        if _bit(s0, s1, piv[k]):
             s0 ^= b0[k]
             s1 ^= b1[k]
-            k0 ^= c0[k]
-            k1 ^= c1[k]
-    out = np.uint8(0)
+            kd0 ^= c0[k]
+            kd1 ^= c1[k]
+    if lam == 0 and not coset:
+        out = np.uint8(0)
+        for r in range(rank):
+            if _bit(kd0, kd1, r):
+                out ^= logical[sel[r]]
+        return out
+    # base candidate
+    base_cost = 0.0
+    base_log = np.uint8(0)
     for r in range(rank):
-        bit = ((k0 >> np.uint64(r)) & one) if r < 64 else ((k1 >> np.uint64(r - 64)) & one)
-        if bit:
-            out ^= logical[sel[r]]
-    return out
+        if _bit(kd0, kd1, r):
+            base_cost += cost[sel[r]]
+            base_log ^= logical[sel[r]]
+    best_cost = base_cost
+    best_log = base_log
+    prob = np.zeros(16, np.float64)
+    prob[base_log] += 1.0
+    # singles: flip one outside column a; S part changes by nk[a]
+    dcost = np.empty(nn, np.float64)
+    dlog = np.empty(nn, np.uint8)
+    for a in range(nn):
+        dc = cost[npj[a]]
+        dl = logical[npj[a]]
+        for r in range(rank):
+            if _bit(nk0[a], nk1[a], r):
+                dc += -cost[sel[r]] if _bit(kd0, kd1, r) else cost[sel[r]]
+                dl ^= logical[sel[r]]
+        dcost[a] = dc
+        dlog[a] = dl
+        c = base_cost + dc
+        lg = base_log ^ dl
+        prob[lg] += np.exp(base_cost - c)
+        if c < best_cost:
+            best_cost = c
+            best_log = lg
+    # pairs among the first lam2: S part changes by nk[a] ^ nk[b]
+    for a in range(min(lam2, nn)):
+        for bb in range(a + 1, min(lam2, nn)):
+            x0 = kd0 ^ nk0[a] ^ nk0[bb]
+            x1 = kd1 ^ nk1[a] ^ nk1[bb]
+            c = cost[npj[a]] + cost[npj[bb]]
+            lg = logical[npj[a]] ^ logical[npj[bb]]
+            for r in range(rank):
+                if _bit(x0, x1, r):
+                    c += cost[sel[r]]
+                    lg ^= logical[sel[r]]
+            prob[lg] += np.exp(base_cost - c)
+            if c < best_cost:
+                best_cost = c
+                best_log = lg
+    if coset:
+        return np.uint8(np.argmax(prob))
+    return best_log
 
 
 @njit(parallel=True, cache=True)
 def decode_batch(D, ec, ev, check_ptr, cols, logical, llr0, max_iter, alpha, always_osd, damping, avg_post, nchunks,
-                 stats):
+                 lam, lam2, coset, stats):
     """D: (shots, m) uint8. Returns (shots,) uint8 logical masks. stats[s] = BP iterations used, or -1 if OSD ran.
 
     Flooding min-sum where the error->detector message is never stored: it is post[j] - c2v[e], the posterior of
@@ -208,17 +272,18 @@ def decode_batch(D, ec, ev, check_ptr, cols, logical, llr0, max_iter, alpha, alw
                             D0 |= np.uint64(1) << np.uint64(i)
                         else:
                             D1 |= np.uint64(1) << np.uint64(i - 64)
-                out[s] = _osd0(acc if avg_post else post, cols, logical, D0, D1, m)
+                out[s] = _osd(acc if avg_post else post, llr0, cols, logical, D0, D1, m, lam, lam2, coset)
                 stats[s] = -1
     return out
 
 
 def decode_bp_osd(graph, detector_events, max_iter=5, alpha=0.9, always_osd=True, damping=0.5, avg_post=True,
-                  return_stats=False):
+                  lam=200, lam2=40, coset=True, return_stats=False):
     D = np.ascontiguousarray(detector_events, dtype=np.uint8)
     stats = np.zeros(len(D), np.int64)
     nchunks = max(1, min(len(D), 8 * numba.get_num_threads()))
     masks = decode_batch(D, graph["ec"], graph["ev"], graph["check_ptr"], graph["cols"], graph["logical"],
-                         graph["llr0"], max_iter, alpha, always_osd, damping, avg_post, nchunks, stats)
+                         graph["llr0"], max_iter, alpha, always_osd, damping, avg_post, nchunks,
+                         lam, lam2, coset, stats)
     out = np.unpackbits(masks[:, None], axis=1, count=4, bitorder="little")
     return (out, stats) if return_stats else out
