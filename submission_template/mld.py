@@ -30,7 +30,18 @@ import numpy as np
 import numba
 from numba import njit, prange
 
-from bp_osd import _ctz
+_DEBRUIJN = np.uint64(0x03F79D71B4CB0A89)
+_CTZ_TABLE = np.zeros(64, np.int64)
+with np.errstate(over="ignore"):  # the multiplication is meant to wrap around
+    for _i in range(64):
+        _CTZ_TABLE[((np.uint64(1) << np.uint64(_i)) * _DEBRUIJN) >> np.uint64(58)] = _i
+
+
+@njit(cache=True)
+def _ctz(x):
+    """Index of the lowest set bit of a non-zero uint64 (de Bruijn multiplication)."""
+    return _CTZ_TABLE[((x & (~x + np.uint64(1))) * _DEBRUIJN) >> np.uint64(58)]
+
 
 VEC_MIN = 24  # state count from which a step uses the vectorisable passes
 
