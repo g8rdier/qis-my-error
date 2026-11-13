@@ -5,7 +5,9 @@ prior probability p of each mechanism. Given detector events D, find a likely er
 predict the logical flips L e (mod 2).
 
 1. BP: messages are passed between error nodes and detector nodes of the graph defined by H, starting from the
-   priors. After every iteration the hard decision (posterior LLR < 0) is checked against D; if it matches, done.
+   priors. Detector-to-error messages are damped (mixed with the previous iteration) and the posteriors are
+   averaged over the iterations, which stops min-sum oscillating on this loopy graph. By default OSD always runs
+   after a fixed number of iterations; with always_osd=False the hard decision is checked against D instead.
 2. OSD-0, if BP has not matched D after max_iter iterations: sort the mechanisms from most to least likely by their
    BP posterior, pick the first linearly independent set of columns of H (Gaussian elimination over GF(2)), and
    solve H e = D using only those columns. This always gives an e that explains D.
@@ -108,7 +110,8 @@ def _osd0(post, cols, logical, D0, D1, m):
 
 
 @njit(parallel=True, cache=True)
-def decode_batch(D, ec, ev, check_ptr, var_edges, var_ptr, cols, logical, llr0, max_iter, alpha, always_osd, stats):
+def decode_batch(D, ec, ev, check_ptr, var_edges, var_ptr, cols, logical, llr0, max_iter, alpha, always_osd, damping,
+                 avg_post, stats):
     """D: (shots, m) uint8. Returns (shots,) uint8 logical masks. stats[s] = BP iterations used, or -1 if OSD ran."""
     shots, m = D.shape
     n = llr0.shape[0]
@@ -120,8 +123,10 @@ def decode_batch(D, ec, ev, check_ptr, var_edges, var_ptr, cols, logical, llr0, 
         c2v = np.empty(E, np.float64)
         post = llr0.copy()
         hard = np.zeros(n, np.uint8)
+        acc = np.zeros(n, np.float64)  # sum of posteriors over iterations (used when avg_post)
         for e in range(E):
             v2c[e] = llr0[ev[e]]
+            c2v[e] = 0.0
         converged = False
         it = 0
         while it < max_iter:
@@ -146,13 +151,14 @@ def decode_batch(D, ec, ev, check_ptr, var_edges, var_ptr, cols, logical, llr0, 
                 for e in range(check_ptr[i], check_ptr[i + 1]):
                     mag = min2 if e == arg else min1
                     sg = sgn if v2c[e] >= 0 else -sgn
-                    c2v[e] = alpha * sg * mag
+                    c2v[e] = damping * c2v[e] + (1.0 - damping) * alpha * sg * mag
             # error -> detector, posteriors and hard decision
             for j in range(n):
                 tot = llr0[j]
                 for q in range(var_ptr[j], var_ptr[j + 1]):
                     tot += c2v[var_edges[q]]
                 post[j] = tot
+                acc[j] += tot
                 hard[j] = 1 if tot < 0 else 0
                 for q in range(var_ptr[j], var_ptr[j + 1]):
                     e = var_edges[q]
@@ -187,15 +193,16 @@ def decode_batch(D, ec, ev, check_ptr, var_edges, var_ptr, cols, logical, llr0, 
                         D0 |= np.uint64(1) << np.uint64(i)
                     else:
                         D1 |= np.uint64(1) << np.uint64(i - 64)
-            out[s] = _osd0(post, cols, logical, D0, D1, m)
+            out[s] = _osd0(acc if avg_post else post, cols, logical, D0, D1, m)
             stats[s] = -1
     return out
 
 
-def decode_bp_osd(graph, detector_events, max_iter=5, alpha=0.5, always_osd=True, return_stats=False):
+def decode_bp_osd(graph, detector_events, max_iter=5, alpha=0.9, always_osd=True, damping=0.5, avg_post=True,
+                  return_stats=False):
     D = np.ascontiguousarray(detector_events, dtype=np.uint8)
     stats = np.zeros(len(D), np.int64)
     masks = decode_batch(D, graph["ec"], graph["ev"], graph["check_ptr"], graph["var_edges"], graph["var_ptr"],
-                         graph["cols"], graph["logical"], graph["llr0"], max_iter, alpha, always_osd, stats)
+                         graph["cols"], graph["logical"], graph["llr0"], max_iter, alpha, always_osd, damping, avg_post, stats)
     out = np.unpackbits(masks[:, None], axis=1, count=4, bitorder="little")
     return (out, stats) if return_stats else out
