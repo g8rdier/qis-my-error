@@ -24,16 +24,295 @@ All eight tests pass; exported predictions match the research model exactly.
 
 ## How it works
 
-It sums likely physical-error explanations with a pruned dynamic programme.
-One component orders checks chronologically; the other uses a fixed
-within-round shuffle. Each runs a forward sweep and refines uncertain shots
-backwards. Their absolute logical-outcome weights are combined by a maximum,
-then each output bit is selected by its marginal probability. This is an
-approximation, not a mathematically exact posterior or deduplicated union.
+This decoder is a **physics and probability calculation**, not a neural network
+trained on labels. For each shot it asks: *which combinations of physical
+faults could have produced these detector events, and how much probability
+belongs to each possible logical answer?* The exact sum is too large to
+enumerate, so the decoder computes a carefully pruned approximation.
+
+The explanation below starts with the problem and builds up to the two-sweep
+ensemble. The short version is:
+
+1. Turn the circuit into a list of possible faults and their probabilities.
+2. Sweep through those faults, accumulating all explanations consistent with
+   the observed detectors.
+3. Merge explanations that have become indistinguishable, and throw away the
+   least promising ones.
+4. Repeat the sweep in the opposite direction and in a different detector order.
+5. For each of the 16 logical outcomes, keep the best estimate; convert those
+   estimates into four per-bit probabilities and threshold at 0.5.
+
+### 1. The problem in plain language
+
+A shot produces a **syndrome**: 70 detector bits, `D0` to `D69`. A detector
+fires when a parity check disagrees with its previous value. The syndrome is
+evidence that some physical faults happened, but it does not say which ones.
+
+The noisy circuit defines about **2,470 possible fault mechanisms**. Each
+mechanism has a prior probability `p_i`. A mechanism can flip several detectors
+and up to four **logical bits**, which record whether the stored logical state
+was flipped. Mechanisms with exactly the same detector and logical effect are
+merged into one column, so every column has a unique effect. The circuit gives
+us two binary matrices:
+
+| Symbol | Meaning |
+|---|---|
+| `D` | the observed detector events, 70 bits |
+| `e` | the hidden error vector: one bit per mechanism, 1 means it fired |
+| `p_i` | the prior probability that mechanism `i` fired |
+| `H` | which detectors each mechanism flips |
+| `L` | which logical bits each mechanism flips |
+| `O` | the four logical flips we must predict |
+
+In equations, the circuit tells us `D = H e (mod 2)` and `O = L e (mod 2)`.
+The decoder knows `H`, `L` and `p`; it must infer the likely `O` from `D`.
+
+The target is not “find the single most likely error vector.” The map from
+faults to detectors is **many-to-one**: many different physical fault patterns
+produce exactly the same `D`, and they can produce different logical flips.
+Those alternatives must be weighted and added. The competition metric counts
+each logical bit separately, so the right target is the **marginal probability**
+
+```text
+P(O_j = 1 | D)
+```
+
+for each bit `j`. Predicting 1 when that probability is above 0.5 minimizes the
+expected number of wrong bits. This distinction—summing over explanations
+rather than committing to one—is the central idea of marginal
+(Bayes-optimal) decoding for this degenerate code.
+
+### 2. Why the decoder needs a search
+
+There are two enormous numbers in the problem:
+
+- Each of the ~2,470 mechanisms can be on or off, so the error vector has about
+  `2^2470` possible values.
+- Even after grouping by the 70-bit syndrome, the number of distinct partial
+  explanations that survive during a sweep is far too large to enumerate
+  exactly on a CPU.
+
+The decoder therefore uses a **dynamic programme** to build explanations one
+mechanism at a time, plus a **beam search** to discard weak partial explanations
+early. “Dynamic programme” here simply means: solve the problem in stages and
+reuse the partial answers from the previous stage. “Beam” means: keep a bounded
+set of the most promising partial answers instead of all of them.
+
+### 3. What one “state” contains
+
+During the sweep, the decoder does not remember every fault that has fired. Two
+different partial fault patterns are equivalent if they have:
+
+1. the same **residual syndrome**—the detector bits that still disagree with
+   the observed `D`; and
+2. the same **logical flips**—the four bits produced by the faults chosen so far.
+
+Future mechanisms only care about those two things. For example, if two
+different faults both leave detector 7 unresolved and neither has flipped a
+logical bit, the rest of the calculation cannot tell them apart. Their
+probabilities can be added immediately. This is why a state stores only:
+
+```text
+residual syndrome (70 bits) + logical flips (4 bits)
+```
+
+plus one number: the total probability mass of all partial fault patterns that
+have reached this summary. “Mass” is measured relative to the empty error
+vector: the common factors `(1 - p_i)` cancel, so a mechanism that fires
+contributes a factor `p_i / (1 - p_i)`, while one that does not fire contributes
+1.
+
+The implementation packs the 70 residual bits and 4 logical bits into **two
+64-bit words**. That compact representation is what makes a hash table of
+states practical.
+
+### 4. The sweep: one mechanism at a time
+
+The decoder sorts mechanisms by the **first detector they touch**—ties are
+broken by the last detector. This ordering is important: once the last
+mechanism touching a detector has been processed, that detector can never be
+changed again. If a state still disagrees with `D` on it at that point, the
+state is impossible and is dropped immediately.
+
+For each mechanism `k`, every surviving state has two possible children:
+
+- **Did not fire.** The residual and logical bits stay the same, and the
+  probability mass is unchanged.
+- **Fired.** The mechanism’s detector column is XORed into the residual, its
+  logical column is XORed into the logical bits, and the mass is multiplied by
+  `p_k / (1 - p_k)`.
+
+The “did not fire” children are updated in place, because they are just the
+same state with a slightly different search score. The “fired” children are
+looked up in a hash table: if the same residual-and-logical summary already
+exists, the two masses are added; otherwise a new state is created.
+
+At the end, the decoder collects only states whose residual is zero. They still
+differ in their four logical bits, so their masses are grouped into **16
+logical classes** (`0000` through `1111`). Those 16 masses are the decoder’s
+approximation to the posterior over logical outcomes.
+
+```text
+Start: residual = D, logical = 0000, mass = 1
+  for each mechanism:
+      keep a copy (mechanism did not fire)
+      or XOR its detector effect into the residual
+         and its logical effect into the logical bits,
+         multiplying the mass by p/(1-p)
+      merge equal summaries
+      close detectors whose last mechanism has passed
+Finish: residual = 000000...0
+        → 16 logical masses
+```
+
+### 5. Beam pruning: deciding what to forget
+
+The exact state table is still too large. The decoder gives every state a
+**search score** made of two parts:
+
+```text
+score = log(probability mass) + look-ahead estimate
+```
+
+The first part rewards explanations that already have high probability. The
+second part is needed because an explanation that has not yet fixed a fired
+detector looks incomplete; without a look-ahead, the “no faults at all” state
+can look best until it is too late.
+
+For each detector that a state still disagrees with, the look-ahead charges an
+estimate of the cost of fixing it. The estimate uses the most likely future
+mechanism that touches that detector, multiplied by `heuristic_exponent = 0.5`.
+The factor 0.5 is a heuristic: a typical fault touches about two detectors, so
+roughly half of its “cost” is assigned to each detector. This is only a
+search-ordering heuristic; it does **not** change the physical probability mass
+of a completed explanation.
+
+After each step, the decoder:
+
+- drops any state whose score is below `best + log(eps)`—that is, more than
+  `-log(eps)` below the best score;
+- if there are more than `max_states`, keeps only the highest-scoring ones; and
+- periodically compacts the table (every 32 steps, and whenever a detector
+  closes).
+
+The two passes use different settings:
+
+| Pass | Direction | `eps` | Max states | Runs on |
+|---|---|---:|---:|---|
+| First | forward | `1e-4` | 1,024 | every shot |
+| Refinement | backward | `3e-5` | 4,096 | uncertain shots only |
+
+A smaller `eps` and a larger state cap keep more explanations and cost more
+time. The refinement pass runs only when any logical bit is still uncertain:
+specifically, when a bit’s current probability lies between **0.15 and 0.85**.
+Easy shots stop after the first pass.
+
+### 6. Why there are forward, backward and shuffled sweeps
+
+Pruning is not exact. A forward sweep may discard a low-probability partial
+explanation that would have become important later. A backward sweep builds the
+same kind of dynamic programme with the detector order reversed, so it makes
+its pruning decisions from the other end and may retain a different set of
+explanations.
+
+Each sweep returns **absolute log masses** for the 16 logical classes: masses
+relative to the all-no-error explanation, on the same scale for every sweep of
+that shot. Pruning only removes positive terms from a sum, so each sweep’s mass
+is a **lower bound** on the exact mass for that class. The decoder combines two
+sweeps by taking the **maximum mass per class**:
+
+```text
+combined_mass[class] = max(mass_from_sweep_1[class],
+                            mass_from_sweep_2[class])
+```
+
+Taking the maximum keeps the better of two lower bounds. It is not an average,
+and it deliberately does not add the two sweeps together: adding would
+double-count explanations that both sweeps found. This is still an
+approximation, not an exact posterior.
+
+The ensemble repeats this whole process with a second check order: component 0
+uses the original chronological order, and component 1 uses a fixed permutation
+**within each time block** (initial round, each middle round, and final
+measurement). The permutation keeps the time structure but changes which
+detector is “first” inside a round. That changes the mechanism order and
+therefore which partial explanations survive pruning. The two component results
+are again combined by a per-class maximum.
+
+There is no randomness at decode time: the shuffled order is stored in
+`assets.npz`, and all search settings are fixed in `model.json`.
+
+### 7. From 16 masses to four predictions
+
+The 16 classes correspond to the 16 possible combinations of four logical bits.
+For each bit `j`, the decoder sums the masses of all classes whose bit `j` is 1:
+
+```text
+P(L_j = 1 | D) = sum of masses of classes with bit j set
+```
+
+It then predicts 1 when that probability is greater than 0.5. These are
+**per-bit marginal decisions**, so the four predicted bits need not all come
+from one single logical class. That is intentional: the competition scores each
+bit independently, and the per-bit marginal is the decision that minimizes the
+expected number of wrong bits.
+
+If no complete explanation survives at all, every class is tied at probability
+0.5; the strict `> 0.5` threshold then produces a deterministic all-zero
+prediction.
+
+### 8. What the code does at runtime
+
+The heavy preparation happens when the module is imported, before the timed
+`decode()` calls:
+
+- `assets.npz` stores the two circuit texts, their `H`, `L` and `p` values, and
+  the two detector permutations.
+- `build_mld` precomputes the mechanism order, column bitmasks, detector-closing
+  times and all look-ahead tables for every component and direction.
+- The Numba kernel compiles and is warmed on a zero-syndrome shot.
+
+A `decode()` call then:
+
+1. fingerprints the circuit and selects its frozen tables;
+2. deduplicates exact repeated detector patterns within the call;
+3. runs the two components, each with its forward pass and optional backward
+   refinement;
+4. takes the per-class maximum and thresholds the four marginals; and
+5. maps predictions back to the original shot order.
+
+Shots are parallelized with Numba. Duplicate patterns are decoded once inside a
+call; there is no memoization between calls and no reading of `results.csv`.
+The model is deterministic and produces identical predictions across repeated
+calls.
+
+### 9. What “training” means here
+
+Nothing in `assets.npz` is a learned neural weight. The probabilities come from
+the circuit’s SI1000 noise model (`p = 0.002`), and the rest is deterministic
+linear algebra and search. The `fitted_training_shots` count in `model.json` is
+therefore **0**.
+
+The 66,000 development shots and larger validation sets were used to choose and
+measure settings such as beam caps, refinement thresholds and detector orders,
+not to fit a model that stores per-example answers. Generating more labelled
+shots can give a more precise LER estimate, but it does not change the decoder’s
+parameters or make the search itself more accurate. The supplied `data/test/test.csv` labels are
+not available and are never used.
+
+A useful one-sentence summary: **the decoder repeatedly adds up the probability
+of every plausible fault pattern that could explain the observed detectors, uses
+beam pruning and repeated sweep orders to keep that sum tractable, and predicts
+each logical bit from the resulting marginal probability.**
 
 The model initializes at import. Calls are deterministic and CPU-parallel;
 48 judge threads are supported. Prior local timing was 48.98s / 200k shots on
 16 laptop threads, **not** a B200/48-core timing.
+
+For code readers: `kernel.py` contains the state sweep and pruning;
+`decoder.py` contains the forward/backward routing, two-order ensemble and
+bit-marginal decision; `assets.npz` contains the frozen circuit physics and
+orders; and `prepare.py` rebuilds those assets or runs evaluation/prediction.
 
 ## Runtime improvement ideas (not implemented)
 
