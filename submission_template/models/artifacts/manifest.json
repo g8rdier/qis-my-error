@@ -1,0 +1,954 @@
+{
+  "X_mlp_512x256_600k_s2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "data": "train100k+gen_big500k",
+    "seed": 2,
+    "epochs": 120,
+    "batch": 16384,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 20,
+    "val_ler": 0.0992,
+    "fresh_ler": 0.0969,
+    "date": "2026-11-14",
+    "cmd": "train_mlp.py --use-big --hidden 512 256 --epochs 120 --patience 20 --batch 16384 --seed 2"
+  },
+  "Z_mlp_512x256_600k_s2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "data": "train100k+gen_big500k",
+    "seed": 2,
+    "epochs": 120,
+    "batch": 16384,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 20,
+    "val_ler": 0.09274,
+    "fresh_ler": 0.09477,
+    "date": "2026-11-14",
+    "cmd": "train_mlp.py --use-big --hidden 512 256 --epochs 120 --patience 20 --batch 16384 --seed 2"
+  },
+  "X_mlp_256x128_90k_s1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "data": "train90k-split",
+    "seed": 1,
+    "epochs": 80,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 15,
+    "val_ler": 0.167,
+    "fresh_ler": 0.16245,
+    "date": "2026-11-13",
+    "cmd": "train_mlp.py --basis X --epochs 80 --patience 15 --seed 1"
+  },
+  "Z_mlp_256x128_90k_s0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "data": "train90k-split",
+    "seed": 0,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 6,
+    "val_ler": 0.1738,
+    "fresh_ler": 0.17554,
+    "date": "2026-11-13",
+    "cmd": "train_mlp.py (defaults, seed 0)"
+  },
+  "X_mlp_512x256_2600k_s3.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "data": "train100k+gen_big500k+gen_big2_2000k",
+    "seed": 3,
+    "epochs": 60,
+    "batch": 32768,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 10,
+    "val_ler": 0.08473,
+    "fresh_ler": 0.08338,
+    "date": "2026-11-13",
+    "cmd": "train_mlp.py --hidden 512 256 --epochs 60 --patience 10 --batch 32768 --seed 3 --use-big"
+  },
+  "Z_mlp_512x256_2600k_s3.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "data": "train100k+gen_big500k+gen_big2_2000k",
+    "seed": 3,
+    "epochs": 60,
+    "batch": 32768,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 10,
+    "val_ler": 0.08048,
+    "fresh_ler": 0.08189,
+    "date": "2026-11-13",
+    "cmd": "train_mlp.py --hidden 512 256 --epochs 60 --patience 10 --batch 32768 --seed 3 --use-big"
+  },
+  "X_mlp_sweep_256x128_do10_f0.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "sweep": "256x128_do10",
+    "fold": 0,
+    "seed_init": 1000,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15462,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_256x128_do10_f1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "sweep": "256x128_do10",
+    "fold": 1,
+    "seed_init": 1000,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15516,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do10_f0.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do10",
+    "fold": 0,
+    "seed_init": 1001,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.14029,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do10_f1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do10",
+    "fold": 1,
+    "seed_init": 1001,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.13903,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_256x128_do10_f0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "sweep": "256x128_do10",
+    "fold": 0,
+    "seed_init": 1000,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.14481,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_256x128_do10_f1.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "sweep": "256x128_do10",
+    "fold": 1,
+    "seed_init": 1000,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.14484,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do10_f0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do10",
+    "fold": 0,
+    "seed_init": 1001,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12814,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do10_f1.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do10",
+    "fold": 1,
+    "seed_init": 1001,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12899,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_256x128_do10_f2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "sweep": "256x128_do10",
+    "fold": 2,
+    "seed_init": 1000,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15566,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do10_f2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do10",
+    "fold": 2,
+    "seed_init": 1001,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.13991,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_1024x512_do10_f0.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "sweep": "1024x512_do10",
+    "fold": 0,
+    "seed_init": 1002,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12999,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_1024x512_do10_f1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "sweep": "1024x512_do10",
+    "fold": 1,
+    "seed_init": 1002,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12928,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_1024x512_do10_f2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "sweep": "1024x512_do10",
+    "fold": 2,
+    "seed_init": 1002,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.13014,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do20_f0.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do20",
+    "fold": 0,
+    "seed_init": 1003,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.2,
+    "pool_n": 300000,
+    "val_ler": 0.14014,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do20_f1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do20",
+    "fold": 1,
+    "seed_init": 1003,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.2,
+    "pool_n": 300000,
+    "val_ler": 0.13998,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do20_f2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do20",
+    "fold": 2,
+    "seed_init": 1003,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.2,
+    "pool_n": 300000,
+    "val_ler": 0.14065,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do00_f0.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do00",
+    "fold": 0,
+    "seed_init": 1004,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.0,
+    "pool_n": 300000,
+    "val_ler": 0.148,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do00_f1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do00",
+    "fold": 1,
+    "seed_init": 1004,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.0,
+    "pool_n": 300000,
+    "val_ler": 0.14626,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_do00_f2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do00",
+    "fold": 2,
+    "seed_init": 1004,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.0,
+    "pool_n": 300000,
+    "val_ler": 0.14693,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x1_do10_f0.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      4
+    ],
+    "sweep": "512x1_do10",
+    "fold": 0,
+    "seed_init": 1005,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.17577,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x1_do10_f1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      4
+    ],
+    "sweep": "512x1_do10",
+    "fold": 1,
+    "seed_init": 1005,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.1739,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x1_do10_f2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      4
+    ],
+    "sweep": "512x1_do10",
+    "fold": 2,
+    "seed_init": 1005,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.17399,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_lr3e4_f0.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_lr3e4",
+    "fold": 0,
+    "seed_init": 1006,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.0003,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.17458,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_lr3e4_f1.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_lr3e4",
+    "fold": 1,
+    "seed_init": 1006,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.0003,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.17572,
+    "date": "2026-11-13"
+  },
+  "X_mlp_sweep_512x256_lr3e4_f2.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_lr3e4",
+    "fold": 2,
+    "seed_init": 1006,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.0003,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.17598,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_256x128_do10_f2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      256,
+      128,
+      4
+    ],
+    "sweep": "256x128_do10",
+    "fold": 2,
+    "seed_init": 1000,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.14327,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do10_f2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do10",
+    "fold": 2,
+    "seed_init": 1001,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12813,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_1024x512_do10_f0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "sweep": "1024x512_do10",
+    "fold": 0,
+    "seed_init": 1002,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12392,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_1024x512_do10_f1.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "sweep": "1024x512_do10",
+    "fold": 1,
+    "seed_init": 1002,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12415,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_1024x512_do10_f2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "sweep": "1024x512_do10",
+    "fold": 2,
+    "seed_init": 1002,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.12421,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do20_f0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do20",
+    "fold": 0,
+    "seed_init": 1003,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.2,
+    "pool_n": 300000,
+    "val_ler": 0.13059,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do20_f1.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do20",
+    "fold": 1,
+    "seed_init": 1003,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.2,
+    "pool_n": 300000,
+    "val_ler": 0.13103,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do20_f2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do20",
+    "fold": 2,
+    "seed_init": 1003,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.2,
+    "pool_n": 300000,
+    "val_ler": 0.13037,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do00_f0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do00",
+    "fold": 0,
+    "seed_init": 1004,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.0,
+    "pool_n": 300000,
+    "val_ler": 0.13193,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do00_f1.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do00",
+    "fold": 1,
+    "seed_init": 1004,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.0,
+    "pool_n": 300000,
+    "val_ler": 0.13281,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_do00_f2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_do00",
+    "fold": 2,
+    "seed_init": 1004,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.0,
+    "pool_n": 300000,
+    "val_ler": 0.13104,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x1_do10_f0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      4
+    ],
+    "sweep": "512x1_do10",
+    "fold": 0,
+    "seed_init": 1005,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15846,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x1_do10_f1.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      4
+    ],
+    "sweep": "512x1_do10",
+    "fold": 1,
+    "seed_init": 1005,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15842,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x1_do10_f2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      4
+    ],
+    "sweep": "512x1_do10",
+    "fold": 2,
+    "seed_init": 1005,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15814,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_lr3e4_f0.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_lr3e4",
+    "fold": 0,
+    "seed_init": 1006,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.0003,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15971,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_lr3e4_f1.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_lr3e4",
+    "fold": 1,
+    "seed_init": 1006,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.0003,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.16012,
+    "date": "2026-11-13"
+  },
+  "Z_mlp_sweep_512x256_lr3e4_f2.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      512,
+      256,
+      4
+    ],
+    "sweep": "512x256_lr3e4",
+    "fold": 2,
+    "seed_init": 1006,
+    "epochs": 40,
+    "batch": 8192,
+    "lr": 0.0003,
+    "dropout": 0.1,
+    "pool_n": 300000,
+    "val_ler": 0.15903,
+    "date": "2026-11-13"
+  },
+  "X_mlp_1024x512_2600k_s4.npz": {
+    "basis": "X",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "data": "train100k+gen_big500k+gen_big2_2000k",
+    "seed": 4,
+    "epochs": 80,
+    "batch": 32768,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 12,
+    "val_ler": 0.0779,
+    "fresh_ler": 0.07541,
+    "date": "2026-11-13",
+    "cmd": "train_mlp.py --hidden 1024 512 --epochs 80 --patience 12 --batch 32768 --seed 4 --use-big --use-big2"
+  },
+  "Z_mlp_1024x512_2600k_s4.npz": {
+    "basis": "Z",
+    "arch": [
+      70,
+      1024,
+      512,
+      4
+    ],
+    "data": "train100k+gen_big500k+gen_big2_2000k",
+    "seed": 4,
+    "epochs": 80,
+    "batch": 32768,
+    "lr": 0.001,
+    "dropout": 0.1,
+    "patience": 12,
+    "val_ler": 0.07177,
+    "fresh_ler": 0.07399,
+    "date": "2026-11-13",
+    "cmd": "train_mlp.py --hidden 1024 512 --epochs 80 --patience 12 --batch 32768 --seed 4 --use-big --use-big2"
+  }
+}

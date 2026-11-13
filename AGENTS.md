@@ -20,6 +20,8 @@ a B200 GPU + 48 CPU cores machine, and the final score is `LER * max(1, t / t_ca
 There is a hard limit of 5 minutes. Import-time work (loading weights, building tables) is
 **not** timed — only the `decode()` calls are. So: front-load everything into import time.
 
+Hand-ins can include pretrained weights/models, as long as we trained them and provide the code that generated the weights.
+
 ## The decoding problem (the physics/linear-algebra view)
 
 - Hidden binary error vector `e` (~2470 error mechanisms, each 1 with its own probability p_i).
@@ -191,6 +193,8 @@ Candidate architectures, roughly in increasing power/cost:
   posterior as an extra feature (hybrid decoder).
 - **Loss:** predict P(O_j=1|D) with BCE, threshold at 0.5 at inference (optimal for per-bit
   error). Consider weighted training on rare nonzero-O shots since all-zero dominates.
+
+This computer has an NVIDIA RTX 3050 Ti available to train.
 
 ### 4. PCA / dimensionality-reduction analysis (idea to explore)
 
