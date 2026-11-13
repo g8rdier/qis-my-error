@@ -1,129 +1,118 @@
-"""Competition hand-in decoder: LUT head + MLP tail (per basis, torch-free).
+"""Near-maximum-likelihood decoder for the code check.
 
-Strategy (see RESULTS.md for measurements):
-  - Exact detector-pattern hits -> stored LUT majority vote (near-optimal).
-  - Misses -> MLP P(O|D) marginal approximator (numpy forward, milliseconds).
-  - If MLP weights are absent for a basis, misses fall back to dist-1 LUT vote.
-Everything loads at import (free under timing rules); decode() is pure numpy,
-deterministic, and has no randomness.
+The top 10 teams hand in this folder: decoder.py, requirements.txt and any files decode() loads, together with
+the code that created them. We call decode() once per basis on that basis's 100,000 shots in data/kaggle_private and time the two
+calls (see "Handing in your code" in the README). Importing the decoder, and anything it builds when imported, is
+not timed.
+
+Every shot is decoded by the pruned dynamic programme in mld.py, which computes the weight of each of the 16 logical
+outcomes and predicts each logical bit by its marginal (the optimal decision for the per-bit LER). It runs in
+passes: the first decodes every shot, and each later pass re-decodes the shots where some logical bit is still
+uncertain.
+
+Pruning only removes terms from an outcome's weight, so every pass gives a lower bound on it, and passes are
+combined by keeping the largest bound per outcome. Passes alternate between sweeping the error mechanisms forward
+and backward in time: the two directions prune different error vectors, so their combination is closer to the exact
+weights than one sweep with a tighter threshold that costs the same.
+
+At import we rebuild the competition's two circuits (5 rounds, SI1000 p = 0.002), precompute the decoder tables for
+each and compile the numba kernel, so decode() only has to look the tables up by a hash of the circuit text. A
+circuit that is not one of these is handled too, by building its tables inside decode().
 """
 import hashlib
-import os
 
 import numpy as np
 import stim
+from hackathon_2026 import apply_circuit_noise, create_circuit, problem_info
 
-from models.common import current_load
+from mld import build_mld, marginals_logw, mld_logw
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ART = os.path.join(HERE, "models", "artifacts")
-
-
-def _load_npz(name):
-    try:
-        return np.load(os.path.join(ART, name), allow_pickle=True)
-    except FileNotFoundError:
-        return None
-
-
-_BASIS_MAP = _load_npz("basis_map.npz")
-
-_TABLES, _MLPS, _THR = {}, {}, {}
-try:
-    _CUR = current_load()
-except Exception:
-    _CUR = {}
-for _b in "XZ":
-    _t = _load_npz(_b + "_lut.npz")
-    if _t is not None:
-        _TABLES[_b] = {"keys": _t["keys"], "probs": _t["probs"], "counts": _t["counts"]}
-    _wname = _CUR.get(_b, {}).get("weights", _b + "_mlp.npz")  # legacy fallback
-    _m = _load_npz(_wname)
-    if _m is not None:
-        _MLPS[_b] = ({k: _m[k] for k in _m.files if k != "arch_tag"}, str(_m["arch_tag"]))
-    _THR[_b] = np.array(_CUR.get(_b, {}).get("threshold", [0.5] * 4), dtype=np.float32)
-
-_N_PACKED = 9
+ROUNDS, NOISE = 5, 0.002
+# passes (direction, eps, max_states, thr): the first pass decodes every shot; each later pass re-decodes the shots
+# where some logical bit still has a probability between thr and 1 - thr. Direction 0 sweeps the mechanisms forward
+# in time, 1 backward.
+MLD_TIERS = [(0, 1e-4, 1024, 0.0), (1, 3e-5, 4096, 0.15)]
+MLD_COMPACT_EVERY = 32
+MLD_HEXP = 0.5
 
 
-def _detect_basis(circuit):
-    if _BASIS_MAP is not None:
-        sha = hashlib.sha256(str(circuit).encode()).hexdigest()
-        for b in "XZ":
-            if _BASIS_MAP[f"sha_{b}"] == sha:
-                return b
-    # Fallback: X has 2470 mechanisms, Z 2465 (from stored map).
-    ncol = int(_BASIS_MAP[f"ncol_X"]) if _BASIS_MAP is not None else 2470
-    dem = circuit.detector_error_model()
-    n = sum(1 for ins in dem.flatten() if ins.type == "error")
-    # NOTE: raw DEM count overcounts merged columns; use unique-column count via
-    # cheap pass only when fingerprint missed (unknown circuit variant).
-    return "X" if n >= 2470 else "Z"
+def _key(circuit: stim.Circuit) -> str:
+    return hashlib.sha256(str(circuit).encode()).hexdigest()
 
 
-def _pack(D):
-    return np.packbits(np.asarray(D, dtype=np.uint8), axis=1)
+def _tables(circuit: stim.Circuit):
+    m = problem_info(circuit)
+    # backward sweep: the same decoder on the detectors in reverse order
+    return (
+        build_mld(m["H"], m["L"], m["p"], hexp=MLD_HEXP),
+        build_mld(m["H"][::-1].copy(), m["L"], m["p"], hexp=MLD_HEXP),
+    )
 
 
-def _exact(table, packed):
-    q = packed.reshape(len(packed), _N_PACKED).view(f"V{_N_PACKED}").reshape(-1)
-    idx = np.searchsorted(table["keys"], q)
-    valid = idx < len(table["keys"])
-    hit = np.zeros(len(q), dtype=bool)
-    hit[valid] = table["keys"][idx[valid]] == q[valid]
-    probs = np.full((len(q), 4), np.nan, dtype=np.float32)
-    probs[hit] = table["probs"][np.where(hit, idx, 0)[hit]]
-    return probs, hit
+_TABLES = {}
+for _basis in "XZ":
+    _c = apply_circuit_noise(create_circuit(_basis, ROUNDS), p=NOISE)
+    _TABLES[_key(_c)] = _tables(_c)
+for _g in _TABLES.values():  # compile (or load from numba's cache) the kernel before the clock starts
+    for _dir, _eps, _max_states, _ in MLD_TIERS:
+        mld_logw(
+            _g[_dir],
+            np.zeros((2, _g[_dir]["nd"]), bool),
+            eps=_eps,
+            max_states=_max_states,
+            compact_every=MLD_COMPACT_EVERY,
+        )
 
 
-def _mlp_forward(D, params):
-    X = np.asarray(D, dtype=np.float32)
-    h = X @ params["W1"] + params["b1"]
-    np.maximum(h, 0, out=h)
-    if "W3" in params:
-        h = h @ params["W2"] + params["b2"]
-        np.maximum(h, 0, out=h)
-        logits = h @ params["W3"] + params["b3"]
-    else:
-        logits = h @ params["W2"] + params["b2"]
-    return 1.0 / (1.0 + np.exp(-logits))
-
-
-def _dist1(table, packed, miss):
-    sub = packed[miss]
-    votes = np.zeros((len(miss), 4), np.float64)
-    tot = np.zeros(len(miss), np.float64)
-    for j in range(70):
-        f = sub.copy()
-        f[:, j // 8] ^= np.uint8(1 << (7 - (j % 8)))
-        fp, fh = _exact(f, f)[:2]
-        if fh.any():
-            w = table["counts"][np.searchsorted(table["keys"], f.reshape(len(f), _N_PACKED).view(f"V{_N_PACKED}").reshape(-1))[fh]]
-            votes[fh] += fp[fh] * w[:, None].astype(np.float64)
-            tot[fh] += w
-    return votes, tot
+def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
+    """Per-bit probability of a logical flip, shape (shots, 4)."""
+    D = np.asarray(detector_events, dtype=bool)
+    events = (np.ascontiguousarray(D), np.ascontiguousarray(D[:, ::-1]))
+    logw = None
+    for direction, eps, max_states, thr in MLD_TIERS:
+        if logw is None:
+            logw = mld_logw(
+                g[direction],
+                events[direction],
+                eps=eps,
+                max_states=max_states,
+                compact_every=MLD_COMPACT_EVERY,
+            )
+            continue
+        sel = np.flatnonzero((np.abs(marginals_logw(logw) - 0.5) < 0.5 - thr).any(1))
+        if len(sel):
+            logw[sel] = np.maximum(
+                logw[sel],
+                mld_logw(
+                    g[direction],
+                    events[direction][sel],
+                    eps=eps,
+                    max_states=max_states,
+                    compact_every=MLD_COMPACT_EVERY,
+                ),
+            )
+    return marginals_logw(logw)
 
 
 def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:
-    D = np.asarray(detector_events, dtype=bool)
-    n = len(D)
-    out = np.zeros((n, 4), dtype=np.uint8)
-    if n == 0:
-        return out
-    basis = _detect_basis(circuit)
-    table = _TABLES.get(basis)
-    if table is None:  # no artifacts at all: all-zeros
-        return out
-    packed = _pack(D)
-    probs, hit = _exact(table, packed)
-    miss = np.flatnonzero(~hit)
-    if len(miss) and basis in _MLPS:
-        params, _ = _MLPS[basis]
-        probs[miss] = _mlp_forward(D[miss], params).astype(np.float32)
-    elif len(miss):
-        votes, tot = _dist1(table, packed, miss)
-        has = tot > 0
-        probs[miss[has]] = (votes[has] / tot[has, None]).astype(np.float32)
-    known = ~np.isnan(probs[:, 0])
-    out[known] = (probs[known] >= _THR[basis]).astype(np.uint8)
-    return out
+    """
+    circuit: the X or Z circuit, loaded with stim.Circuit.from_file.
+    detector_events: bool array of shape (shots, 70), columns D0 to D69.
+    Returns a 0/1 array of shape (shots, 4), columns L0 to L3.
+    """
+    g = _TABLES.get(_key(circuit))
+    if g is None:
+        g = _tables(circuit)
+    events = np.asarray(detector_events, dtype=bool)
+    assert events.ndim == 2 and events.shape[1] == g[0]["nd"]
+    return (decode_marginals(g, events) > 0.5).astype(np.uint8)
+    #out, found = lookup(circuit, detector_events)
+    ## the table is only trusted for the easiest shots; BP + OSD is more accurate on everything else
+    #miss = ~(found & (np.asarray(detector_events).sum(1) <= LUT_MAX_FIRED))
+    #if miss.any():
+        #m = problem_info(circuit)
+        #graph = build_graph(m["H"], m["L"], m["p"])
+        #bposd_params = {'max_iter': 8, 'alpha': 0.6, 'always_osd': True, 'damping': 0.1, 'avg_post': True, 'lam': 400, 'lam2': 100, 'coset': 2, 'temp': 0.85, 'refine_thr': 0.3, 'refine_lam': 1000, 'refine_lam2': 300
+                        #,'return_stats': False, 'return_classp': False}
+        #out[miss] = decode_bp_osd(graph, np.asarray(detector_events)[miss], **bposd_params)
+    #return out
