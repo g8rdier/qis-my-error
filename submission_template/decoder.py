@@ -31,7 +31,9 @@ ROUNDS, NOISE = 5, 0.002
 # passes (direction, eps, max_states, thr): the first pass decodes every shot; each later pass re-decodes the shots
 # where some logical bit still has a probability between thr and 1 - thr. Direction 0 sweeps the mechanisms forward
 # in time, 1 backward.
-MLD_TIERS = [(0, 1e-4, 4096, 0.0), (1, 1e-4, 4096, 0.05), (0, 3e-5, 4096, 0.1), (1, 3e-5, 4096, 0.1)]
+MLD_TIERS = [(0, 1e-4, 1024, 0.0), (1, 3e-5, 4096, 0.15)]
+MLD_COMPACT_EVERY = 32
+MLD_HEXP = 0.5
 
 
 def _key(circuit: stim.Circuit) -> str:
@@ -41,7 +43,10 @@ def _key(circuit: stim.Circuit) -> str:
 def _tables(circuit: stim.Circuit):
     m = problem_info(circuit)
     # backward sweep: the same decoder on the detectors in reverse order
-    return build_mld(m["H"], m["L"], m["p"]), build_mld(m["H"][::-1].copy(), m["L"], m["p"])
+    return (
+        build_mld(m["H"], m["L"], m["p"], hexp=MLD_HEXP),
+        build_mld(m["H"][::-1].copy(), m["L"], m["p"], hexp=MLD_HEXP),
+    )
 
 
 _TABLES = {}
@@ -50,7 +55,13 @@ for _basis in "XZ":
     _TABLES[_key(_c)] = _tables(_c)
 for _g in _TABLES.values():  # compile (or load from numba's cache) the kernel before the clock starts
     for _dir, _eps, _max_states, _ in MLD_TIERS:
-        mld_logw(_g[_dir], np.zeros((2, _g[_dir]["nd"]), bool), eps=_eps, max_states=_max_states)
+        mld_logw(
+            _g[_dir],
+            np.zeros((2, _g[_dir]["nd"]), bool),
+            eps=_eps,
+            max_states=_max_states,
+            compact_every=MLD_COMPACT_EVERY,
+        )
 
 
 def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
@@ -60,11 +71,26 @@ def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
     logw = None
     for direction, eps, max_states, thr in MLD_TIERS:
         if logw is None:
-            logw = mld_logw(g[direction], events[direction], eps=eps, max_states=max_states)
+            logw = mld_logw(
+                g[direction],
+                events[direction],
+                eps=eps,
+                max_states=max_states,
+                compact_every=MLD_COMPACT_EVERY,
+            )
             continue
         sel = np.flatnonzero((np.abs(marginals_logw(logw) - 0.5) < 0.5 - thr).any(1))
         if len(sel):
-            logw[sel] = np.maximum(logw[sel], mld_logw(g[direction], events[direction][sel], eps=eps, max_states=max_states))
+            logw[sel] = np.maximum(
+                logw[sel],
+                mld_logw(
+                    g[direction],
+                    events[direction][sel],
+                    eps=eps,
+                    max_states=max_states,
+                    compact_every=MLD_COMPACT_EVERY,
+                ),
+            )
     return marginals_logw(logw)
 
 
