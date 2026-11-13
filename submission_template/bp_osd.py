@@ -14,6 +14,7 @@ predict the logical flips L e (mod 2).
 
 Columns of H have 70 bits, stored as two uint64 words. Shots are decoded in parallel with numba.
 """
+import numba
 import numpy as np
 from numba import njit, prange
 
@@ -33,7 +34,7 @@ def build_graph(H: np.ndarray, L: np.ndarray, p: np.ndarray):
     for i, j in zip(ec, ev):
         cols[j, i // 64] |= np.uint64(1) << np.uint64(i % 64)
     logical = (np.asarray(L, np.uint8).T * (1 << np.arange(L.shape[0]))).sum(1).astype(np.uint8)  # 4-bit mask per column
-    llr0 = np.log((1 - p) / p).astype(np.float64)
+    llr0 = np.log((1 - p) / p).astype(np.float32)
     return dict(ec=ec.astype(np.int64), ev=ev.astype(np.int64), check_ptr=check_ptr, var_edges=order.astype(np.int64),
                 var_ptr=var_ptr, cols=cols, logical=logical, llr0=llr0, m=m, n=n)
 
@@ -110,91 +111,105 @@ def _osd0(post, cols, logical, D0, D1, m):
 
 
 @njit(parallel=True, cache=True)
-def decode_batch(D, ec, ev, check_ptr, var_edges, var_ptr, cols, logical, llr0, max_iter, alpha, always_osd, damping,
-                 avg_post, stats):
-    """D: (shots, m) uint8. Returns (shots,) uint8 logical masks. stats[s] = BP iterations used, or -1 if OSD ran."""
+def decode_batch(D, ec, ev, check_ptr, cols, logical, llr0, max_iter, alpha, always_osd, damping, avg_post, nchunks,
+                 stats):
+    """D: (shots, m) uint8. Returns (shots,) uint8 logical masks. stats[s] = BP iterations used, or -1 if OSD ran.
+
+    Flooding min-sum where the error->detector message is never stored: it is post[j] - c2v[e], the posterior of
+    the previous iteration minus this edge's own incoming message. Only c2v (one float per edge) and the posteriors
+    are kept, so the working set stays in cache and no variable-major indirection is needed.
+    """
     shots, m = D.shape
     n = llr0.shape[0]
     E = ec.shape[0]
     out = np.zeros(shots, np.uint8)
-    for s in prange(shots):
-        d = D[s]
-        v2c = np.empty(E, np.float64)
-        c2v = np.empty(E, np.float64)
-        post = llr0.copy()
-        hard = np.zeros(n, np.uint8)
-        acc = np.zeros(n, np.float64)  # sum of posteriors over iterations (used when avg_post)
-        for e in range(E):
-            v2c[e] = llr0[ev[e]]
-            c2v[e] = 0.0
-        converged = False
-        it = 0
-        while it < max_iter:
-            it += 1
-            # detector -> error: normalised min-sum
-            for i in range(m):
-                sgn = 1.0 if d[i] == 0 else -1.0
-                min1 = 1e300
-                min2 = 1e300
-                arg = -1
-                for e in range(check_ptr[i], check_ptr[i + 1]):
-                    x = v2c[e]
-                    if x < 0:
-                        sgn = -sgn
-                        x = -x
-                    if x < min1:
-                        min2 = min1
-                        min1 = x
-                        arg = e
-                    elif x < min2:
-                        min2 = x
-                for e in range(check_ptr[i], check_ptr[i + 1]):
-                    mag = min2 if e == arg else min1
-                    sg = sgn if v2c[e] >= 0 else -sgn
-                    c2v[e] = damping * c2v[e] + (1.0 - damping) * alpha * sg * mag
-            # error -> detector, posteriors and hard decision
+    a = np.float32(alpha)
+    dmp = np.float32(damping)
+    big = np.float32(1e30)
+    maxdeg = 0
+    for i in range(m):
+        maxdeg = max(maxdeg, check_ptr[i + 1] - check_ptr[i])
+    per = (shots + nchunks - 1) // nchunks
+    for ch in prange(nchunks):
+        c2v = np.empty(E, np.float32)
+        post = np.empty(n, np.float32)
+        acc = np.empty(n, np.float32)  # sum of posteriors over iterations (used when avg_post)
+        hard = np.empty(n, np.uint8)
+        xs = np.empty(maxdeg, np.float32)
+        for s in range(ch * per, min(shots, (ch + 1) * per)):
+            d = D[s]
+            for e in range(E):
+                c2v[e] = 0.0
             for j in range(n):
-                tot = llr0[j]
-                for q in range(var_ptr[j], var_ptr[j + 1]):
-                    tot += c2v[var_edges[q]]
-                post[j] = tot
-                acc[j] += tot
-                hard[j] = 1 if tot < 0 else 0
-                for q in range(var_ptr[j], var_ptr[j + 1]):
-                    e = var_edges[q]
-                    v2c[e] = tot - c2v[e]
-            if always_osd:
-                continue  # OSD runs regardless, so skip the convergence check
-            # does the hard decision explain the detectors?
-            ok = True
-            for i in range(m):
-                par = 0
-                for e in range(check_ptr[i], check_ptr[i + 1]):
-                    par ^= hard[ev[e]]
-                if par != d[i]:
-                    ok = False
+                post[j] = llr0[j]
+                acc[j] = 0.0
+            converged = False
+            it = 0
+            while it < max_iter:
+                it += 1
+                # detector -> error: damped, normalised min-sum
+                for i in range(m):
+                    lo = check_ptr[i]
+                    deg = check_ptr[i + 1] - lo
+                    neg = d[i]  # parity of negative incoming messages, starting from the detector value
+                    min1 = big
+                    min2 = big
+                    arg = -1
+                    for k in range(deg):  # branch-light: gather each message once
+                        x = post[ev[lo + k]] - c2v[lo + k]
+                        xs[k] = x
+                        neg ^= x < 0
+                        ax = abs(x)
+                        min2 = min(min2, max(min1, ax))
+                        if ax < min1:
+                            arg = k
+                        min1 = min(min1, ax)
+                    scale = (1 - dmp) * a * (np.float32(-1.0) if neg else np.float32(1.0))
+                    for k in range(deg):
+                        mag = min2 if k == arg else min1
+                        sg = -scale if xs[k] < 0 else scale
+                        c2v[lo + k] = dmp * c2v[lo + k] + sg * mag
+                # posteriors = prior + all incoming messages
+                for j in range(n):
+                    post[j] = llr0[j]
+                for e in range(E):
+                    post[ev[e]] += c2v[e]
+                for j in range(n):
+                    acc[j] += post[j]
+                if always_osd:
+                    continue  # OSD runs regardless, so skip the convergence check
+                # does the hard decision explain the detectors?
+                for j in range(n):
+                    hard[j] = 1 if post[j] < 0 else 0
+                ok = True
+                for i in range(m):
+                    par = 0
+                    for e in range(check_ptr[i], check_ptr[i + 1]):
+                        par ^= hard[ev[e]]
+                    if par != d[i]:
+                        ok = False
+                        break
+                if ok:
+                    converged = True
                     break
-            if ok:
-                converged = True
-                break
-        if converged:
-            o = np.uint8(0)
-            for j in range(n):
-                if hard[j]:
-                    o ^= logical[j]
-            out[s] = o
-            stats[s] = it
-        else:
-            D0 = np.uint64(0)
-            D1 = np.uint64(0)
-            for i in range(m):
-                if d[i]:
-                    if i < 64:
-                        D0 |= np.uint64(1) << np.uint64(i)
-                    else:
-                        D1 |= np.uint64(1) << np.uint64(i - 64)
-            out[s] = _osd0(acc if avg_post else post, cols, logical, D0, D1, m)
-            stats[s] = -1
+            if converged:
+                o = np.uint8(0)
+                for j in range(n):
+                    if hard[j]:
+                        o ^= logical[j]
+                out[s] = o
+                stats[s] = it
+            else:
+                D0 = np.uint64(0)
+                D1 = np.uint64(0)
+                for i in range(m):
+                    if d[i]:
+                        if i < 64:
+                            D0 |= np.uint64(1) << np.uint64(i)
+                        else:
+                            D1 |= np.uint64(1) << np.uint64(i - 64)
+                out[s] = _osd0(acc if avg_post else post, cols, logical, D0, D1, m)
+                stats[s] = -1
     return out
 
 
@@ -202,7 +217,8 @@ def decode_bp_osd(graph, detector_events, max_iter=5, alpha=0.9, always_osd=True
                   return_stats=False):
     D = np.ascontiguousarray(detector_events, dtype=np.uint8)
     stats = np.zeros(len(D), np.int64)
-    masks = decode_batch(D, graph["ec"], graph["ev"], graph["check_ptr"], graph["var_edges"], graph["var_ptr"],
-                         graph["cols"], graph["logical"], graph["llr0"], max_iter, alpha, always_osd, damping, avg_post, stats)
+    nchunks = max(1, min(len(D), 8 * numba.get_num_threads()))
+    masks = decode_batch(D, graph["ec"], graph["ev"], graph["check_ptr"], graph["cols"], graph["logical"],
+                         graph["llr0"], max_iter, alpha, always_osd, damping, avg_post, nchunks, stats)
     out = np.unpackbits(masks[:, None], axis=1, count=4, bitorder="little")
     return (out, stats) if return_stats else out
