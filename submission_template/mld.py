@@ -130,7 +130,8 @@ def _logadd(x, y):
 def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, max_states, compact_every,
               ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16, stats):
     """Posterior weights of the 16 logical outcomes for one shot, written to out16. The remaining arrays are
-    scratch space of size >= 2 * max_states + 1 (table: a power of two >= 4 times that). stats: peak state count."""
+    scratch space of size >= 2 * max_states + 1 (table: a power of two >= 4 times that). The weights in out16 are
+    relative to the largest one, whose log is written to stats[1]; stats[0] is the peak state count."""
     cur = 64  # table[:cur] is in use, sized to the state count
     tmask = np.uint64(cur - 1)
     table[:cur] = -1
@@ -340,6 +341,7 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
             if sc[i] > ninf:
                 out16[np.int64((kb[i] >> sh) & np.uint64(15))] += np.exp(lw[i] - mx)
     stats[0] = peak
+    stats[1] = mx
 
 
 @njit(parallel=True, cache=True)
@@ -375,16 +377,42 @@ def _mld_batch(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, 
                       compact_every, ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16[s], stats[s])
 
 
-def mld_classp(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16):
-    """Normalised posterior over the 16 logical outcomes, shape (shots, 16), and the peak state count per shot."""
+def _run(g, detector_events, eps, max_states, compact_every):
     D = np.ascontiguousarray(np.asarray(detector_events, dtype=np.bool_))
     out16 = np.zeros((len(D), 16))
-    stats = np.zeros((len(D), 1))
+    stats = np.zeros((len(D), 2))
     nchunks = max(1, min(len(D), 16 * numba.get_num_threads()))
     _mld_batch(g["c0"], g["c1"], g["m0"], g["m1"], g["cl0"], g["cl1"], g["lr"], g["v0"], g["v1"], g["hasv0"], g["cdet"], g["cv0"], g["cv1"], g["cw"], g["d1z"],
                g["h0"], D, g["nd"], np.log(eps), max_states, compact_every, nchunks, out16, stats)
+    return out16, stats
+
+
+def mld_classp(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16):
+    """Normalised posterior over the 16 logical outcomes, shape (shots, 16), and the peak state count per shot."""
+    out16, stats = _run(g, detector_events, eps, max_states, compact_every)
     tot = out16.sum(1, keepdims=True)
     return out16 / np.where(tot > 0, tot, 1), stats[:, 0]
+
+
+def mld_logw(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16):
+    """Log of the unnormalised weight of each of the 16 logical outcomes, shape (shots, 16); -inf where no error
+    vector of that outcome survived the pruning.
+
+    The weights are on the same absolute scale for every sweep of the same shot (relative to the no-error vector),
+    and pruning only ever removes terms from the sum. Each entry is therefore a lower bound on the exact weight, so
+    the results of different sweeps (another mechanism order, another threshold) can be combined by taking the
+    largest value per outcome."""
+    out16, stats = _run(g, detector_events, eps, max_states, compact_every)
+    with np.errstate(divide="ignore"):
+        return np.log(out16) + np.where(np.isfinite(stats[:, 1:2]), stats[:, 1:2], 0.0)
+
+
+def marginals_logw(logw):
+    """Per-bit probability of a logical flip from log outcome weights; 0.5 for shots with no surviving outcome."""
+    mx = logw.max(1, keepdims=True)
+    ok = np.isfinite(mx)
+    w = np.where(ok, np.exp(logw - np.where(ok, mx, 0.0)), 1.0)
+    return marginals(w / w.sum(1, keepdims=True))
 
 
 def marginals(classp):
