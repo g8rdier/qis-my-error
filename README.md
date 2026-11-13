@@ -1,3 +1,5 @@
+<p align="center"><img src="figures/logo.png" alt="Qis my error logo" width="280"></p>
+
 # QEC decoder hackathon, November 2026: build your own decoder
 
 This repository holds the tools for the QEC decoder hackathon. The competition itself runs on Kaggle (invite only); the link to the competition will be added here later. On Kaggle you download the data, submit predictions and follow the leaderboard. Where this README and the Kaggle pages differ, the Kaggle pages count.
