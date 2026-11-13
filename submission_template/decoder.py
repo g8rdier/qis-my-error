@@ -31,7 +31,10 @@ ROUNDS, NOISE = 5, 0.002
 # passes (direction, eps, max_states, thr): the first pass decodes every shot; each later pass re-decodes the shots
 # where some logical bit still has a probability between thr and 1 - thr. Direction 0 sweeps the mechanisms forward
 # in time, 1 backward.
-MLD_TIERS = [(0, 1e-4, 1024, 0.0), (1, 3e-5, 4096, 0.15)]
+# The second pass used to be (1, 3e-5, 4096, 0.15). This cheaper one is ~1/3 faster overall with no significant
+# accuracy difference: compare_settings.py on 100k + 50k fresh shots per basis (seeds 1, 2) gave 349 bits only the
+# old setting got right vs 321 only this one got right (sign test: not significant).
+MLD_TIERS = [(0, 1e-4, 1024, 0.0), (1, 1e-4, 2048, 0.15)]
 MLD_COMPACT_EVERY = 32
 MLD_HEXP = 0.5
 
