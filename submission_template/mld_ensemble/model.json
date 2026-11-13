@@ -3,9 +3,24 @@
   "format_version": 1,
   "assets_sha256": "7d06df05521eb5abc70ddda9f0786491cdc904bee87f61f9d678241ba2b55c03",
   "parameters": {
-    "heuristic_exponent": 0.5,
-    "compact_every": 32,
-    "tiers": [[0, 0.0001, 1024, 0.0], [1, 0.00003, 4096, 0.15]],
+    "basis_specific": {
+      "X": {
+        "heuristic_exponent": 0.6,
+        "compact_every": 32,
+        "tiers": [
+          [0, 6.666666666666667e-05, 3072, 0.0],
+          [1, 4.5e-05, 3072, 0.125]
+        ]
+      },
+      "Z": {
+        "heuristic_exponent": 0.6,
+        "compact_every": 32,
+        "tiers": [
+          [0, 6.666666666666667e-05, 3072, 0.0],
+          [1, 4.5e-05, 3072, 0.125]
+        ]
+      }
+    },
     "combination": "maximum absolute weight per logical class, then bitwise marginals",
     "detector_orders": ["chronological", "shuffled within rounds"],
     "shuffle_seed": 42071,

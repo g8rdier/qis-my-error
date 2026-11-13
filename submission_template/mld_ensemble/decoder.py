@@ -24,8 +24,14 @@ elif Path(sys.modules["mld_ensemble"].__file__).resolve().parent != HERE:
 
 from mld_ensemble.kernel import build_mld, marginals_logw, mld_logw
 
+MLD_TIERS = (
+    (0, 6.666666666666667e-05, 3072, 0.0),
+    (1, 4.5e-05, 3072, 0.125),
+)
+MLD_COMPACT_EVERY = 32
+MLD_HEXP = 0.6
+
 MODEL = json.loads((HERE / "model.json").read_text())
-PARAMETERS = MODEL["parameters"]
 ASSETS = HERE / "assets.npz"
 if hashlib.sha256(ASSETS.read_bytes()).hexdigest() != MODEL["assets_sha256"]:
     raise ValueError("assets.npz does not match model.json")
@@ -49,7 +55,7 @@ def _make_states(path):
                 raise ValueError("invalid mechanism probabilities")
             tables = [
                 [build_mld(H[order[::direction]].copy(), L, p,
-                           hexp=PARAMETERS["heuristic_exponent"])
+                         hexp=MLD_HEXP)
                  for direction in (1, -1)]
                 for order in orders
             ]
@@ -62,7 +68,8 @@ def _component(state, D, component):
     """Absolute outcome masses; reverse pass retains the larger per-class bound."""
     weights = None
     order = state["orders"][component]
-    for direction, eps, max_states, threshold in PARAMETERS["tiers"]:
+    basis = state["basis"]
+    for direction, eps, max_states, threshold in MLD_TIERS:
         selected = np.arange(len(D)) if weights is None else np.flatnonzero(
             (np.abs(marginals_logw(weights) - .5) < .5 - threshold).any(1))
         if not len(selected):
@@ -70,7 +77,7 @@ def _component(state, D, component):
         events = D[selected][:, order[::(-1 if direction else 1)]]
         extra = mld_logw(state["tables"][component][direction], events,
                          eps=eps, max_states=max_states,
-                         compact_every=PARAMETERS["compact_every"])
+                         compact_every=MLD_COMPACT_EVERY)
         if weights is None:
             weights = extra
         else:
@@ -100,9 +107,14 @@ _STATES = _make_states(ASSETS)
 for _state in _STATES.values():
     for _tables in _state["tables"]:
         for _graph in _tables:
-            mld_logw(_graph, np.zeros((1, 70), bool),
-                     eps=1e-4, max_states=1024,
-                     compact_every=PARAMETERS["compact_every"])
+            for _direction, _eps, _max_states, _threshold in MLD_TIERS:
+                mld_logw(
+                    _graph,
+                    np.zeros((1, 70), bool),
+                    eps=_eps,
+                    max_states=_max_states,
+                    compact_every=MLD_COMPACT_EVERY,
+                )
 
 
 def decode(circuit: stim.Circuit, detector_events: np.ndarray) -> np.ndarray:

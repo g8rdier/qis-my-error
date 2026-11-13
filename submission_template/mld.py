@@ -48,9 +48,11 @@ def _ctz(x):
 
 
 VEC_MIN = 24  # state count from which a step uses the vectorisable passes
+DEFAULT_HEXP = 0.6
+DEFAULT_COMPACT_EVERY = 32
 
 
-def build_mld(H: np.ndarray, L: np.ndarray, p: np.ndarray, hexp=0.5):
+def build_mld(H: np.ndarray, L: np.ndarray, p: np.ndarray, hexp=DEFAULT_HEXP):
     """Precompute the sweep order and the per-step tables the kernel needs from the error model."""
     H = np.asarray(H, np.uint8)
     L = np.asarray(L, np.uint8)
@@ -441,14 +443,16 @@ def mld_logw_many(sweeps):
     return [_logw(out16, stats) for out16, stats in _run_many(sweeps)]
 
 
-def mld_classp(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16):
+def mld_classp(g, detector_events, eps=1e-4, max_states=1 << 12,
+               compact_every=DEFAULT_COMPACT_EVERY):
     """Normalised posterior over the 16 logical outcomes, shape (shots, 16), and the peak state count per shot."""
     out16, stats = _run(g, detector_events, eps, max_states, compact_every)
     tot = out16.sum(1, keepdims=True)
     return out16 / np.where(tot > 0, tot, 1), stats[:, 0]
 
 
-def mld_logw(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16):
+def mld_logw(g, detector_events, eps=1e-4, max_states=1 << 12,
+             compact_every=DEFAULT_COMPACT_EVERY):
     """Log of the unnormalised weight of each of the 16 logical outcomes, shape (shots, 16); -inf where no error
     vector of that outcome survived the pruning.
 
