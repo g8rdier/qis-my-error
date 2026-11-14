@@ -223,9 +223,11 @@ def _argsort_states(scores, keep):
             indices[high], indices[mid] = indices[mid], indices[high]
             i, j = low, high-1
             while True:
-                while i < high and values[i] < pivot:
+                # values[high] is the pivot and values[low] <= pivot throughout, so both scans stop inside
+                # [low, high] without the bounds tests of the original
+                while values[i] < pivot:
                     i += 1
-                while j >= low and pivot < values[j]:
+                while pivot < values[j]:
                     j -= 1
                 if i >= j:
                     break

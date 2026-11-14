@@ -190,3 +190,23 @@ gain is within noise (full set, 16 threads: 76.27/75.89 s before vs
 All 800,000 bits and the CSV bytes match at 16 and 48 threads, all 21 parity
 arrays are byte-identical at 1 and 16 threads, and `check_handin.py` passes in
 a fresh venv.
+
+## Partition scans without bounds tests
+
+In the exact prefix quicksort, the partition scans `values[i] < pivot` and
+`pivot < values[j]` no longer test `i < high` and `j >= low`. After the
+median-of-three step `values[high]` holds the pivot (never swapped inside the
+loop) and `values[low]` stays <= pivot (it is only ever replaced by a value
+<= pivot), so the scans stop exactly where they did. Pivots, swaps and the
+returned order are unchanged; the sort invariant tests pass.
+
+| Implementation | Threads | Runs (interleaved) | X+Z runtime | Changed bits |
+| --- | ---: | ---: | ---: | ---: |
+| Before (b92b96e) | 16 | 2 | 73.76 s, 73.63 s | 0 |
+| Partition scans without bounds tests | 16 | 2 | **64.24 s, 65.00 s** | 0 |
+| Partition scans without bounds tests | 48 | 1 | 68.45 s | 0 |
+
+All 21 parity arrays are byte-identical at 1 and 16 threads, and `handin/`
+reproduces the selected CSV byte for byte and passes `check_handin.py` in a
+fresh venv. The same idea for the insertion-sort step and int32 sort indices
+gave no gain and were not kept.
