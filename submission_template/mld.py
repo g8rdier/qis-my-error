@@ -125,9 +125,9 @@ def _find(table, tmask, ka, kb, a, b):
     h = _hash(a, b, tmask)
     while True:
         t = table[h]
-        if t < 0:
+        if t == -1:  # empty; -2 marks a removed state, whose slot still continues probe sequences
             return -1
-        if ka[t] == a and kb[t] == b:
+        if t >= 0 and ka[t] == a and kb[t] == b:
             return t
         h = np.int64((np.uint64(h) + np.uint64(1)) & tmask)
 
@@ -280,6 +280,7 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
     lw[0] = 0.0
     sc[0] = h
     _insert(table, tmask, D0, D1, 0)
+    occ = 1  # upper bound on the non-empty table slots (states and removed-state markers)
     ns = 1
     peak = 1
     best = h
@@ -433,12 +434,16 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
                 lw[t] = clw[c]
                 sc[t] = csc[c]
                 ns += 1
-                if 2 * ns > cur:  # keep the load factor below 1/2
-                    cur *= 2
+                occ += 1
+                if 2 * occ > cur:  # keep the load factor, removed-state markers included, below 1/2
+                    cur = 64
+                    while cur < 4 * ns:
+                        cur *= 2
                     tmask = np.uint64(cur - 1)
                     table[:cur] = -1
                     for q in range(ns):
                         _insert(table, tmask, ka[q], kb[q], q)
+                    occ = ns
                 else:
                     _insert(table, tmask, a, b, t)
             if sc[t] > nbest:
@@ -448,6 +453,7 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
         if ns > max_states or since >= compact_every or closes:
             since = 0
             thr = best + leps
+            pos = ce.view(np.int64)  # pos[old index] = new index or -1; ce is free until the next step
             m = 0
             for i in range(ns):
                 if sc[i] >= thr:
@@ -455,7 +461,11 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
                     kb[m] = kb[i]
                     lw[m] = lw[i]
                     sc[m] = sc[i]
+                    pos[i] = m
                     m += 1
+                else:
+                    pos[i] = -1
+            nold = ns
             ns = m
             if ns == 0:
                 break
@@ -473,15 +483,31 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
                 kb[:max_states] = ckb[:max_states]
                 lw[:max_states] = clw[:max_states]
                 sc[:max_states] = csc[:max_states]
+                inv = cs.view(np.int64)  # inv[index before sorting] = index after, or -1
+                for j in range(m):
+                    inv[j] = -1
+                for j in range(max_states):
+                    inv[idx[j]] = j
+                for i in range(nold):
+                    if pos[i] >= 0:
+                        pos[i] = inv[pos[i]]
                 ns = max_states
-            table[:cur] = -1
-            cur = 64
-            while cur < 4 * ns:
-                cur *= 2
-            tmask = np.uint64(cur - 1)
-            table[:cur] = -1
-            for i in range(ns):
-                _insert(table, tmask, ka[i], kb[i], i)
+            if 2 * occ <= cur and cur <= 16 * ns:
+                # the states keep their keys, so every slot keeps its place on its probe sequence: renumber the
+                # surviving states and mark the removed ones, instead of inserting every state again
+                for h in range(cur):
+                    t = table[h]
+                    if t >= 0:
+                        table[h] = pos[t] if pos[t] >= 0 else -2
+            else:
+                cur = 64
+                while cur < 4 * ns:
+                    cur *= 2
+                tmask = np.uint64(cur - 1)
+                table[:cur] = -1
+                for i in range(ns):
+                    _insert(table, tmask, ka[i], kb[i], i)
+                occ = ns
         if ns > peak:
             peak = ns
     out16[:] = 0.0

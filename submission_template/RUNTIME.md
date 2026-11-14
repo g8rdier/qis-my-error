@@ -131,6 +131,30 @@ other file and imports none of the verification tools.
 - `check_handin.py` in a fresh Python 3.13.15 venv built from
   `handin/requirements.txt`: passes (X LER 0.03430, Z LER 0.03277).
 
+## In-place hash-table renumbering
+
+After every compaction the kernel used to clear the hash table and insert every
+surviving state again (random memory accesses, ~22% of stage-3 kernel time).
+The states keep their keys, so every occupied slot stays on its key's probe
+sequence. The table is now renumbered in one sequential pass: surviving states
+get their new index (also after the state-cap sort), removed states become a
+marker (-2) that lookups skip and inserts may reuse. A full rebuild still
+happens when occupied slots including markers exceed half the table, or when
+the table is more than 16 times the state count. Hash keys, scores, weights,
+state order and all arithmetic are unchanged.
+
+| Implementation | Threads | Runs (interleaved) | Median X+Z runtime | Changed bits |
+| --- | ---: | ---: | ---: | ---: |
+| State-sort optimization (f639e6b) | 16 | 3 | 77.33 s | 0 |
+| + in-place renumbering | 16 | 3 | **74.52 s** | 0 |
+| + in-place renumbering | 48 | 1 | 80.16 s | 0 |
+
+Ranges: 73.05-75.14 s vs 77.01-77.83 s. Single-thread kernel time on stage-3
+shots fell 14% and on stage-2 shots 11%; stage 1 is unchanged. All 21 parity
+arrays are byte-identical to the reference at 1 and 16 threads, the invariant
+tests pass, and `handin/` (updated to the same `mld.py`) reproduces the
+selected CSV byte for byte and passes `check_handin.py` in a fresh venv.
+
 ## Trials after the state-sort optimization (not kept)
 
 Profile at 16 threads, per basis: stage 1 ~3.9 s, stage 2 ~8 s, stage 3 ~26 s,

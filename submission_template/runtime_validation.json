@@ -436,5 +436,129 @@
     "allocation_free_sort": "same quicksort into kernel scratch buffers: 18.06 s vs 17.95 s. Not kept.",
     "skip_unchanged_table_rebuild": "18.20 s vs 17.99 s. Not kept.",
     "deduplicate_syndromes": "duplicates are 21% of stage-1 shots but 0.2-0.3% of stage 2 and ~0% of stage 3; stage 1 is ~10% of the runtime and the duplicates are its cheapest shots. Not implemented."
+  },
+  "table_remap_optimization": {
+    "change": "After compaction, renumber the surviving states in the hash table in one sequential pass and mark removed states (-2) instead of clearing the table and inserting every state again; a full rebuild happens only when occupied slots including markers exceed half the table or the table exceeds 16x the state count. Lookups skip markers, inserts may reuse them. Keys and arithmetic are unchanged.",
+    "reference_commit": "f639e6b",
+    "single_thread_kernel_seconds": {
+      "stage3_150_shots_per_basis_and_direction": {
+        "before": 18.0,
+        "after": 15.51
+      },
+      "stage2_1000": {
+        "before": 6.76,
+        "after": 6.03
+      },
+      "stage1_20000": {
+        "before": 10.66,
+        "after": 10.78
+      },
+      "outputs_and_stats_sha256_identical": true
+    },
+    "interleaved_16_thread_full_runs": {
+      "candidate_total_seconds": [
+        74.51834205602063,
+        75.14313231699634,
+        73.04784495697822
+      ],
+      "reference_total_seconds": [
+        77.01321255601943,
+        77.8333767070435,
+        77.32620336103719
+      ],
+      "candidate_median": 74.51834205602063,
+      "reference_median": 77.32620336103719,
+      "changed_bits": 0,
+      "byte_identical_csv": true,
+      "candidate_source_sha256": {
+        "decoder.py": "c773f4f9d09214c0de4c322284b6265b8489ace133eafc650d4040bda8e6c977",
+        "mld.py": "58dc1afea9f3972a58e00999c2774e46c71cf3d6fbce95ba1a36f84a5a97cc6d",
+        "requirements.txt": "c8dd99bc00e75c5350c0734c45a7c415ef3bf9b5055b7b8dd30b03cd3544f4e7",
+        "circuits/X_circuit.stim": "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070",
+        "circuits/Z_circuit.stim": "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968"
+      }
+    },
+    "full_check_48_threads": {
+      "selected_submission": "submission_tweak_tieband01.csv",
+      "selected_submission_sha256": "878631d6b0a31f7c2ec06d55b58fb82b7f6b8aa26f27e7321f5ebb63b08a17a1",
+      "input_sha256": "04607a99023315216e86c790bc11bf72150c1885a4ae18b7729d0be105d2dab5",
+      "shots": 200000,
+      "bits": 800000,
+      "threads": 48,
+      "runs": [
+        {
+          "run": 1,
+          "seconds": {
+            "X": 39.42317249800544,
+            "Z": 40.73873048101086
+          },
+          "total_seconds": 80.1619029790163,
+          "changed_bits": 0
+        }
+      ],
+      "median_seconds": 80.1619029790163,
+      "import_seconds_excluded": 0.2718853650148958,
+      "byte_identical_csv": true,
+      "source_sha256": {
+        "decoder.py": "c773f4f9d09214c0de4c322284b6265b8489ace133eafc650d4040bda8e6c977",
+        "mld.py": "58dc1afea9f3972a58e00999c2774e46c71cf3d6fbce95ba1a36f84a5a97cc6d",
+        "requirements.txt": "c8dd99bc00e75c5350c0734c45a7c415ef3bf9b5055b7b8dd30b03cd3544f4e7",
+        "circuits/X_circuit.stim": "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070",
+        "circuits/Z_circuit.stim": "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968"
+      },
+      "python": "3.13.15 (main, Sep  1 2026, 14:18:08) [Clang 22.1.3 ]",
+      "packages": {
+        "numpy": "2.2.6",
+        "stim": "1.16.0",
+        "numba": "0.68.1",
+        "llvmlite": "0.50.0"
+      },
+      "official_hardware_timing": false
+    },
+    "handin_full_check_48_threads": {
+      "selected_submission": "submission_tweak_tieband01.csv",
+      "selected_submission_sha256": "878631d6b0a31f7c2ec06d55b58fb82b7f6b8aa26f27e7321f5ebb63b08a17a1",
+      "input_sha256": "04607a99023315216e86c790bc11bf72150c1885a4ae18b7729d0be105d2dab5",
+      "shots": 200000,
+      "bits": 800000,
+      "threads": 48,
+      "runs": [
+        {
+          "run": 1,
+          "seconds": {
+            "X": 36.98640489502577,
+            "Z": 38.765457808971405
+          },
+          "total_seconds": 75.75186270399718,
+          "changed_bits": 0
+        }
+      ],
+      "median_seconds": 75.75186270399718,
+      "import_seconds_excluded": 4.570303165004589,
+      "byte_identical_csv": true,
+      "source_sha256": {
+        "decoder.py": "c773f4f9d09214c0de4c322284b6265b8489ace133eafc650d4040bda8e6c977",
+        "mld.py": "58dc1afea9f3972a58e00999c2774e46c71cf3d6fbce95ba1a36f84a5a97cc6d",
+        "requirements.txt": "28f7dc7ce08d40dd82a9eb8b46103b18d1fa6af14495274ba3756356be1c00e1",
+        "circuits/X_circuit.stim": "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070",
+        "circuits/Z_circuit.stim": "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968"
+      },
+      "python": "3.13.15 (main, Sep  1 2026, 14:18:08) [Clang 22.1.3 ]",
+      "packages": {
+        "numpy": "2.2.6",
+        "stim": "1.16.0",
+        "numba": "0.68.1",
+        "llvmlite": "0.50.0"
+      },
+      "official_hardware_timing": false
+    },
+    "generated_numerical_equality": "21 arrays of verify_runtime_parity.py (all stage log weights, marginals, predictions) byte-identical to the reference at 1 and 16 threads",
+    "check_handin_fresh_venv": {
+      "X_LER": 0.0343,
+      "Z_LER": 0.03277,
+      "decode_seconds_16_threads": 72.7,
+      "passed": true
+    },
+    "official_hardware_timing": false
   }
 }
