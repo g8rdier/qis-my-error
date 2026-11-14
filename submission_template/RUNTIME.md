@@ -179,7 +179,7 @@ it exactly; no such sort was found. Details are in `runtime_validation.json`.
 Stages 2 and 3 now hand out their shots most expensive first, using each
 shot's peak state count from the previous stage (rank correlation 0.96 with
 its time), in batches of about equal estimated cost. The results are put back
-in the original shot order before any further arithmetic, and 
+in the original shot order before any further arithmetic, and `decoder.py`
 only passes the costs along; the escalation mask is computed as before.
 
 A simulation from measured per-shot times predicts a shorter stage-3 tail on
@@ -188,5 +188,5 @@ gain is within noise (full set, 16 threads: 76.27/75.89 s before vs
 76.70/75.61 s after; one-third subset, 48 threads: medians 26.31 s vs
 26.12 s), so it was included at the team's request, not on measured speedup.
 All 800,000 bits and the CSV bytes match at 16 and 48 threads, all 21 parity
-arrays are byte-identical at 1 and 16 threads, and  passes in
+arrays are byte-identical at 1 and 16 threads, and `check_handin.py` passes in
 a fresh venv.
