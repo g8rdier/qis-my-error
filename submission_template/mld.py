@@ -241,22 +241,39 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
             for i in range(ns):
                 cs[i] = dz
                 ce[i] = 0.0
-            for j in range(cw[k]):
-                d = cdet[k, j]
-                f1 = cv1[k, j]
-                f0 = cv0[k, j]
-                if d < 64:
-                    sh = np.uint64(d)
-                    for i in range(ns):
-                        bit = np.float64((ka[i] >> sh) & np.uint64(1))
-                        cs[i] += f1 * bit
-                        ce[i] += f0 * bit
-                else:
-                    sh = np.uint64(d - 64)
-                    for i in range(ns):
-                        bit = np.float64((kb[i] >> sh) & np.uint64(1))
-                        cs[i] += f1 * bit
-                        ce[i] += f0 * bit
+            if hasv0[k]:
+                for j in range(cw[k]):
+                    d = cdet[k, j]
+                    f1 = cv1[k, j]
+                    f0 = cv0[k, j]
+                    if d < 64:
+                        sh = np.uint64(d)
+                        for i in range(ns):
+                            bit = np.float64((ka[i] >> sh) & np.uint64(1))
+                            cs[i] += f1 * bit
+                            ce[i] += f0 * bit
+                    else:
+                        sh = np.uint64(d - 64)
+                        for i in range(ns):
+                            bit = np.float64((kb[i] >> sh) & np.uint64(1))
+                            cs[i] += f1 * bit
+                            ce[i] += f0 * bit
+            else:
+                # Every cv0 term is exactly zero, so ce remains its initialized
+                # zero. The cs updates keep the same order and operations.
+                for j in range(cw[k]):
+                    d = cdet[k, j]
+                    f1 = cv1[k, j]
+                    if d < 64:
+                        sh = np.uint64(d)
+                        for i in range(ns):
+                            bit = np.float64((ka[i] >> sh) & np.uint64(1))
+                            cs[i] += f1 * bit
+                    else:
+                        sh = np.uint64(d - 64)
+                        for i in range(ns):
+                            bit = np.float64((kb[i] >> sh) & np.uint64(1))
+                            cs[i] += f1 * bit
             nbest = ninf
             if closes:
                 for i in range(ns):
