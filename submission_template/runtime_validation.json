@@ -435,7 +435,8 @@
     "radix_sort_with_tie_fallback": "stable radix sort used only when the kept prefix has no tied keys; ties occur in nearly every sort (~34 fallbacks per shot), so slower (19.5 s vs 17.6 s). Not kept.",
     "allocation_free_sort": "same quicksort into kernel scratch buffers: 18.06 s vs 17.95 s. Not kept.",
     "skip_unchanged_table_rebuild": "18.20 s vs 17.99 s. Not kept.",
-    "deduplicate_syndromes": "duplicates are 21% of stage-1 shots but 0.2-0.3% of stage 2 and ~0% of stage 3; stage 1 is ~10% of the runtime and the duplicates are its cheapest shots. Not implemented."
+    "deduplicate_syndromes": "duplicates are 21% of stage-1 shots but 0.2-0.3% of stage 2 and ~0% of stage 3; stage 1 is ~10% of the runtime and the duplicates are its cheapest shots. Not implemented.",
+    "swap_arrays_after_sort": "on top of the in-place renumbering: stage-3 single-thread 15.17/15.51 s vs 15.33/15.40 s, outputs identical. Not kept."
   },
   "table_remap_optimization": {
     "change": "After compaction, renumber the surviving states in the hash table in one sequential pass and mark removed states (-2) instead of clearing the table and inserting every state again; a full rebuild happens only when occupied slots including markers exceed half the table or the table exceeds 16x the state count. Lookups skip markers, inserts may reuse them. Keys and arithmetic are unchanged.",

@@ -167,6 +167,7 @@ serial NumPy glue 0.18 s. Within stage 3 the exact prefix quicksort takes
 | Radix sort, quicksort fallback on ties in the kept prefix | yes | slower: ties occur in nearly every sort |
 | Quicksort into preallocated scratch buffers | yes | no gain |
 | Skip the table rebuild when compaction removes nothing | yes | no gain |
+| Swap state arrays after the cap sort instead of copying back (on top of in-place renumbering) | yes | no gain (stage 3: 15.17/15.51 s vs 15.33/15.40 s) |
 | Decode duplicate syndromes once | — | duplicates are almost all cheap stage-1 shots; not implemented |
 
 The quicksort's order of tied scores determines later tie-breaks and the
