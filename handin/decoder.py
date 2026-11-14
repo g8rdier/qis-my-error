@@ -105,17 +105,20 @@ def decode_marginals(g, detector_events: np.ndarray) -> np.ndarray:
     events = (np.ascontiguousarray(D), np.ascontiguousarray(D[:, ::-1]))
     logw = np.full((len(D), 16), -np.inf)  # best lower bound so far on the log weight of each outcome
     sel = np.arange(len(D))
+    cost = None  # peak state counts of the previous stage, only used to start the hardest shots first
     for stage, (sweeps, thr) in enumerate(MLD_STAGES):
         if len(sel) == 0:
             break
         views = [marginals_logw(logw[sel])] if stage else []
-        results = mld_logw_many([(g[direction], events[direction][sel], eps, max_states) for direction, eps, max_states in sweeps])
+        results, cost = mld_logw_many([(g[direction], events[direction][sel], eps, max_states) for direction, eps, max_states in sweeps],
+                                      priority=cost, return_costs=True)
         for lw in results:
             views.append(marginals_logw(lw))
             logw[sel] = np.maximum(logw[sel], lw)
         views.append(marginals_logw(logw[sel]))
         spread = np.max(views, 0) - np.min(views, 0)
-        sel = sel[(spread / (np.abs(views[-1] - 0.5) + MARGIN_FLOOR)).max(1) > thr]
+        escalate = (spread / (np.abs(views[-1] - 0.5) + MARGIN_FLOOR)).max(1) > thr
+        sel, cost = sel[escalate], cost[escalate]
     return marginals_logw(logw)
 
 

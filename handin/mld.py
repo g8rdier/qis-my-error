@@ -572,23 +572,54 @@ def _worker(tasks, counter):
                    g["cw"], g["d1z"], g["h0"], D, lo, hi, g["nd"], leps, max_states, compact_every, *_scratch(max_states), out16, stats)
 
 
-def _run_many(sweeps, compact_every=16):
+def _run_many(sweeps, compact_every=16, priority=None):
     """sweeps: list of (g, detector_events, eps, max_states). Returns a list of (out16, stats), one per sweep. The
-    batches of all sweeps share the thread pool; the result does not depend on the number of threads."""
+    batches of all sweeps share the thread pool; the result does not depend on the number of threads.
+
+    priority (optional, one value per shot, the same shots in every sweep): an estimate of each shot's cost. The
+    shots are then handed out most expensive first, in batches of about equal estimated cost, so no thread starts a
+    hard shot when the others are nearly done. Every shot is decoded on its own, so this changes only which thread
+    decodes it and when, never its result; the results are returned in the callers' shot order."""
+    order = None
+    if priority is not None:
+        priority = np.asarray(priority, dtype=np.float64)
+        order = np.argsort(-priority, kind="stable")
+        cost = np.maximum(priority[order], 1.0)
+        budget = cost.sum() / (32 * NUM_THREADS)
+        bounds = [0]
+        acc = 0.0
+        for i in range(len(cost)):
+            if i > bounds[-1] and (acc + cost[i] > budget or i - bounds[-1] >= 64):
+                bounds.append(i)
+                acc = 0.0
+            acc += cost[i]
+        bounds.append(len(cost))
     results, per_sweep = [], []
     for g, detector_events, eps, max_states in sweeps:
         D = np.ascontiguousarray(np.asarray(detector_events, dtype=np.bool_))
+        if order is not None:
+            D = np.ascontiguousarray(D[order])
+            ranges = list(zip(bounds[:-1], bounds[1:]))
+        else:
+            step = max(1, min(64, len(D) // (32 * NUM_THREADS)))
+            ranges = [(lo, min(lo + step, len(D))) for lo in range(0, len(D), step)]
         out16 = np.zeros((len(D), 16))
         stats = np.zeros((len(D), 2))
         results.append((out16, stats))
-        step = max(1, min(64, len(D) // (32 * NUM_THREADS)))
-        per_sweep.append([(g, D, lo, min(lo + step, len(D)), np.log(eps), max_states, compact_every, out16, stats)
-                          for lo in range(0, len(D), step)])
+        per_sweep.append([(g, D, lo, hi, np.log(eps), max_states, compact_every, out16, stats) for lo, hi in ranges])
     tasks = [t for group in itertools.zip_longest(*per_sweep) for t in group if t is not None]
     counter = itertools.count()
     futures = [_POOL.submit(_worker, tasks, counter) for _ in range(min(NUM_THREADS, len(tasks)))]
     for f in futures:
         f.result()
+    if order is not None:
+        restored = []
+        for out16, stats in results:
+            o, s = np.empty_like(out16), np.empty_like(stats)
+            o[order] = out16
+            s[order] = stats
+            restored.append((o, s))
+        results = restored
     return results
 
 
@@ -601,9 +632,15 @@ def _logw(out16, stats):
         return np.log(out16) + np.where(np.isfinite(stats[:, 1:2]), stats[:, 1:2], 0.0)
 
 
-def mld_logw_many(sweeps):
-    """mld_logw for several sweeps (g, detector_events, eps, max_states) at once, sharing the thread pool."""
-    return [_logw(out16, stats) for out16, stats in _run_many(sweeps)]
+def mld_logw_many(sweeps, priority=None, return_costs=False):
+    """mld_logw for several sweeps (g, detector_events, eps, max_states) at once, sharing the thread pool.
+    priority: optional per-shot cost estimate, used only for scheduling (see _run_many). With return_costs, also
+    returns each shot's peak state count summed over the sweeps, a cost estimate for a later, tighter stage."""
+    runs = _run_many(sweeps, priority=priority)
+    weights = [_logw(out16, stats) for out16, stats in runs]
+    if return_costs:
+        return weights, sum(stats[:, 0] for _, stats in runs)
+    return weights
 
 
 def mld_classp(g, detector_events, eps=1e-4, max_states=1 << 12, compact_every=16):

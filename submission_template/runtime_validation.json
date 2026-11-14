@@ -431,7 +431,7 @@
   },
   "discarded_trials_2026_11_14": {
     "profile_16_threads": "per basis: stage 1 ~3.9 s, stage 2 ~8 s, stage 3 ~26 s, serial NumPy glue 0.18 s. In stage 3 (single-thread, 150 shots per basis and direction) the exact prefix quicksort is ~54% of kernel time and the hash-table rebuild after compaction ~22% (measured by running each twice).",
-    "hardest_first_scheduling": "stages 2-3 handed out by previous-stage peak state count (rank correlation 0.96 with time), equal-cost batches. Exact (0 changed bits at 48 threads, 21 parity arrays identical at 1 and 16 threads), but no gain above noise locally: full set 80.4/81.1 s vs 80.9/81.3 s reference (48 threads), one-third subset at 16 threads median 25.31 s vs 25.56 s. Not kept.",
+    "hardest_first_scheduling": "stages 2-3 handed out by previous-stage peak state count (rank correlation 0.96 with time), equal-cost batches. Exact (0 changed bits at 48 threads, 21 parity arrays identical at 1 and 16 threads), but no gain above noise locally: full set 80.4/81.1 s vs 80.9/81.3 s reference (48 threads), one-third subset at 16 threads median 25.31 s vs 25.56 s. Not kept. Later included at the team's request (see hardest_first_scheduling_included).",
     "radix_sort_with_tie_fallback": "stable radix sort used only when the kept prefix has no tied keys; ties occur in nearly every sort (~34 fallbacks per shot), so slower (19.5 s vs 17.6 s). Not kept.",
     "allocation_free_sort": "same quicksort into kernel scratch buffers: 18.06 s vs 17.95 s. Not kept.",
     "skip_unchanged_table_rebuild": "18.20 s vs 17.99 s. Not kept.",
@@ -561,5 +561,115 @@
       "passed": true
     },
     "official_hardware_timing": false
+  },
+  "hardest_first_scheduling_included": {
+    "decision": "Included at the team's request on simulation evidence; exact, but not measurably faster on the 8-core laptop.",
+    "change": "Stages 2-3 hand out shots most expensive first (previous-stage peak state count, summed over both sweeps), in batches of about equal estimated cost; results are scattered back to the original shot order before any further arithmetic. decoder.py only passes the costs; the escalation mask is unchanged.",
+    "simulation_48_threads": "from measured per-shot times: stage 3 9.11 -> 8.34 s (optimal), stage 2 2.81 -> 2.72 s per basis; HT tail compression makes the real gain smaller.",
+    "local_ab": {
+      "full_16_threads_old_new": [
+        [
+          76.27,
+          75.89
+        ],
+        [
+          76.7,
+          75.61
+        ]
+      ],
+      "subset_33333_48_threads_old_new": [
+        [
+          25.16,
+          26.46,
+          26.31
+        ],
+        [
+          26.18,
+          26.12,
+          25.86
+        ]
+      ]
+    },
+    "full_check_handin_48_threads": {
+      "selected_submission": "submission_tweak_tieband01.csv",
+      "selected_submission_sha256": "878631d6b0a31f7c2ec06d55b58fb82b7f6b8aa26f27e7321f5ebb63b08a17a1",
+      "input_sha256": "04607a99023315216e86c790bc11bf72150c1885a4ae18b7729d0be105d2dab5",
+      "shots": 200000,
+      "bits": 800000,
+      "threads": 48,
+      "runs": [
+        {
+          "run": 1,
+          "seconds": {
+            "X": 39.08914910303429,
+            "Z": 40.165897830040194
+          },
+          "total_seconds": 79.25504693307448,
+          "changed_bits": 0
+        }
+      ],
+      "median_seconds": 79.25504693307448,
+      "import_seconds_excluded": 0.28038633899996057,
+      "byte_identical_csv": true,
+      "source_sha256": {
+        "decoder.py": "6e86a6ecf7b050bfcb0dd4450a5d8732d73f36ac2693959c8f1e9a9271deca1e",
+        "mld.py": "c158ccaed7f8b7691faebcea1655a18dede635ba553a07be6840efeb37899b06",
+        "requirements.txt": "28f7dc7ce08d40dd82a9eb8b46103b18d1fa6af14495274ba3756356be1c00e1",
+        "circuits/X_circuit.stim": "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070",
+        "circuits/Z_circuit.stim": "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968"
+      },
+      "python": "3.13.15 (main, Sep  1 2026, 14:18:08) [Clang 22.1.3 ]",
+      "packages": {
+        "numpy": "2.2.6",
+        "stim": "1.16.0",
+        "numba": "0.68.1",
+        "llvmlite": "0.50.0"
+      },
+      "official_hardware_timing": false
+    },
+    "full_check_handin_16_threads": {
+      "selected_submission": "submission_tweak_tieband01.csv",
+      "selected_submission_sha256": "878631d6b0a31f7c2ec06d55b58fb82b7f6b8aa26f27e7321f5ebb63b08a17a1",
+      "input_sha256": "04607a99023315216e86c790bc11bf72150c1885a4ae18b7729d0be105d2dab5",
+      "shots": 200000,
+      "bits": 800000,
+      "threads": 16,
+      "runs": [
+        {
+          "run": 1,
+          "seconds": {
+            "X": 38.496374548994936,
+            "Z": 41.34035453799879
+          },
+          "total_seconds": 79.83672908699373,
+          "changed_bits": 0
+        }
+      ],
+      "median_seconds": 79.83672908699373,
+      "import_seconds_excluded": 0.3060288460110314,
+      "byte_identical_csv": true,
+      "source_sha256": {
+        "decoder.py": "6e86a6ecf7b050bfcb0dd4450a5d8732d73f36ac2693959c8f1e9a9271deca1e",
+        "mld.py": "c158ccaed7f8b7691faebcea1655a18dede635ba553a07be6840efeb37899b06",
+        "requirements.txt": "28f7dc7ce08d40dd82a9eb8b46103b18d1fa6af14495274ba3756356be1c00e1",
+        "circuits/X_circuit.stim": "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070",
+        "circuits/Z_circuit.stim": "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968"
+      },
+      "python": "3.13.15 (main, Sep  1 2026, 14:18:08) [Clang 22.1.3 ]",
+      "packages": {
+        "numpy": "2.2.6",
+        "stim": "1.16.0",
+        "numba": "0.68.1",
+        "llvmlite": "0.50.0"
+      },
+      "official_hardware_timing": false
+    },
+    "generated_numerical_equality": "21 parity arrays byte-identical to the reference at 1 and 16 threads",
+    "check_handin_fresh_venv_48_threads": {
+      "X_LER": 0.0343,
+      "Z_LER": 0.03277,
+      "decode_seconds": 76.9,
+      "passed": true
+    }
   }
 }

@@ -163,7 +163,7 @@ serial NumPy glue 0.18 s. Within stage 3 the exact prefix quicksort takes
 
 | Trial | Exact | Result |
 | --- | --- | --- |
-| Hardest-first scheduling of stages 2-3 (previous-stage peak states) | yes | within noise locally (one-third subset: 25.31 s vs 25.56 s) |
+| Hardest-first scheduling of stages 2-3 (previous-stage peak states) | yes | within noise locally; later included (see below) |
 | Radix sort, quicksort fallback on ties in the kept prefix | yes | slower: ties occur in nearly every sort |
 | Quicksort into preallocated scratch buffers | yes | no gain |
 | Skip the table rebuild when compaction removes nothing | yes | no gain |
@@ -173,3 +173,20 @@ serial NumPy glue 0.18 s. Within stage 3 the exact prefix quicksort takes
 The quicksort's order of tied scores determines later tie-breaks and the
 summation order of the final class weights, so any faster sort must reproduce
 it exactly; no such sort was found. Details are in `runtime_validation.json`.
+
+## Hardest-first scheduling (included on simulation evidence)
+
+Stages 2 and 3 now hand out their shots most expensive first, using each
+shot's peak state count from the previous stage (rank correlation 0.96 with
+its time), in batches of about equal estimated cost. The results are put back
+in the original shot order before any further arithmetic, and 
+only passes the costs along; the escalation mask is computed as before.
+
+A simulation from measured per-shot times predicts a shorter stage-3 tail on
+48 cores (9.11 s to the optimal 8.34 s per basis). On the 8-core laptop the
+gain is within noise (full set, 16 threads: 76.27/75.89 s before vs
+76.70/75.61 s after; one-third subset, 48 threads: medians 26.31 s vs
+26.12 s), so it was included at the team's request, not on measured speedup.
+All 800,000 bits and the CSV bytes match at 16 and 48 threads, all 21 parity
+arrays are byte-identical at 1 and 16 threads, and  passes in
+a fresh venv.
