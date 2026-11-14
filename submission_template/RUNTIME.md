@@ -60,7 +60,7 @@ The judge's minimal decoder folder still needs only `decoder.py`, `mld.py`,
 `requirements.txt`, and `circuits/{X,Z}_circuit.stim`. The verification tools
 and reports are for reproducibility and are never loaded by `decode`.
 
-## Local validation results
+## First optimization: local validation
 
 On an AMD Ryzen 7 250 (8 cores, 16 hardware threads), both bases and all
 200,000 test shots, with import/JIT excluded:
@@ -80,3 +80,40 @@ with 1 and 16 candidate threads.
 These are local measurements, not the organisers' median of five on their
 48-vCPU machine. Full timings, package versions, source hashes, and static
 checks are recorded in `runtime_validation.json`.
+
+## Faster state ordering
+
+The next change replaces repeated full floating-point argsorts with an exact
+prefix sorter and gathers the retained state fields in one pass. It preserves
+the original Numba quicksort pivots, swaps, insertion-sort cutoff, and tie
+ordering. Order-preserving unsigned keys represent the existing float64 scores;
+NaNs and signed zeros retain their original comparison equivalence. All
+candidates are still considered. Only subpartitions wholly beyond the retained
+prefix are left unsorted, so retained states and their order are unchanged.
+
+This sorter adapts Numba's general-purpose quicksort, with its BSD copyright
+and license notice included in `mld.py`. No external QEC implementation is used.
+Decoder settings, numerical precision, probability calculations and dependencies
+remain unchanged.
+
+The local 16-thread median over three full runs is **78.34 s**, compared with
+**86.10 s** for the previously pushed zero-update optimization and **88.94 s**
+for the original. That is another **9.0%** improvement, or **11.9%** overall.
+Every run matches all 800,000 selected-submission bits and the CSV bytes exactly.
+
+Run the independent sorting tests with the same hand-in environment:
+
+```bash
+/tmp/qec-verify/bin/python -I submission_template/test_runtime_invariants.py
+```
+
+The tests exhaust small tied-value arrays and all binary arrays at the first
+quicksort partition size, then check larger random, sorted, reversed, infinite,
+NaN, signed-zero, subnormal and raw float-bit inputs. They require exact index
+ordering and verify that the input score arrays remain bit-identical.
+
+The final full 48-thread local check took **77.01 s**, with zero changed bits.
+Fresh generated-shot intermediate arrays also match the original exactly at
+1 and 16 threads. The compaction-copy trial was discarded because it showed
+no reliable additional benefit. Detailed evidence is in the
+`state_sort_optimization` section of `runtime_validation.json`.

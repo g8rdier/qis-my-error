@@ -246,5 +246,131 @@
       "reason": "Difference within observed runtime variation; no reliable benefit"
     }
   ],
-  "official_hardware_timing_measured": false
+  "official_hardware_timing_measured": false,
+  "state_sort_optimization": {
+    "reference_commit": "1071efb6ca2470bef27082780c621dcf07e3147b",
+    "change": "Exact quicksort prefix with order-preserving integer keys and fused field gathers",
+    "optimized_16_threads": {
+      "selected_submission": "submission_tweak_tieband01.csv",
+      "selected_submission_sha256": "878631d6b0a31f7c2ec06d55b58fb82b7f6b8aa26f27e7321f5ebb63b08a17a1",
+      "input_sha256": "04607a99023315216e86c790bc11bf72150c1885a4ae18b7729d0be105d2dab5",
+      "shots": 200000,
+      "bits": 800000,
+      "threads": 16,
+      "runs": [
+        {
+          "run": 1,
+          "seconds": {
+            "X": 38.98789155000122,
+            "Z": 39.43358965899097
+          },
+          "total_seconds": 78.42148120899219,
+          "changed_bits": 0
+        },
+        {
+          "run": 2,
+          "seconds": {
+            "X": 38.6882079920033,
+            "Z": 39.64909362903563
+          },
+          "total_seconds": 78.33730162103893,
+          "changed_bits": 0
+        },
+        {
+          "run": 3,
+          "seconds": {
+            "X": 38.75944850698579,
+            "Z": 39.372064783005044
+          },
+          "total_seconds": 78.13151328999083,
+          "changed_bits": 0
+        }
+      ],
+      "median_seconds": 78.33730162103893,
+      "import_seconds_excluded": 0.5289461130159907,
+      "byte_identical_csv": true,
+      "source_sha256": {
+        "decoder.py": "c773f4f9d09214c0de4c322284b6265b8489ace133eafc650d4040bda8e6c977",
+        "mld.py": "c4efce66fb885db8b0b3f51fb5a966dc9def5745dd73a2dab9d6fa8a1dbebb3f",
+        "requirements.txt": "c8dd99bc00e75c5350c0734c45a7c415ef3bf9b5055b7b8dd30b03cd3544f4e7",
+        "circuits/X_circuit.stim": "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070",
+        "circuits/Z_circuit.stim": "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968"
+      },
+      "python": "3.13.15 (main, Sep  1 2026, 14:18:08) [Clang 22.1.3 ]",
+      "packages": {
+        "numpy": "2.2.6",
+        "stim": "1.16.0",
+        "numba": "0.68.1",
+        "llvmlite": "0.50.0"
+      },
+      "official_hardware_timing": false
+    },
+    "optimized_48_threads": {
+      "selected_submission": "submission_tweak_tieband01.csv",
+      "selected_submission_sha256": "878631d6b0a31f7c2ec06d55b58fb82b7f6b8aa26f27e7321f5ebb63b08a17a1",
+      "input_sha256": "04607a99023315216e86c790bc11bf72150c1885a4ae18b7729d0be105d2dab5",
+      "shots": 200000,
+      "bits": 800000,
+      "threads": 48,
+      "runs": [
+        {
+          "run": 1,
+          "seconds": {
+            "X": 37.93829523102613,
+            "Z": 39.071956247033086
+          },
+          "total_seconds": 77.01025147805922,
+          "changed_bits": 0
+        }
+      ],
+      "median_seconds": 77.01025147805922,
+      "import_seconds_excluded": 0.5352087219944224,
+      "byte_identical_csv": true,
+      "source_sha256": {
+        "decoder.py": "c773f4f9d09214c0de4c322284b6265b8489ace133eafc650d4040bda8e6c977",
+        "mld.py": "c4efce66fb885db8b0b3f51fb5a966dc9def5745dd73a2dab9d6fa8a1dbebb3f",
+        "requirements.txt": "c8dd99bc00e75c5350c0734c45a7c415ef3bf9b5055b7b8dd30b03cd3544f4e7",
+        "circuits/X_circuit.stim": "dc6d415ae3f0b5396a7f63ba1047f024be8ce7e44b03ace65348bcee78b3c070",
+        "circuits/Z_circuit.stim": "36a24a0347bbb82362af28d816d790d5ee1cb1543fef2e9af7ada70536bf9968"
+      },
+      "python": "3.13.15 (main, Sep  1 2026, 14:18:08) [Clang 22.1.3 ]",
+      "packages": {
+        "numpy": "2.2.6",
+        "stim": "1.16.0",
+        "numba": "0.68.1",
+        "llvmlite": "0.50.0"
+      },
+      "official_hardware_timing": false
+    },
+    "additional_runtime_reduction_percent": 9.0205289146697,
+    "overall_runtime_reduction_percent": 11.924646925864602,
+    "sort_invariant_tests": {
+      "passed": 3,
+      "exhaustive_tied_prefix_cases": 83653,
+      "exhaustive_binary_partition_cases": 131072,
+      "large_random_special_and_raw_float_bit_cases": true,
+      "input_scores_bit_identical": true
+    },
+    "generated_numerical_equality": {
+      "shots_per_basis": 2048,
+      "candidate_threads": [
+        1,
+        16
+      ],
+      "all_21_arrays_exactly_equal_to_original": true,
+      "scope": "All stage log weights, marginals, predictions; repeated, reversed, partitioned, duplicate and empty batches"
+    },
+    "static_equivalence": {
+      "decoder_py_byte_identical": true,
+      "requirements_byte_identical": true,
+      "kernel_identical_after_restoring_only_sort_and_gather": true,
+      "all_other_existing_mld_module_nodes_identical": true
+    },
+    "provenance": "General-purpose Numba 0.68.1 quicksort adaptation; full BSD copyright and license notice embedded in mld.py; no external QEC implementation",
+    "discarded_compaction_trial": {
+      "median_seconds": 78.57415154902264,
+      "reason": "No reliable additional speedup"
+    },
+    "official_hardware_timing_measured": false
+  }
 }

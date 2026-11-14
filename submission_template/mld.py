@@ -141,6 +141,124 @@ def _logadd(x, y):
     return x + np.log1p(np.exp(y - x))
 
 
+
+# General-purpose sorting adaptation from numba==0.68.1, numba/misc/quicksort.py.
+# This is sorting code, not an external QEC decoder.
+# Copyright (c) 2012, Anaconda, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+@njit(cache=True)
+def _argsort_states(scores, keep):
+    """Exact prefix sorter adapted from Numba's general-purpose quicksort (BSD-2-Clause).
+
+    Move keys with indices instead of looking them up indirectly. The pivot,
+    swaps and insertion-sort cutoff match numba==0.68.1 exactly. Subpartitions
+    wholly beyond the returned prefix need no further sorting.
+    """
+    # Map IEEE float64 keys to an unsigned order with exactly the same
+    # comparisons as Numba's float argsort, including NaNs and signed zeros.
+    values = (-scores).view(np.uint64)
+    sign = np.uint64(0x8000000000000000)
+    magnitude_mask = np.uint64(0x7fffffffffffffff)
+    infinity = np.uint64(0x7ff0000000000000)
+    for i in range(len(values)):
+        bits = values[i]
+        magnitude = bits & magnitude_mask
+        if magnitude == 0:
+            values[i] = sign
+        elif magnitude > infinity:
+            values[i] = np.uint64(0xffffffffffffffff)
+        else:
+            values[i] = ~bits if bits & sign else bits ^ sign
+    n = len(values)
+    indices = np.arange(n)
+    if n < 2 or keep == 0:
+        return indices[:keep]
+    lows = np.empty(100, np.int64)
+    highs = np.empty(100, np.int64)
+    lows[0], highs[0] = 0, n-1
+    count = 1
+    while count:
+        count -= 1
+        low, high = lows[count], highs[count]
+        if low >= keep:
+            continue
+        while high-low >= 15:
+            if low >= keep:
+                break
+            mid = (low+high) >> 1
+            if values[mid] < values[low]:
+                values[low], values[mid] = values[mid], values[low]
+                indices[low], indices[mid] = indices[mid], indices[low]
+            if values[high] < values[mid]:
+                values[high], values[mid] = values[mid], values[high]
+                indices[high], indices[mid] = indices[mid], indices[high]
+            if values[mid] < values[low]:
+                values[low], values[mid] = values[mid], values[low]
+                indices[low], indices[mid] = indices[mid], indices[low]
+            pivot = values[mid]
+            values[high], values[mid] = values[mid], values[high]
+            indices[high], indices[mid] = indices[mid], indices[high]
+            i, j = low, high-1
+            while True:
+                while i < high and values[i] < pivot:
+                    i += 1
+                while j >= low and pivot < values[j]:
+                    j -= 1
+                if i >= j:
+                    break
+                values[i], values[j] = values[j], values[i]
+                indices[i], indices[j] = indices[j], indices[i]
+                i += 1
+                j -= 1
+            values[i], values[high] = values[high], values[i]
+            indices[i], indices[high] = indices[high], indices[i]
+            assert count < 100
+            if high-i > i-low:
+                if high > i:
+                    lows[count], highs[count] = i+1, high
+                    count += 1
+                high = i-1
+            else:
+                if i > low:
+                    lows[count], highs[count] = low, i-1
+                    count += 1
+                low = i+1
+        if low >= keep:
+            continue
+        for i in range(low+1, high+1):
+            key, index = values[i], indices[i]
+            j = i
+            while j > low and key < values[j-1]:
+                values[j] = values[j-1]
+                indices[j] = indices[j-1]
+                j -= 1
+            values[j], indices[j] = key, index
+    return indices[:keep]
+
+
 @njit(cache=True, fastmath={"nsz", "reassoc", "contract", "arcp"})
 def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d1z, h0, D0, D1, nd, leps, max_states, compact_every,
               ka, kb, lw, sc, cka, ckb, clw, csc, cs, ce, table, out16, stats):
@@ -342,11 +460,15 @@ def _mld_shot(c0, c1, m0, m1, cl0, cl1, lr, v0, v1, hasv0, cdet, cv0, cv1, cw, d
             if ns == 0:
                 break
             if ns > max_states:
-                idx = np.argsort(-sc[:ns])[:max_states]
-                cka[:max_states] = ka[idx]
-                ckb[:max_states] = kb[idx]
-                clw[:max_states] = lw[idx]
-                csc[:max_states] = sc[idx]
+                idx = _argsort_states(sc[:ns], max_states)
+                # Gather all fields before copying back; preserve the exact
+                # original state order without four temporary indexed arrays.
+                for j in range(max_states):
+                    source_index = idx[j]
+                    cka[j] = ka[source_index]
+                    ckb[j] = kb[source_index]
+                    clw[j] = lw[source_index]
+                    csc[j] = sc[source_index]
                 ka[:max_states] = cka[:max_states]
                 kb[:max_states] = ckb[:max_states]
                 lw[:max_states] = clw[:max_states]
