@@ -117,3 +117,34 @@ Fresh generated-shot intermediate arrays also match the original exactly at
 1 and 16 threads. The compaction-copy trial was discarded because it showed
 no reliable additional benefit. Detailed evidence is in the
 `state_sort_optimization` section of `runtime_validation.json`.
+
+## Hand-in folder
+
+`handin/` (repository root) is the folder to hand in. It contains only what
+`decode` needs: `decoder.py`, `mld.py`, `requirements.txt` (the three pinned
+packages) and `circuits/{X,Z}_circuit.stim`. The Python files and circuits are
+byte-identical copies of the ones in `submission_template/`; `decode` loads no
+other file and imports none of the verification tools.
+
+- `verify_runtime.py --decoder handin --threads 48`: all 800,000 bits and the
+  CSV bytes match the selected submission.
+- `check_handin.py` in a fresh Python 3.13.15 venv built from
+  `handin/requirements.txt`: passes (X LER 0.03430, Z LER 0.03277).
+
+## Trials after the state-sort optimization (not kept)
+
+Profile at 16 threads, per basis: stage 1 ~3.9 s, stage 2 ~8 s, stage 3 ~26 s,
+serial NumPy glue 0.18 s. Within stage 3 the exact prefix quicksort takes
+~54% of the kernel time and the hash-table rebuild after compaction ~22%.
+
+| Trial | Exact | Result |
+| --- | --- | --- |
+| Hardest-first scheduling of stages 2-3 (previous-stage peak states) | yes | within noise locally (one-third subset: 25.31 s vs 25.56 s) |
+| Radix sort, quicksort fallback on ties in the kept prefix | yes | slower: ties occur in nearly every sort |
+| Quicksort into preallocated scratch buffers | yes | no gain |
+| Skip the table rebuild when compaction removes nothing | yes | no gain |
+| Decode duplicate syndromes once | — | duplicates are almost all cheap stage-1 shots; not implemented |
+
+The quicksort's order of tied scores determines later tie-breaks and the
+summation order of the final class weights, so any faster sort must reproduce
+it exactly; no such sort was found. Details are in `runtime_validation.json`.
