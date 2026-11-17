@@ -1,8 +1,10 @@
 <p align="center"><img src="figures/logo.png" alt="Qis my error logo" width="280"></p>
 
 # How to run OUR solution
-- The "decoder" folder is in the submission_template folder
-- From there, the requirements.txt should have all preq. required. 
+- The hand-in folder is `handin/`: `decoder.py`, `mld.py`, `requirements.txt` (pinned numpy, stim, numba) and `circuits/{X,Z}_circuit.stim`.
+- Install with `pip install -r handin/requirements.txt`, then call `decode(circuit, detector_events)` from `handin/decoder.py`.
+- The development copy and the verification tools are in `submission_template/` (see `submission_template/RUNTIME.md`).
+- The version as submitted is the [`final-submission` release](https://github.com/g8rdier/qismyerror/releases/tag/final-submission) of [g8rdier/qismyerror](https://github.com/g8rdier/qismyerror), a cleaned copy whose code is identical to `b03b4cf` here. This repository keeps the full development history.
 
 
 # QEC decoder hackathon, November 2026: build your own decoder
