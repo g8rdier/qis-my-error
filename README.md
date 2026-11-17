@@ -1,9 +1,9 @@
 <p align="center"><img src="figures/logo.png" alt="Qis my error logo" width="280"></p>
 
 # Result
-- **1st place on the Kaggle private leaderboard** with a logical error rate of **0.03440** (the next three teams: 0.03441).
+- **1st place on the Kaggle private leaderboard** (accuracy) with a logical error rate of **0.03440** (the next three teams: 0.03441).
+- The competition scored runtime as well as accuracy. On runtime we were not the best, so the overall result is not 1st place.
 - The decoder is a pruned maximum-likelihood decoder that sits within ~6×10⁻⁷ of exact maximum-likelihood decoding, the best any decoder can do in expectation under this noise model.
-- The overall hackathon ranking also penalised runtime; there we did not finish first.
 
 # How to run OUR solution
 - The hand-in folder is `handin/`: `decoder.py`, `mld.py`, `requirements.txt` (pinned numpy, stim, numba) and `circuits/{X,Z}_circuit.stim`.
