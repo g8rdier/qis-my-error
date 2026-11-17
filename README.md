@@ -1,16 +1,23 @@
 <p align="center"><img src="figures/logo.png" alt="Qis my error logo" width="280"></p>
 
-# Result
+# Qis my error: Quantum Error Correction Decoder Hackathon 2026
+
+Built during the 12-hour online **Quantum Error Correction Decoder Hackathon** (13 November 2026), hosted by DTU Physics, NQCP and QMATH together with NVIDIA and Riverlane and judged by representatives from NVIDIA and Riverlane.
+
+## Result
 - **1st in accuracy**: lowest logical error rate of all teams, **0.03440** (the next three teams: 0.03441; Kaggle private leaderboard).
 - The competition scored runtime as well as accuracy. On runtime we were not the best, so the overall result is not 1st place.
 - The decoder is a pruned maximum-likelihood decoder that sits within ~6×10⁻⁷ of exact maximum-likelihood decoding, the best any decoder can do in expectation under this noise model.
 
-# How to run OUR solution
+## How to run OUR solution
 - The hand-in folder is `handin/`: `decoder.py`, `mld.py`, `requirements.txt` (pinned numpy, stim, numba) and `circuits/{X,Z}_circuit.stim`.
 - Install with `pip install -r handin/requirements.txt`, then call `decode(circuit, detector_events)` from `handin/decoder.py`.
 - The development copy and the verification tools are in `submission_template/` (see `submission_template/RUNTIME.md`).
 - The version as submitted is the [`final-submission` release](https://github.com/g8rdier/qismyerror/releases/tag/final-submission) of [g8rdier/qismyerror](https://github.com/g8rdier/qismyerror), a cleaned copy whose code is identical to `b03b4cf` here. This repository keeps the full development history.
 
+---
+
+*The rest of this README is the organisers' original task description.*
 
 # QEC decoder hackathon, November 2026: build your own decoder
 
